@@ -89,6 +89,8 @@ export const EducationEntrySchema = z.object({
   location: str(),
   dates: DateRangeSchema,
   gpa: str(),
+  /** Label printed before the value: GPA, CGPA, Grade... */
+  gpaLabel: z.string().default('GPA'),
   gpaScale: str(),
   description: str(),
   details: z.array(BulletSchema).default([]),
@@ -193,6 +195,8 @@ export const CustomEntrySchema = z.object({
 
 export const SectionOptionsSchema = z
   .object({
+    /** Render the section heading. A summary often reads better without one. */
+    showTitle: z.boolean().optional(),
     /** Skills: category table or one run-on line per category. */
     skillsLayout: z.enum(['table', 'inline']).optional(),
     /** Separator between list items (skills, technologies, languages...). */

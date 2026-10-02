@@ -1,0 +1,447 @@
+/*
+ * ResumeForge document styles.
+ *
+ * Shared verbatim by the live preview, dashboard thumbnails, the print
+ * iframe and the server-side PDF renderer. Rules here must not depend on any
+ * application stylesheet or theme: the document is always black-on-white
+ * paper regardless of the app's light or dark mode.
+ *
+ * Layout contract with the pagination engine:
+ *  - Vertical space between blocks is applied by the engine (padding-top on
+ *    .rf-block), never by margins here, so it can be dropped at page tops.
+ *  - Blocks are flow roots: nothing inside can collapse margins through them.
+ *  - Elements marked [data-rf-atom] are the only break opportunities.
+ */
+
+.rf-document {
+  font-family: var(--rf-font-body);
+  font-size: var(--rf-size-base);
+  line-height: var(--rf-line-height);
+  letter-spacing: var(--rf-letter-spacing);
+  color: var(--rf-text);
+  text-align: left;
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+
+.rf-document *,
+.rf-document *::before,
+.rf-document *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.rf-document h1,
+.rf-document h2,
+.rf-document h3 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.rf-page {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--rf-text);
+}
+
+.rf-page-content,
+.rf-block {
+  display: flow-root;
+}
+
+.rf-measure {
+  position: absolute;
+  top: 0;
+  left: -100000px;
+  visibility: hidden;
+  pointer-events: none;
+  contain: layout style;
+}
+
+.rf-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rf-page-number {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--rf-margin-bottom) * 0.38);
+  text-align: center;
+  font-size: 0.8em;
+  color: var(--rf-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Header                                                                   */
+/* ------------------------------------------------------------------------ */
+
+.rf-header {
+  text-align: var(--rf-header-align);
+  padding-bottom: var(--rf-space-header);
+}
+
+.rf-name {
+  font-family: var(--rf-font-heading);
+  font-size: var(--rf-size-name);
+  font-weight: var(--rf-weight-name);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.rf-headline {
+  margin-top: 0.4em;
+  font-size: 1.12em;
+  line-height: 1.3;
+}
+
+.rf-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  margin-top: 0.85em;
+  font-size: 0.88em;
+}
+
+.rf-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: var(--rf-header-justify);
+  column-gap: 1.7em;
+  row-gap: 0.2em;
+  list-style: none;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Sections and entries                                                     */
+/* ------------------------------------------------------------------------ */
+
+.rf-section-title {
+  font-family: var(--rf-font-heading);
+  font-size: var(--rf-size-section);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--rf-accent);
+  padding-bottom: 0.55em;
+}
+
+.rf-entry-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.2em;
+}
+
+.rf-entry-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--rf-font-heading);
+  font-size: var(--rf-size-entry);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.rf-entry-meta {
+  font-weight: 400;
+  color: var(--rf-secondary);
+}
+
+.rf-entry-aside {
+  flex: 0 0 auto;
+  max-width: 55%;
+  font-size: 0.88em;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-entry-line {
+  margin-top: 0.12em;
+}
+
+.rf-tech {
+  font-size: 0.88em;
+  color: var(--rf-secondary);
+}
+
+.rf-entry-desc {
+  margin-top: var(--rf-space-paragraph);
+  white-space: pre-line;
+}
+
+.rf-paragraph {
+  white-space: pre-line;
+}
+
+.rf-paragraph + .rf-paragraph {
+  padding-top: calc(var(--rf-space-paragraph) * 2.5);
+}
+
+/* Bullets ---------------------------------------------------------------- */
+
+.rf-bullets {
+  list-style: none;
+}
+
+.rf-bullets > li {
+  position: relative;
+  padding-top: var(--rf-space-paragraph);
+  padding-left: 1.15em;
+}
+
+.rf-bullets > li::before {
+  position: absolute;
+  left: 0.25em;
+  content: '•';
+}
+
+.rf-bullets-dash .rf-bullets > li::before {
+  content: '–';
+  left: 0.1em;
+}
+
+.rf-bullets-square .rf-bullets > li::before {
+  content: '▪';
+  left: 0.2em;
+}
+
+.rf-bullets-none .rf-bullets > li {
+  padding-left: 0;
+}
+
+.rf-bullets-none .rf-bullets > li::before {
+  content: none;
+}
+
+/* Skills ----------------------------------------------------------------- */
+
+.rf-skill-row + .rf-skill-row {
+  padding-top: calc(var(--rf-space-paragraph) * 0.9);
+}
+
+.rf-skills--table .rf-skill-row {
+  display: grid;
+  grid-template-columns: var(--rf-skill-col) 1fr;
+  column-gap: 0.6em;
+}
+
+.rf-skill-name {
+  font-weight: 600;
+}
+
+/* Figures ---------------------------------------------------------------- */
+
+.rf-stat-row {
+  display: grid;
+  grid-template-columns: repeat(var(--rf-stat-cols), minmax(0, 1fr));
+  column-gap: 1.3em;
+}
+
+.rf-stat-row + .rf-stat-row {
+  padding-top: 0.9em;
+}
+
+.rf-stat {
+  padding: 0.05em 0 0.1em 0.8em;
+  border-left: 1.5pt solid var(--rf-divider);
+}
+
+.rf-stat-value {
+  font-family: var(--rf-font-heading);
+  font-size: 1.95em;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums;
+}
+
+.rf-stat-label {
+  margin-top: 0.2em;
+  font-size: 0.86em;
+  line-height: 1.3;
+}
+
+.rf-stat-desc {
+  margin-top: 0.15em;
+  font-size: 0.82em;
+  line-height: 1.3;
+  color: var(--rf-secondary);
+}
+
+.rf-achievement-text .rf-paragraph + .rf-paragraph {
+  padding-top: var(--rf-space-paragraph);
+}
+
+/* Key–value lists (languages, interests) --------------------------------- */
+
+.rf-kv {
+  display: grid;
+  grid-template-columns: minmax(8em, max-content) 1fr;
+  column-gap: 1.2em;
+}
+
+.rf-kv + .rf-kv {
+  padding-top: calc(var(--rf-space-paragraph) * 0.9);
+}
+
+.rf-kv-key,
+.rf-inline-key {
+  font-weight: 600;
+}
+
+.rf-kv-value,
+.rf-inline-value {
+  color: var(--rf-secondary);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Classic: ruled, uppercase headings in the accent colour            */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-classic .rf-header {
+  border-bottom: 0.75pt solid var(--rf-divider);
+}
+
+.rf-tpl-classic .rf-section-title {
+  border-top: 1.4pt solid var(--rf-divider);
+  padding-top: 0.75em;
+  padding-bottom: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+}
+
+.rf-tpl-classic .rf-compact-link {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Modern: accent-led hierarchy, hairline under headings              */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-modern .rf-name {
+  letter-spacing: -0.03em;
+}
+
+.rf-tpl-modern .rf-headline {
+  color: var(--rf-accent);
+  font-weight: 500;
+}
+
+.rf-tpl-modern .rf-contacts {
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-modern .rf-contact-row {
+  column-gap: 1.3em;
+}
+
+.rf-tpl-modern .rf-section-title {
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  padding-bottom: 0.3em;
+  margin-bottom: 0.6em;
+  border-bottom: 0.75pt solid var(--rf-divider);
+}
+
+.rf-tpl-modern .rf-entry-aside {
+  font-weight: 500;
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-modern .rf-compact-link {
+  color: var(--rf-accent);
+}
+
+.rf-tpl-modern .rf-tech {
+  color: var(--rf-accent);
+}
+
+.rf-tpl-modern .rf-bullets > li::before {
+  color: var(--rf-accent);
+}
+
+.rf-tpl-modern .rf-stat {
+  border-left-color: var(--rf-accent);
+}
+
+.rf-tpl-modern .rf-stat-value {
+  color: var(--rf-accent);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Minimal: typography only                                           */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-minimal .rf-name {
+  letter-spacing: 0.01em;
+}
+
+.rf-tpl-minimal .rf-headline {
+  font-style: italic;
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-minimal .rf-contacts {
+  margin-top: 0.7em;
+}
+
+.rf-tpl-minimal .rf-contact-row {
+  column-gap: 1.2em;
+}
+
+.rf-tpl-minimal .rf-section-title {
+  font-variant-caps: all-small-caps;
+  font-size: calc(var(--rf-size-section) * 1.15);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  padding-bottom: 0.35em;
+}
+
+.rf-tpl-minimal .rf-entry-meta,
+.rf-tpl-minimal .rf-entry-aside {
+  font-style: italic;
+}
+
+.rf-tpl-minimal .rf-entry-aside {
+  font-weight: 400;
+}
+
+.rf-tpl-minimal .rf-stat {
+  border-left: none;
+  padding-left: 0;
+}
+
+.rf-tpl-minimal .rf-stat-value {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Print: one .rf-page per sheet, nothing else                              */
+/* ------------------------------------------------------------------------ */
+
+@media print {
+  .rf-page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .rf-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}

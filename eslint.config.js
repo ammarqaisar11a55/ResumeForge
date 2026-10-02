@@ -23,9 +23,13 @@ export default tseslint.config(
   },
   {
     files: ['apps/web/**/*.{ts,tsx}', 'packages/renderer/**/*.{ts,tsx}'],
-    plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
+    plugins: { 'react-hooks': reactHooks },
+    rules: reactHooks.configs.recommended.rules,
+  },
+  {
+    files: ['apps/web/src/**/*.tsx'],
+    plugins: { 'react-refresh': reactRefresh },
     rules: {
-      ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },

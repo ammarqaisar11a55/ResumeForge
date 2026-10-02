@@ -153,6 +153,7 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
       location: '',
       dates: range(),
       gpa: '',
+      gpaLabel: 'GPA',
       gpaScale: '',
       description: '',
       details: [],
@@ -162,8 +163,19 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
       { key: 'institution', label: 'Institution', kind: 'text', placeholder: 'University name' },
       { key: 'location', label: 'Location', kind: 'text', placeholder: 'City, Country' },
       { key: 'dates', label: 'Dates', kind: 'date-range', span: 2, currentLabel: 'Currently studying' },
-      { key: 'gpa', label: 'GPA / CGPA', kind: 'text', placeholder: '3.89' },
-      { key: 'gpaScale', label: 'Out of', kind: 'text', placeholder: '4.00' },
+      { key: 'gpa', label: 'Result', kind: 'text', placeholder: '3.89' },
+      {
+        key: 'gpaLabel',
+        label: 'Shown as',
+        kind: 'select',
+        choices: [
+          { value: 'GPA', label: 'GPA' },
+          { value: 'CGPA', label: 'CGPA' },
+          { value: 'Grade', label: 'Grade' },
+          { value: 'Percentage', label: 'Percentage' },
+        ],
+      },
+      { key: 'gpaScale', label: 'Out of (optional)', kind: 'text', placeholder: '4.00', hint: 'Printed after the result, e.g. 3.89/4.00' },
       { key: 'description', label: 'Description', kind: 'textarea', span: 2, placeholder: 'Relevant coursework, thesis, honours…' },
       { key: 'details', label: 'Additional details', kind: 'bullets', span: 2 },
     ],
@@ -493,6 +505,7 @@ export function getSectionDefinition<T extends SectionType>(type: T): SectionDef
 export function sectionOptions(section: Section): Required<SectionOptions> {
   const defaults = SECTION_DEFINITIONS[section.type].defaultOptions;
   return {
+    showTitle: true,
     skillsLayout: 'table',
     separator: 'comma',
     statColumns: 3,

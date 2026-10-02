@@ -1,0 +1,21 @@
+/*
+ * Every font a resume can use, self-hosted. Upright and italic axes are
+ * loaded so emphasis renders with true italics instead of synthesized slants.
+ * The server-side PDF renderer embeds the same files (see apps/server/src/pdf/fonts.ts).
+ */
+@import '@fontsource-variable/archivo/index.css';
+@import '@fontsource-variable/archivo/wght-italic.css';
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource-variable/inter/wght-italic.css';
+@import '@fontsource-variable/ibm-plex-sans/index.css';
+@import '@fontsource-variable/ibm-plex-sans/wght-italic.css';
+@import '@fontsource-variable/source-sans-3/index.css';
+@import '@fontsource-variable/source-sans-3/wght-italic.css';
+@import '@fontsource-variable/roboto/index.css';
+@import '@fontsource-variable/roboto/wght-italic.css';
+@import '@fontsource-variable/source-serif-4/index.css';
+@import '@fontsource-variable/source-serif-4/wght-italic.css';
+@import '@fontsource-variable/eb-garamond/index.css';
+@import '@fontsource-variable/eb-garamond/wght-italic.css';
+@import '@fontsource-variable/lora/index.css';
+@import '@fontsource-variable/lora/wght-italic.css';

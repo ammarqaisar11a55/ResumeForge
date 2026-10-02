@@ -36,7 +36,8 @@ function education(
     location: '',
     dates: range(start, end, current),
     gpa,
-    gpaScale: gpa ? '4.00' : '',
+    gpaLabel: 'CGPA',
+    gpaScale: '',
     description: '',
     details: [],
   };
@@ -264,7 +265,7 @@ export function createDemoResume(template: TemplateId = 'classic'): Resume {
         type: 'summary',
         title: 'Summary',
         visible: true,
-        options: {},
+        options: { showTitle: false },
         entries: [
           {
             id: createId(),
