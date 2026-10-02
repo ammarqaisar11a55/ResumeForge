@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../app';
 import { DEFAULT_USER_ID, findChrome } from '../config';
 import { openDatabase, type Db } from '../db';
-import { fontFaceCss } from '../pdf/fonts';
+import { detectFonts, fontFaceCss } from '../pdf/fonts';
 import { PdfRenderer, sanitizeDocumentHtml } from '../pdf/pdfRenderer';
 
 const chrome = findChrome(process.env.CHROME_PATH);
@@ -28,6 +28,11 @@ describe('sanitizeDocumentHtml', () => {
 });
 
 describe('font embedding', () => {
+  it('detects the fonts a document uses from its markup', () => {
+    const html = `<div class="rf-document" style="--rf-font-body: 'Inter Variable', Arial; --rf-font-heading: 'Lora Variable', serif">`;
+    expect(detectFonts(html)).toEqual(['inter', 'lora']);
+  });
+
   it('inlines Latin subsets of the font files as data URIs', async () => {
     const css = await fontFaceCss('archivo');
     expect(css).toContain("font-family: 'Archivo Variable'");

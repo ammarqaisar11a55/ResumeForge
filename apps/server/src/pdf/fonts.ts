@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { FONTS, type FontId } from '@resumeforge/core';
+import { FONT_IDS, FONTS, type FontId } from '@resumeforge/core';
 
 const require = createRequire(import.meta.url);
 
@@ -53,6 +53,15 @@ async function inlineUrls(rule: string, dir: string): Promise<string> {
     out = out.replace(whole, `url(data:font/woff2;base64,${data.toString('base64')})`);
   }
   return out;
+}
+
+/**
+ * Fonts referenced by the document markup itself (the renderer writes the
+ * family names into CSS custom properties), so a PDF never silently falls
+ * back to a system font because a client listed the wrong fonts.
+ */
+export function detectFonts(html: string): FontId[] {
+  return FONT_IDS.filter((id) => html.includes(FONTS[id].family));
 }
 
 export async function fontFacesFor(ids: FontId[]): Promise<string> {

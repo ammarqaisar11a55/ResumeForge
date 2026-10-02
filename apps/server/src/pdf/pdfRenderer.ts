@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import puppeteer, { type Browser } from 'puppeteer-core';
 import type { FontId } from '@resumeforge/core';
 import { buildPrintHtml } from '@resumeforge/renderer/print';
-import { fontFacesFor } from './fonts';
+import { detectFonts, fontFacesFor } from './fonts';
 
 const require = createRequire(import.meta.url);
 
@@ -120,7 +120,8 @@ export class PdfRenderer {
         else void request.abort('blockedbyclient');
       });
 
-      const [fonts, css] = await Promise.all([fontFacesFor(input.fonts), documentCss()]);
+      const fontIds = [...new Set([...input.fonts, ...detectFonts(input.html)])];
+      const [fonts, css] = await Promise.all([fontFacesFor(fontIds), documentCss()]);
       const html = buildPrintHtml({
         documentHtml: sanitizeDocumentHtml(input.html),
         css: `${fonts}\n${css}`,
