@@ -170,6 +170,73 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Scroll reveals on the marketing pages (Reveal.tsx). */
+  .reveal {
+    transition:
+      opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal--rise:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  .reveal--fade:not([data-shown]) {
+    opacity: 0;
+  }
+
+  .reveal--draw {
+    transform-origin: left center;
+  }
+
+  .reveal--draw:not([data-shown]) {
+    transform: scaleX(0);
+  }
+
+  /* Page-break specimen: the heading leaves page 1 and lands on page 2. */
+  .specimen-ghost,
+  .specimen-moved {
+    transition:
+      opacity 600ms ease,
+      transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .reveal[data-shown] .specimen-ghost {
+    opacity: 0;
+    transform: translateY(18px);
+    transition-delay: 700ms;
+  }
+
+  .reveal:not([data-shown]) .specimen-moved {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+
+  .reveal[data-shown] .specimen-moved {
+    transition-delay: 1100ms;
+  }
+
+  /* Hero sheets fan apart as the page scrolls (scroll-driven, where supported). */
+  @supports (animation-timeline: scroll()) {
+    .hero-sheet-back,
+    .hero-sheet-front {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+
+    .hero-sheet-back {
+      animation-name: sheet-fan;
+    }
+
+    .hero-sheet-front {
+      animation-name: sheet-lift;
+    }
+  }
+
   /* Pages sitting on the desk. Crop marks sit outside the trim box. */
   .rf-preview .rf-document {
     display: flex;
@@ -230,7 +297,35 @@
   }
 }
 
+@keyframes sheet-fan {
+  to {
+    transform: translate(36px, 30px) rotate(5deg);
+  }
+}
+
+@keyframes sheet-lift {
+  to {
+    transform: translateY(-28px) rotate(-1.5deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .specimen-ghost,
+  .specimen-moved {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .reveal[data-shown] .specimen-ghost {
+    opacity: 0 !important;
+  }
+
+  .hero-sheet-back,
+  .hero-sheet-front {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
