@@ -8,6 +8,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./print": "./src/print.ts",
     "./styles.css": "./src/styles/document.css",
     "./fonts.css": "./src/styles/fonts.css"
   },
