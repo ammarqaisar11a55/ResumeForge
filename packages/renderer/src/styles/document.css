@@ -32,17 +32,16 @@
   hyphens: manual;
 }
 
-.rf-document *,
-.rf-document *::before,
-.rf-document *::after {
+/* Zero-specificity resets so every rule below wins without tricks. */
+:where(.rf-document) *,
+:where(.rf-document) *::before,
+:where(.rf-document) *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-.rf-document h1,
-.rf-document h2,
-.rf-document h3 {
+:where(.rf-document) :where(h1, h2, h3) {
   font-size: inherit;
   font-weight: inherit;
 }
