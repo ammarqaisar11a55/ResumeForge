@@ -1,0 +1,40 @@
+{
+  "name": "resumeforge",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ResumeForge — build a resume worth remembering.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,web -c blue,magenta \"npm:dev -w @resumeforge/server\" \"npm:dev -w @resumeforge/web\"",
+    "dev:web": "npm run dev -w @resumeforge/web",
+    "dev:server": "npm run dev -w @resumeforge/server",
+    "build": "npm run build -w @resumeforge/web && npm run build -w @resumeforge/server",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "npm run test:e2e -w @resumeforge/web",
+    "db:migrate": "npm run db:migrate -w @resumeforge/server"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "jsdom": "^30.1.1",
+    "prettier": "^3.9.9",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3"
+  }
+}
