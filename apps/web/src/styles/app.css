@@ -7,62 +7,62 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * ResumeForge interface tokens.
- *
- * The app is a print shop for one document: a cool steel "desk" the pages sit
- * on, ink for text and primary actions, and a single molten-amber accent for
- * selection, focus and the moments that matter. The resume itself never
- * inherits these colours.
+ * ResumeForge interface tokens, following Vercel's Geist palette: neutral
+ * greys, near-black or near-white ink, hairline borders and Vercel blue for
+ * links, focus and selection. The resume itself never inherits these colours.
  */
 :root {
-  --ui-canvas: #e7eaee;
+  --ui-canvas: #fafafa;
   --ui-surface: #ffffff;
-  --ui-raised: #f5f6f8;
-  --ui-sunken: #eef0f3;
-  --ui-ink: #171a21;
-  --ui-muted: #5b6371;
-  --ui-faint: #8a93a2;
-  --ui-line: #dce0e6;
-  --ui-line-strong: #c3c9d2;
-  --ui-accent: #e89b0c;
-  --ui-accent-ink: #8a5300;
-  --ui-accent-soft: #fdf1d8;
-  --ui-on-accent: #171a21;
-  --ui-primary: #171a21;
+  --ui-raised: #f2f2f2;
+  --ui-sunken: #fafafa;
+  --ui-ink: #171717;
+  --ui-muted: #666666;
+  --ui-faint: #8f8f8f;
+  --ui-line: #ebebeb;
+  --ui-line-strong: #d4d4d4;
+  --ui-accent: #0070f3;
+  --ui-accent-ink: #0068d6;
+  --ui-accent-soft: #ebf5ff;
+  --ui-on-accent: #ffffff;
+  --ui-primary: #171717;
   --ui-on-primary: #ffffff;
-  --ui-focus: #a86400;
-  --ui-danger: #c2362b;
-  --ui-danger-soft: #fbe9e7;
-  --ui-success: #18794e;
-  --ui-warning: #8a5300;
-  --ui-page-shadow: 0 1px 2px rgb(23 26 33 / 0.08), 0 8px 24px -6px rgb(23 26 33 / 0.18);
-  --ui-pop-shadow: 0 2px 6px rgb(23 26 33 / 0.08), 0 16px 40px -12px rgb(23 26 33 / 0.28);
+  --ui-focus: #0070f3;
+  --ui-danger: #cb2a2f;
+  --ui-danger-soft: #ffebeb;
+  --ui-success: #297c3b;
+  --ui-warning: #a35200;
+  --ui-page-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.08), 0 2px 2px rgb(0 0 0 / 0.04), 0 8px 24px -8px rgb(0 0 0 / 0.1);
+  --ui-pop-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.08), 0 4px 8px -4px rgb(0 0 0 / 0.04),
+    0 16px 24px -8px rgb(0 0 0 / 0.06);
   color-scheme: light;
 }
 
 .dark {
-  --ui-canvas: #0f1217;
-  --ui-surface: #171b22;
-  --ui-raised: #1e232c;
-  --ui-sunken: #13161c;
-  --ui-ink: #e9ecf1;
-  --ui-muted: #98a1b0;
-  --ui-faint: #6b7483;
-  --ui-line: #2a303b;
-  --ui-line-strong: #3a4250;
-  --ui-accent: #f2b233;
-  --ui-accent-ink: #f5c25c;
-  --ui-accent-soft: #3a2e14;
-  --ui-on-accent: #171a21;
-  --ui-primary: #f2b233;
-  --ui-on-primary: #171a21;
-  --ui-focus: #f5c25c;
-  --ui-danger: #ff6b5e;
-  --ui-danger-soft: #3b1d1b;
-  --ui-success: #4cc38a;
-  --ui-warning: #f5c25c;
-  --ui-page-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -8px rgb(0 0 0 / 0.6);
-  --ui-pop-shadow: 0 2px 6px rgb(0 0 0 / 0.3), 0 16px 40px -12px rgb(0 0 0 / 0.7);
+  --ui-canvas: #000000;
+  --ui-surface: #0a0a0a;
+  --ui-raised: #1a1a1a;
+  --ui-sunken: #111111;
+  --ui-ink: #ededed;
+  --ui-muted: #a1a1a1;
+  --ui-faint: #878787;
+  --ui-line: #1f1f1f;
+  --ui-line-strong: #333333;
+  --ui-accent: #0070f3;
+  --ui-accent-ink: #52a8ff;
+  --ui-accent-soft: #0b1d33;
+  --ui-on-accent: #ffffff;
+  --ui-primary: #ededed;
+  --ui-on-primary: #0a0a0a;
+  --ui-focus: #52a8ff;
+  --ui-danger: #ff6166;
+  --ui-danger-soft: #2a1314;
+  --ui-success: #62c073;
+  --ui-warning: #f1a10d;
+  --ui-page-shadow: 0 0 0 1px rgb(255 255 255 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.8);
+  --ui-pop-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 16px 32px -8px rgb(0 0 0 / 0.8);
   color-scheme: dark;
 }
 

@@ -8,7 +8,7 @@ import {
 } from 'motion/react';
 import { useRef } from 'react';
 
-/** Thin molten rule across the top of the page that tracks reading progress. */
+/** Thin accent rule across the top of the page that tracks reading progress. */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const reduce = useReducedMotion();

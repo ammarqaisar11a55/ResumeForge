@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { cn } from '../lib/cn';
 
-/** A folded sheet with a molten line: the document being forged. */
+/** A folded sheet with an accent line: the document being forged. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={cn('size-7', className)} aria-hidden="true">
@@ -10,7 +10,7 @@ export function LogoMark({ className }: { className?: string }) {
       <path d="M20 7v4h4" className="fill-line-strong" />
       <rect x="13" y="14" width="8" height="1.6" className="fill-ink" />
       <rect x="13" y="17.5" width="6" height="1.6" className="fill-ink" />
-      <rect x="13" y="21" width="7" height="1.6" fill="#f0a51b" />
+      <rect x="13" y="21" width="7" height="1.6" className="fill-accent" />
     </svg>
   );
 }

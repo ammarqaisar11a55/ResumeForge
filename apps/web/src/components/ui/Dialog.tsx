@@ -14,7 +14,7 @@ export interface DialogProps {
 }
 
 export const overlayClass =
-  'fixed inset-0 z-50 bg-[rgb(15_18_23/0.45)] backdrop-blur-[2px] data-[state=open]:animate-[fade-in_150ms_ease-out]';
+  'fixed inset-0 z-50 bg-black/50 backdrop-blur-[2px] data-[state=open]:animate-[fade-in_150ms_ease-out]';
 export const panelClass =
   'fixed top-1/2 left-1/2 z-50 w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 rounded-[10px] border border-line bg-surface p-5 shadow-pop focus:outline-none data-[state=open]:animate-[dialog-in_180ms_cubic-bezier(0.2,0.8,0.2,1)]';
 

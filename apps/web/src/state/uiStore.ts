@@ -53,7 +53,7 @@ export function applyTheme(preference: ThemePreference) {
   document.documentElement.classList.toggle('dark', dark);
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', dark ? '#0f1217' : '#171a21');
+    ?.setAttribute('content', dark ? '#0a0a0a' : '#ffffff');
 }
 
 interface UiState extends Prefs {
