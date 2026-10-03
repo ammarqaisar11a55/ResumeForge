@@ -11,6 +11,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { TextInput } from '../components/ui/TextInput';
 import { NewResumeDialog, type NewResumeOptions } from '../features/dashboard/NewResumeDialog';
 import { RenameDialog } from '../features/dashboard/RenameDialog';
+import { TemplateStrip } from '../features/dashboard/TemplateStrip';
 import { ResumeCard, type ResumeCardActions } from '../features/dashboard/ResumeCard';
 import { downloadBlob } from '../lib/download';
 import { pluralize, toFileName } from '../lib/format';
@@ -47,7 +48,13 @@ export default function DashboardPage() {
   const [renaming, setRenaming] = useState<ResumeSummary | null>(null);
   const [deleting, setDeleting] = useState<ResumeSummary | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const requestedTemplate = (params.get('template') as TemplateId | null) ?? 'classic';
+  const [dialogTemplate, setDialogTemplate] = useState<TemplateId>(
+    (params.get('template') as TemplateId | null) ?? 'classic',
+  );
+  const startFrom = (template: TemplateId) => {
+    setDialogTemplate(template);
+    setNewOpen(true);
+  };
 
   useEffect(() => {
     document.title = 'My resumes — ResumeForge';
@@ -157,6 +164,7 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
+        {loaded && <TemplateStrip onPick={startFrom} />}
         <input
           ref={fileInput}
           type="file"
@@ -237,8 +245,9 @@ export default function DashboardPage() {
       </main>
 
       <NewResumeDialog
+        key={dialogTemplate}
         open={newOpen}
-        initialTemplate={requestedTemplate}
+        initialTemplate={dialogTemplate}
         onOpenChange={(open) => {
           setNewOpen(open);
           if (!open && params.has('new')) setParams({}, { replace: true });

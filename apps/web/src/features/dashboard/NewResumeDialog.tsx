@@ -5,6 +5,7 @@ import { Dialog } from '../../components/ui/Dialog';
 import { Field } from '../../components/ui/Field';
 import { Segmented } from '../../components/ui/Segmented';
 import { TextInput } from '../../components/ui/TextInput';
+import { TemplatePreview } from '../../components/TemplatePreview';
 import { cn } from '../../lib/cn';
 
 export interface NewResumeOptions {
@@ -77,7 +78,7 @@ export function NewResumeDialog({
               <label
                 key={t.id}
                 className={cn(
-                  'flex cursor-pointer flex-col gap-0.5 rounded-md border p-2.5 text-left transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus',
+                  'flex cursor-pointer flex-col gap-0.5 rounded-md border p-2 text-left transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus',
                   template === t.id
                     ? 'border-accent bg-accent-soft/50'
                     : 'border-line hover:border-line-strong',
@@ -91,7 +92,8 @@ export function NewResumeDialog({
                   onChange={() => setTemplate(t.id)}
                   className="sr-only"
                 />
-                <span className="text-[13px] font-semibold text-ink">
+                <TemplatePreview id={t.id} width={120} height={84} />
+                <span className="mt-1 text-[13px] font-semibold text-ink">
                   {t.name.replace('Forge ', '')}
                 </span>
                 <span className="text-[11px] leading-snug text-muted">{t.highlights[0]}</span>
