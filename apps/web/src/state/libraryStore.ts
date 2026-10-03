@@ -10,6 +10,23 @@ import {
 } from '@resumeforge/core';
 import { resumeService } from '../services';
 
+export interface LibraryBackup {
+  app: 'ResumeForge';
+  kind: 'backup';
+  version: 1;
+  exportedAt: string;
+  resumes: Resume[];
+}
+
+function isBackup(value: unknown): value is { resumes: unknown[] } {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as { kind?: unknown }).kind === 'backup' &&
+    Array.isArray((value as { resumes?: unknown }).resumes)
+  );
+}
+
 /**
  * The resume library shown on the dashboard. Summaries come from the local
  * index; full documents are loaded only when needed.
@@ -27,7 +44,10 @@ interface LibraryState {
   rename: (id: string, title: string) => Promise<void>;
   remove: (id: string) => Promise<Resume | null>;
   restore: (resume: Resume) => void;
-  importJson: (text: string) => Resume;
+  /** Import a single resume or a full backup; returns the new resumes. */
+  importJson: (text: string) => Resume[];
+  /** Every resume as one backup document. */
+  exportAll: () => Promise<LibraryBackup>;
 }
 
 export const useLibraryStore = create<LibraryState>()((set, get) => ({
@@ -84,12 +104,31 @@ export const useLibraryStore = create<LibraryState>()((set, get) => ({
     } catch {
       throw new Error('This file is not valid JSON.');
     }
-    const result = loadResume(raw);
-    if (!result.ok) throw new Error(`This file is not a ResumeForge resume. ${result.reason}`);
-    // Imports always become a new resume so they never overwrite existing work.
-    const imported = duplicateResume(result.resume, result.resume.metadata.title);
-    resumeService.save(imported);
+    const docs = isBackup(raw) ? raw.resumes : [raw];
+    const parsed = docs.map((doc) => loadResume(doc));
+    const failed = parsed.find((r) => !r.ok);
+    if (failed && !failed.ok) {
+      throw new Error(`This file is not a ResumeForge resume or backup. ${failed.reason}`);
+    }
+    // Imports always become new resumes so they never overwrite existing work.
+    const imported = parsed.flatMap((r) =>
+      r.ok ? [duplicateResume(r.resume, r.resume.metadata.title)] : [],
+    );
+    imported.forEach((resume) => resumeService.save(resume));
     get().refresh();
     return imported;
+  },
+
+  exportAll: async () => {
+    const loaded = await Promise.all(
+      get().summaries.map((s) => resumeService.get(s.id).catch(() => null)),
+    );
+    return {
+      app: 'ResumeForge',
+      kind: 'backup',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      resumes: loaded.flatMap((l) => (l ? [l.resume] : [])),
+    };
   },
 }));

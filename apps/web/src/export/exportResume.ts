@@ -53,12 +53,10 @@ export async function downloadPdf(element: HTMLElement | null, resume: Resume): 
   const pending = toast.loading('Creating PDF…');
   try {
     const blob = await api.exportPdf({
-      resumeId: resume.id,
       title: fileName.replace(/\.pdf$/, ''),
       html: snapshot.html,
       page: { widthMm: snapshot.widthMm, heightMm: snapshot.heightMm },
       fonts: snapshot.fonts,
-      pageCount: snapshot.pageCount,
     });
     downloadBlob(blob, fileName);
     toast.success(`Downloaded ${fileName}`, { id: pending });

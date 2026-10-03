@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
-import { createDemoResume, createResume, type Resume } from '@resumeforge/core';
-import { ApiError, NetworkError, type ApiClient } from '../services/api/apiClient';
+import { describe, expect, it } from 'vitest';
+import { createDemoResume, createResume } from '@resumeforge/core';
 import { ResumeService } from '../services/resumeService';
+import { useLibraryStore } from '../state/libraryStore';
 import {
   CorruptResumeError,
   LocalResumeStore,
@@ -72,103 +72,45 @@ describe('LocalResumeStore', () => {
   });
 });
 
-function fakeApi(overrides: Partial<ApiClient> = {}) {
-  const remote = new Map<string, Resume>();
-  const api = {
-    saveResume: vi.fn(async (r: Resume) => void remote.set(r.id, r)),
-    deleteResume: vi.fn(async (id: string) => void remote.delete(id)),
-    listResumes: vi.fn(async () =>
-      [...remote.values()].map((r) => ({
-        id: r.id,
-        title: r.metadata.title,
-        template: r.template,
-        pageCount: r.metadata.pageCount,
-        fullName: r.personalInfo.fullName,
-        headline: r.personalInfo.headline,
-        createdAt: r.createdAt,
-        updatedAt: r.updatedAt,
-      })),
-    ),
-    getResume: vi.fn(async (id: string) => remote.get(id) ?? null),
-    ...overrides,
-  } as unknown as ApiClient;
-  return { api, remote };
-}
-
-const flush = () => new Promise((r) => setTimeout(r, 0));
-
-describe('ResumeService sync', () => {
-  it('saves locally first and mirrors to the server', async () => {
-    const { api, remote } = fakeApi();
-    const service = new ResumeService(new LocalResumeStore(localStorage), api, localStorage);
-    service.setBackend({ persistence: true, pdf: false });
-    const resume = createResume();
+describe('ResumeService', () => {
+  it('keeps resumes only in local storage', async () => {
+    const service = new ResumeService(new LocalResumeStore(localStorage));
+    const resume = createResume({ title: 'Local only' });
     service.save(resume);
-    expect(service.local.get(resume.id)).not.toBeNull();
-    await flush();
-    expect(remote.get(resume.id)).toEqual(resume);
-    expect(service.pending()).toEqual({});
-    expect(service.syncState).toBe('idle');
+    expect(service.list().map((s) => s.title)).toEqual(['Local only']);
+    expect((await service.get(resume.id))?.resume).toEqual(resume);
+    service.remove(resume.id);
+    expect(await service.get(resume.id)).toBeNull();
+    expect(Object.keys(localStorage).some((k) => k.includes('pending'))).toBe(false);
+  });
+});
+
+describe('library backups', () => {
+  it('round-trips every resume through a backup file', async () => {
+    const library = useLibraryStore.getState();
+    library.create({ title: 'First', startFrom: 'blank' });
+    library.create({ startFrom: 'demo' });
+    const backup = await useLibraryStore.getState().exportAll();
+    expect(backup).toMatchObject({ app: 'ResumeForge', kind: 'backup', version: 1 });
+    expect(backup.resumes).toHaveLength(2);
+
+    localStorage.clear();
+    useLibraryStore.getState().refresh();
+    expect(useLibraryStore.getState().summaries).toHaveLength(0);
+
+    const imported = useLibraryStore.getState().importJson(JSON.stringify(backup));
+    expect(imported.map((r) => r.metadata.title).sort()).toEqual(
+      ['First', 'Software Engineering Internship'].sort(),
+    );
+    expect(useLibraryStore.getState().summaries).toHaveLength(2);
+    // Imported copies get new ids so they never overwrite existing resumes.
+    expect(imported.some((r) => backup.resumes.some((b) => b.id === r.id))).toBe(false);
   });
 
-  it('queues changes while offline and retries them on the next sync', async () => {
-    let online = false;
-    const remoteStore = new Map<string, Resume>();
-    const { api } = fakeApi({
-      saveResume: vi.fn(async (r: Resume) => {
-        if (!online) throw new NetworkError();
-        remoteStore.set(r.id, r);
-      }),
-    });
-    const service = new ResumeService(new LocalResumeStore(localStorage), api, localStorage);
-    service.setBackend({ persistence: true, pdf: false });
-    const resume = createResume();
-    service.save(resume);
-    await flush();
-    expect(service.syncState).toBe('offline');
-    expect(service.pending()).toEqual({ [resume.id]: 'save' });
-
-    online = true;
-    await service.sync();
-    await flush();
-    expect(remoteStore.get(resume.id)).toEqual(resume);
-    expect(service.pending()).toEqual({});
-  });
-
-  it('treats gateway errors as the server being unreachable', async () => {
-    const { api } = fakeApi({
-      saveResume: vi.fn(async () => Promise.reject(new ApiError('Bad gateway', 502))),
-    });
-    const service = new ResumeService(new LocalResumeStore(localStorage), api, localStorage);
-    service.setBackend({ persistence: true, pdf: false });
-    service.save(createResume());
-    await flush();
-    expect(service.syncState).toBe('offline');
-  });
-
-  it('pulls newer resumes from the server and uploads local-only ones', async () => {
-    const { api, remote } = fakeApi();
-    const local = new LocalResumeStore(localStorage);
-    const mine = createResume({ title: 'Only here' });
-    local.save(mine);
-    const theirs = createDemoResume();
-    remote.set(theirs.id, theirs);
-
-    const service = new ResumeService(local, api, localStorage);
-    service.setBackend({ persistence: true, pdf: false });
-    await service.sync();
-    await flush();
-    expect(local.get(theirs.id)?.resume).toEqual(theirs);
-    expect(remote.has(mine.id)).toBe(true);
-  });
-
-  it('works fully offline without an API', () => {
-    const service = new ResumeService(new LocalResumeStore(localStorage), null, localStorage);
-    service.setBackend(null);
-    const resume = createResume();
-    service.save(resume);
-    expect(service.syncState).toBe('local-only');
-    expect(service.list()).toHaveLength(1);
-    expect(service.pending()).toEqual({});
+  it('imports a single resume file and rejects other JSON', () => {
+    const resume = createDemoResume();
+    expect(useLibraryStore.getState().importJson(JSON.stringify(resume))).toHaveLength(1);
+    expect(() => useLibraryStore.getState().importJson('{"hello":1}')).toThrow(/not a ResumeForge/);
+    expect(() => useLibraryStore.getState().importJson('nope')).toThrow(/not valid JSON/);
   });
 });

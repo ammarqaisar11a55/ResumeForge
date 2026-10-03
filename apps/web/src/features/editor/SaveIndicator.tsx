@@ -1,19 +1,17 @@
-import { AlertCircle, Check, CloudOff, Loader2 } from 'lucide-react';
+import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { flushSave } from '../../hooks/useAutosave';
 import { cn } from '../../lib/cn';
-import { useBackendStore } from '../../state/backendStore';
 import { useEditorStore } from '../../state/editorStore';
 import { Tooltip } from '../../components/ui/Tooltip';
 
-/** "Saving…", "Saved" or "Unsaved changes", with where the data lives. */
+/** "Saving…", "Saved" or "Unsaved changes". Resumes are stored only in this browser. */
 export function SaveIndicator() {
   const status = useEditorStore((s) => s.saveStatus);
   const error = useEditorStore((s) => s.saveError);
-  const syncState = useBackendStore((s) => s.syncState);
 
   let icon = <Check className="size-3.5" aria-hidden />;
   let text = 'Saved';
-  let hint = 'Saved in this browser';
+  let hint = 'Saved in this browser. Download a backup from My resumes to keep a copy.';
   let tone = 'text-muted';
 
   if (status === 'saving') {
@@ -28,16 +26,6 @@ export function SaveIndicator() {
     text = 'Not saved';
     hint = `${error ?? 'Saving failed.'} Click to retry.`;
     tone = 'text-danger';
-  } else if (syncState === 'syncing') {
-    icon = <Loader2 className="size-3.5 animate-spin" aria-hidden />;
-    text = 'Syncing…';
-    hint = 'Saved in this browser, uploading to the server';
-  } else if (syncState === 'idle') {
-    hint = 'Saved in this browser and on the server';
-  } else if (syncState === 'offline') {
-    icon = <CloudOff className="size-3.5" aria-hidden />;
-    text = 'Saved on this device';
-    hint = 'The server is unreachable. Changes will sync when it is back.';
   }
 
   return (

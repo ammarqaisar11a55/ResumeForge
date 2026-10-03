@@ -1,8 +1,7 @@
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../app';
-import { DEFAULT_USER_ID, findChrome } from '../config';
-import { openDatabase, type Db } from '../db';
+import { findChrome } from '../config';
 import { detectFonts, fontFaceCss } from '../pdf/fonts';
 import { PdfRenderer, sanitizeDocumentHtml } from '../pdf/pdfRenderer';
 
@@ -43,30 +42,22 @@ describe('font embedding', () => {
 });
 
 describe.skipIf(!chrome)('pdf export with Chrome', () => {
-  let db: Db;
   let renderer: PdfRenderer;
   let app: ReturnType<typeof createApp>;
 
   beforeAll(async () => {
-    db = await openDatabase({
-      databaseUrl: null,
-      dataDir: 'memory',
-      defaultUserId: DEFAULT_USER_ID,
-    });
     renderer = new PdfRenderer({
       executablePath: chrome!,
       noSandbox: process.env.CHROME_NO_SANDBOX === 'true',
     });
     app = createApp({
-      config: { corsOrigins: [], defaultUserId: DEFAULT_USER_ID, webDist: null },
-      db,
+      config: { corsOrigins: [], webDist: null },
       pdf: renderer,
     });
   });
 
   afterAll(async () => {
     await renderer.close();
-    await db.close();
   });
 
   it('renders one PDF page per document page with working links', async () => {
@@ -82,7 +73,6 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
         html,
         page: { widthMm: 210, heightMm: 297 },
         fonts: ['archivo'],
-        pageCount: 3,
       })
       .buffer(true)
       .parse((response, done) => {
@@ -102,13 +92,6 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
       pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
     expect(Number(width)).toBeCloseTo(595.3, 0);
     expect(Number(height)).toBeCloseTo(841.9, 0);
-
-    const history = await request(app).get('/api/export').expect(200);
-    expect(history.body.exports[0]).toMatchObject({
-      format: 'pdf',
-      status: 'succeeded',
-      pageCount: 3,
-    });
   });
 
   it('rejects documents that are not ResumeForge output', async () => {
@@ -136,5 +119,24 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
       pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
     expect(Number(width)).toBeCloseTo(612, 0);
     expect(Number(height)).toBeCloseTo(792, 0);
+  });
+});
+
+describe('service without Chrome', () => {
+  const app = createApp({ config: { corsOrigins: [], webDist: null }, pdf: null });
+
+  it('reports its capabilities', async () => {
+    const res = await request(app).get('/api/health').expect(200);
+    expect(res.body).toMatchObject({ ok: true, capabilities: { pdf: false } });
+  });
+
+  it('explains that PDF export is unavailable', async () => {
+    const res = await request(app).post('/api/export/pdf').send({}).expect(503);
+    expect(res.body.error.code).toBe('pdf_unavailable');
+  });
+
+  it('returns JSON 404s and keeps no resume endpoints', async () => {
+    const res = await request(app).get('/api/resumes').expect(404);
+    expect(res.body.error.code).toBe('not_found');
   });
 });

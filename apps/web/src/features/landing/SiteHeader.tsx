@@ -82,8 +82,8 @@ export function SiteFooter() {
         <div className="flex flex-col gap-2 text-sm">
           <span className="font-semibold text-ink">Your data</span>
           <p className="leading-relaxed text-muted">
-            Resumes are saved in your browser, and on your own ResumeForge server when one is
-            connected. Nothing is sent anywhere else.
+            Resumes are stored only in your browser. There is no account and no database. Only the
+            finished pages are sent to the PDF service when you download a PDF, and nothing is kept.
           </p>
         </div>
       </div>

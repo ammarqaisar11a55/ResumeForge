@@ -12,7 +12,7 @@ ResumeForge is a resume builder that works like a document tool. You fill in str
 - Autosave, unload protection, and undo/redo of named actions ("Delete project")
 - Server-rendered PDFs with embedded fonts, selectable text and working links, plus browser printing
 - Light and dark app themes. The resume paper always stays print-white.
-- Local-first storage in the browser, mirrored to PostgreSQL when the API is running
+- No account and no database: resumes live in the browser's local storage, with one-click backup and restore
 
 ## Quick start
 
@@ -26,40 +26,29 @@ npm install
 npm run dev
 ```
 
-This starts the API on `http://localhost:4000` and the web app on `http://localhost:5173`. With no database configured, the API stores data in an embedded PostgreSQL (PGlite) under `apps/server/.data`, so nothing else needs to be installed.
+This starts the PDF service on `http://localhost:4000` and the web app on `http://localhost:5173`. There is no database to set up.
 
-To use your own PostgreSQL server, copy `apps/server/.env.example` to `apps/server/.env` and set `DATABASE_URL`:
-
-```bash
-createdb resumeforge
-```
-
-```bash
-DATABASE_URL=postgres://user:password@localhost:5432/resumeforge npm run db:migrate
-```
-
-The web app also runs on its own (`npm run dev:web`). Resumes are then kept in the browser, and **Download PDF** falls back to the browser's print dialog, which produces the same pages.
+The web app also runs on its own (`npm run dev:web`), or as a static site. **Download PDF** then falls back to the browser's print dialog ("Save as PDF"), which produces the same pages.
 
 ## Scripts
 
-| Command              | What it does                                                                       |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| `npm run dev`        | API and web app with hot reload                                                    |
-| `npm run build`      | Production build of the web app (`apps/web/dist`) and the API (`apps/server/dist`) |
-| `npm test`           | Unit and integration tests for every package (Vitest)                              |
-| `npm run test:e2e`   | End-to-end tests in Chrome (Playwright). Starts its own servers.                   |
-| `npm run typecheck`  | TypeScript across all workspaces                                                   |
-| `npm run lint`       | ESLint                                                                             |
-| `npm run db:migrate` | Apply database migrations                                                          |
+| Command             | What it does                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `npm run dev`       | PDF service and web app with hot reload                                                    |
+| `npm run build`     | Production build of the web app (`apps/web/dist`) and the PDF service (`apps/server/dist`) |
+| `npm test`          | Unit and integration tests for every package (Vitest)                                      |
+| `npm run test:e2e`  | End-to-end tests in Chrome (Playwright). Starts its own servers.                           |
+| `npm run typecheck` | TypeScript across all workspaces                                                           |
+| `npm run lint`      | ESLint                                                                                     |
 
-Production runs as a single process that serves the API and the built web app:
+Production can run as a single process that serves the PDF service and the built web app:
 
 ```bash
 npm run build
 ```
 
 ```bash
-WEB_DIST=../web/dist DATABASE_URL=postgres://… npm start -w @resumeforge/server
+WEB_DIST=../web/dist npm start -w @resumeforge/server
 ```
 
 ## Architecture
@@ -73,7 +62,7 @@ packages/
               print document builder
 apps/
   web/        React + Vite app: landing page, dashboard, editor, export
-  server/     Express API: resumes, versions, export history, PDF rendering
+  server/     Stateless Express service that renders PDFs in headless Chrome
 ```
 
 ### One renderer for every output
@@ -101,23 +90,19 @@ Resume
  └── timestamps
 ```
 
-Sections are a discriminated union (summary, education, experience, projects, skills, achievements, certifications, awards, publications, languages, interests, custom). The editor builds its forms from a declarative section registry, so adding a section type means adding a registry entry and a renderer. No database change is needed.
+Sections are a discriminated union (summary, education, experience, projects, skills, achievements, certifications, awards, publications, languages, interests, custom). The editor builds its forms from a declarative section registry, so adding a section type means adding a registry entry and a renderer.
 
-### Database
+### Storage
 
-PostgreSQL stores each resume's document as `jsonb`, next to relational tables ready for growth: `users`, `templates`, `resumes` (soft delete), `resume_versions` (automatic snapshots at most every 10 minutes, plus labelled versions), and `export_history`. Every query is scoped to a user id. Until authentication is added, requests act as a built-in local user (`apps/server/src/http/context.ts`).
+Resumes are stored only in the user's browser (`localStorage`), one key per resume plus an index (`apps/web/src/services/storage/localResumeStore.ts`). Writes are synchronous, so the latest change is flushed even when a tab is closed mid-edit. Damaged entries are repaired where possible, and the original text is kept as a backup key, never discarded.
 
-### API
+Because nothing is stored on a server, the dashboard offers **Back up all**, which downloads every resume as one JSON file, and **Import**, which restores a backup or a single resume on any browser. Clearing site data removes the resumes, so a backup is the way to keep a copy or move to another device.
 
-| Method                   | Path                           |                                             |
-| ------------------------ | ------------------------------ | ------------------------------------------- |
-| `GET`                    | `/api/health`                  | Capabilities: persistence and PDF           |
-| `GET`                    | `/api/resumes`                 | Summaries                                   |
-| `GET` / `PUT` / `DELETE` | `/api/resumes/:id`             | Read, upsert, soft delete                   |
-| `GET` / `POST`           | `/api/resumes/:id/versions`    | List or create a labelled version           |
-| `GET`                    | `/api/resumes/:id/versions/:n` | Read a version                              |
-| `POST`                   | `/api/export/pdf`              | Render a PDF from paginated document markup |
-| `GET`                    | `/api/export`                  | Export history                              |
+All persistence goes through `ResumeService` (`apps/web/src/services/resumeService.ts`), so a different store (for example cloud sync) could be added later without changing the editor.
+
+### PDF service
+
+The only server endpoints are `GET /api/health` and `POST /api/export/pdf`. The service receives the already-paginated document markup, returns a PDF and stores nothing.
 
 PDF rendering treats the submitted markup as untrusted: scripts and embeds are stripped, a CSP blocks script execution, every network request from the page is refused (fonts are inlined as data URIs), and each render runs in a fresh browser context.
 
@@ -139,17 +124,15 @@ On macOS use `⌘` instead of `Ctrl`.
 
 Server environment variables (see `apps/server/.env.example`):
 
-| Variable            | Default                 |                                                           |
-| ------------------- | ----------------------- | --------------------------------------------------------- |
-| `PORT`              | `4000`                  | API port                                                  |
-| `DATABASE_URL`      | none                    | PostgreSQL connection string. Unset uses embedded PGlite. |
-| `DATA_DIR`          | `.data`                 | PGlite location (`memory` for a throwaway database)       |
-| `CORS_ORIGIN`       | `http://localhost:5173` | Allowed browser origins, comma separated                  |
-| `CHROME_PATH`       | auto-detected           | Chrome or Chromium executable for PDF export              |
-| `CHROME_NO_SANDBOX` | `false`                 | Needed when running Chrome as root in some containers     |
-| `WEB_DIST`          | none                    | Serve the built web app from the API process              |
+| Variable            | Default                 |                                                       |
+| ------------------- | ----------------------- | ----------------------------------------------------- |
+| `PORT`              | `4000`                  | PDF service port                                      |
+| `CORS_ORIGIN`       | `http://localhost:5173` | Allowed browser origins, comma separated              |
+| `CHROME_PATH`       | auto-detected           | Chrome or Chromium executable for PDF export          |
+| `CHROME_NO_SANDBOX` | `false`                 | Needed when running Chrome as root in some containers |
+| `WEB_DIST`          | none                    | Serve the built web app from the same process         |
 
-Web build variables: `VITE_API_URL` (default `/api`) and `VITE_ENABLE_API=false` for a fully offline build.
+Web build variables: `VITE_API_URL` (default `/api`) and `VITE_ENABLE_API=false` for a static build without the PDF service.
 
 ## Author
 

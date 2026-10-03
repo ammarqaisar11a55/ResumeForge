@@ -4,9 +4,8 @@ const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 4174);
 const API_PORT = Number(process.env.E2E_API_PORT ?? 4100);
 
 /**
- * End-to-end tests run the real web app against the real API (embedded
- * in-memory database, headless Chrome for PDFs) in the locally installed
- * Google Chrome.
+ * End-to-end tests run the real web app and the real PDF service in the
+ * locally installed Google Chrome.
  */
 export default defineConfig({
   testDir: 'e2e',
@@ -29,7 +28,6 @@ export default defineConfig({
       reuseExistingServer: false,
       env: {
         PORT: String(API_PORT),
-        DATA_DIR: 'memory',
         CORS_ORIGIN: `http://localhost:${WEB_PORT}`,
       },
       timeout: 60_000,

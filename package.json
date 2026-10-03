@@ -21,8 +21,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "npm run test:e2e -w @resumeforge/web",
-    "db:migrate": "npm run db:migrate -w @resumeforge/server"
+    "test:e2e": "npm run test:e2e -w @resumeforge/web"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

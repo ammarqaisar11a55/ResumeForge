@@ -1,39 +1,28 @@
 import { create } from 'zustand';
-import { api, resumeService, type BackendCapabilities, type SyncState } from '../services';
+import { api, type BackendCapabilities } from '../services';
 
 export type BackendStatus = 'checking' | 'online' | 'offline' | 'disabled';
 
 interface BackendState {
   status: BackendStatus;
   capabilities: BackendCapabilities;
-  syncState: SyncState;
 }
 
+/** Availability of the optional PDF service. */
 export const useBackendStore = create<BackendState>()(() => ({
   status: api ? 'checking' : 'disabled',
-  capabilities: { persistence: false, pdf: false },
-  syncState: resumeService.syncState,
+  capabilities: { pdf: false },
 }));
-
-resumeService.subscribe((syncState) => useBackendStore.setState({ syncState }));
 
 let retryTimer: ReturnType<typeof setTimeout> | undefined;
 
-/** Probe the API; enable sync and server PDF export when it is available. */
 export async function checkBackend(): Promise<void> {
   if (!api) return;
   clearTimeout(retryTimer);
   try {
-    const capabilities = await api.health();
-    useBackendStore.setState({ status: 'online', capabilities });
-    resumeService.setBackend(capabilities);
-    await resumeService.sync();
+    useBackendStore.setState({ status: 'online', capabilities: await api.health() });
   } catch {
-    useBackendStore.setState({
-      status: 'offline',
-      capabilities: { persistence: false, pdf: false },
-    });
-    resumeService.setBackend(null);
+    useBackendStore.setState({ status: 'offline', capabilities: { pdf: false } });
     retryTimer = setTimeout(() => void checkBackend(), 60_000);
   }
 }

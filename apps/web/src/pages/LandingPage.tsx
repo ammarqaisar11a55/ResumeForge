@@ -251,9 +251,9 @@ export function LandingPage() {
           <div>
             <h2 className="type-title text-2xl text-ink">Open source, built in the open</h2>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-muted">
-              ResumeForge is a React and TypeScript monorepo with a shared rendering engine, an
-              Express and PostgreSQL API and headless Chrome PDF export. Read the code, file an
-              issue or run it yourself.
+              ResumeForge is a React and TypeScript monorepo with a shared rendering engine,
+              browser-only storage and a stateless headless Chrome PDF service. Read the code, file
+              an issue or run it yourself.
             </p>
           </div>
           <div className="flex flex-col gap-3 md:items-end md:justify-center">

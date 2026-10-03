@@ -1,4 +1,4 @@
-import { FileUp, Plus, Search, Sparkles } from 'lucide-react';
+import { Archive, FileUp, Plus, Search, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
@@ -15,7 +15,6 @@ import { ResumeCard, type ResumeCardActions } from '../features/dashboard/Resume
 import { downloadBlob } from '../lib/download';
 import { pluralize, toFileName } from '../lib/format';
 import { resumeService } from '../services';
-import { useBackendStore } from '../state/backendStore';
 import { useLibraryStore } from '../state/libraryStore';
 
 type SortKey = 'updated' | 'created' | 'title';
@@ -29,9 +28,18 @@ const SORTS: Record<SortKey, (a: ResumeSummary, b: ResumeSummary) => number> = {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { summaries, loaded, refresh, create, duplicate, rename, remove, restore, importJson } =
-    useLibraryStore();
-  const syncState = useBackendStore((s) => s.syncState);
+  const {
+    summaries,
+    loaded,
+    refresh,
+    create,
+    duplicate,
+    rename,
+    remove,
+    restore,
+    importJson,
+    exportAll,
+  } = useLibraryStore();
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('updated');
   const [templateFilter, setTemplateFilter] = useState<'all' | TemplateId>('all');
@@ -45,11 +53,6 @@ export default function DashboardPage() {
     document.title = 'My resumes — ResumeForge';
     refresh();
   }, [refresh]);
-
-  // A sync from the server may bring in resumes created elsewhere.
-  useEffect(() => {
-    if (syncState === 'idle') refresh();
-  }, [syncState, refresh]);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -93,11 +96,25 @@ export default function DashboardPage() {
 
   const onImport = async (file: File) => {
     try {
-      const resume = importJson(await file.text());
-      toast.success(`Imported “${resume.metadata.title}”`);
+      const imported = importJson(await file.text());
+      toast.success(
+        imported.length === 1
+          ? `Imported “${imported[0]!.metadata.title}”`
+          : `Imported ${pluralize(imported.length, 'resume')}`,
+      );
     } catch (error) {
       toast.error('Import failed', { description: (error as Error).message });
     }
+  };
+
+  const onBackupAll = async () => {
+    const backup = await exportAll();
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const date = new Date().toISOString().slice(0, 10);
+    downloadBlob(blob, `ResumeForge-backup-${date}.json`);
+    toast.success(`Backed up ${pluralize(backup.resumes.length, 'resume')}`, {
+      description: 'Import this file on any browser to restore them.',
+    });
   };
 
   return (
@@ -109,11 +126,8 @@ export default function DashboardPage() {
             <h1 className="type-title text-3xl text-ink">My resumes</h1>
             {loaded && summaries.length > 0 && (
               <p className="mt-1 text-sm text-muted">
-                {pluralize(summaries.length, 'resume')}, saved{' '}
-                {syncState === 'idle' || syncState === 'syncing'
-                  ? 'in this browser and on the server'
-                  : 'in this browser'}
-                .
+                {pluralize(summaries.length, 'resume')}, stored only in this browser. Back them up
+                to move them to another device.
               </p>
             )}
           </div>
@@ -125,6 +139,15 @@ export default function DashboardPage() {
             >
               Import
             </Button>
+            {summaries.length > 0 && (
+              <Button
+                variant="secondary"
+                icon={<Archive className="size-4" />}
+                onClick={() => void onBackupAll()}
+              >
+                Back up all
+              </Button>
+            )}
             <Button
               variant="primary"
               icon={<Plus className="size-4" />}
