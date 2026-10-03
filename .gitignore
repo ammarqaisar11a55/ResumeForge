@@ -13,3 +13,5 @@ apps/web/blob-report/
 *.tsbuildinfo
 .claude/
 .vercel/
+.env*
+!.env.example
