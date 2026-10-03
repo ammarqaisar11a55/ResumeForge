@@ -42,13 +42,18 @@ function writePrefs(prefs: Prefs) {
 }
 
 export function systemPrefersDark(): boolean {
-  return typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches === true;
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-color-scheme: dark)').matches === true
+  );
 }
 
 export function applyTheme(preference: ThemePreference) {
   const dark = preference === 'dark' || (preference === 'system' && systemPrefersDark());
   document.documentElement.classList.toggle('dark', dark);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0f1217' : '#171a21');
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', dark ? '#0f1217' : '#171a21');
 }
 
 interface UiState extends Prefs {

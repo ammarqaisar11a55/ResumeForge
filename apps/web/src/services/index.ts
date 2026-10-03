@@ -9,5 +9,9 @@ export const api: ApiClient | null = apiEnabled ? new ApiClient(apiBaseUrl()) : 
 export const resumeService = new ResumeService(new LocalResumeStore(), api);
 
 export { ApiClient, ApiError, NetworkError, type BackendCapabilities } from './api/apiClient';
-export { CorruptResumeError, StorageFullError, type LoadedResume } from './storage/localResumeStore';
+export {
+  CorruptResumeError,
+  StorageFullError,
+  type LoadedResume,
+} from './storage/localResumeStore';
 export type { SyncState } from './resumeService';

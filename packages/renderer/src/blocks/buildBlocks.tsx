@@ -73,7 +73,9 @@ function headerBlock(resume: Resume, ctx: BuildContext): DocBlock {
   const details = contacts.filter((c) => !LINK_CONTACT_KINDS.has(c.kind));
   const links = contacts.filter((c) => LINK_CONTACT_KINDS.has(c.kind));
   const rows =
-    ctx.settings.header.contactLayout === 'single-line' ? [contacts] : [details, links].filter((r) => r.length > 0);
+    ctx.settings.header.contactLayout === 'single-line'
+      ? [contacts]
+      : [details, links].filter((r) => r.length > 0);
 
   return {
     key: 'header',
@@ -98,7 +100,12 @@ function headerBlock(resume: Resume, ctx: BuildContext): DocBlock {
                   return (
                     <li key={item.id} className={`rf-contact rf-contact--${item.kind}`}>
                       {href ? (
-                        <a className="rf-link" href={href} target="_blank" rel="noopener noreferrer">
+                        <a
+                          className="rf-link"
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           {text}
                         </a>
                       ) : (
@@ -180,12 +187,23 @@ function entryBlock(
     keepWithNext: false,
     atomCount: 1 + visibleBulletCount(bullets),
     render: ({ from, to, continued }) => (
-      <EntryFragment entryId={entryId} head={head} bullets={bullets} from={from} to={to} continued={continued} />
+      <EntryFragment
+        entryId={entryId}
+        head={head}
+        bullets={bullets}
+        from={from}
+        to={to}
+        continued={continued}
+      />
     ),
   };
 }
 
-function dateAside(range: { start: string; end: string; current: boolean }, options: Options, ctx: BuildContext) {
+function dateAside(
+  range: { start: string; end: string; current: boolean },
+  options: Options,
+  ctx: BuildContext,
+) {
   if (!options.showDates) return null;
   const text = formatDateRange(range, ctx.settings.dateFormat);
   return text ? <span className="rf-date">{text}</span> : null;
@@ -223,7 +241,11 @@ function summaryBlocks(section: SectionOf<'summary'>): DocBlock[] {
   ];
 }
 
-function educationBlocks(section: SectionOf<'education'>, options: Options, ctx: BuildContext): DocBlock[] {
+function educationBlocks(
+  section: SectionOf<'education'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
     const result = e.gpa.trim()
       ? e.gpaLabel === 'Percentage'
@@ -244,9 +266,14 @@ function educationBlocks(section: SectionOf<'education'>, options: Options, ctx:
   });
 }
 
-function experienceBlocks(section: SectionOf<'experience'>, options: Options, ctx: BuildContext): DocBlock[] {
+function experienceBlocks(
+  section: SectionOf<'experience'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
-    const link = options.linkDisplay !== 'none' && e.url.trim() ? <CompactLink url={e.url} /> : null;
+    const link =
+      options.linkDisplay !== 'none' && e.url.trim() ? <CompactLink url={e.url} /> : null;
     const head = (
       <EntryHead
         title={e.role.trim() || e.company.trim() || 'Untitled position'}
@@ -260,10 +287,15 @@ function experienceBlocks(section: SectionOf<'experience'>, options: Options, ct
   });
 }
 
-function projectBlocks(section: SectionOf<'projects'>, options: Options, ctx: BuildContext): DocBlock[] {
+function projectBlocks(
+  section: SectionOf<'projects'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
     const urls = [e.githubUrl, e.liveUrl, e.otherUrl].filter((u) => u.trim());
-    const shownUrls = options.linkDisplay === 'none' ? [] : options.linkDisplay === 'all' ? urls : urls.slice(0, 1);
+    const shownUrls =
+      options.linkDisplay === 'none' ? [] : options.linkDisplay === 'all' ? urls : urls.slice(0, 1);
     const date = options.showDates ? formatDateRange(e.dates, ctx.settings.dateFormat) : '';
     const asideItems: ReactNode[] = [
       ...shownUrls.map((u) => <CompactLink key={u} url={u} />),
@@ -277,7 +309,11 @@ function projectBlocks(section: SectionOf<'projects'>, options: Options, ctx: Bu
         aside={asideItems.some(Boolean) ? <Joined items={asideItems} separator="  ·  " /> : null}
         lines={
           tech.length
-            ? [<span className="rf-tech" key="t">{tech.join(SEPARATORS[options.separator])}</span>]
+            ? [
+                <span className="rf-tech" key="t">
+                  {tech.join(SEPARATORS[options.separator])}
+                </span>,
+              ]
             : []
         }
         description={e.description}
@@ -321,11 +357,16 @@ function skillsBlocks(section: SectionOf<'skills'>, options: Options): DocBlock[
   ];
 }
 
-function achievementBlocks(section: SectionOf<'achievements'>, options: Options, ctx: BuildContext): DocBlock[] {
+function achievementBlocks(
+  section: SectionOf<'achievements'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   // Consecutive figures share a grid; consecutive text items share a group.
   const groups: { kind: 'stat' | 'text'; items: AchievementEntry[] }[] = [];
   for (const entry of section.entries) {
-    const empty = entry.kind === 'stat' ? !entry.value.trim() && !entry.label.trim() : !entry.text.trim();
+    const empty =
+      entry.kind === 'stat' ? !entry.value.trim() && !entry.label.trim() : !entry.text.trim();
     if (empty) continue;
     const last = groups[groups.length - 1];
     if (last && last.kind === entry.kind) last.items.push(entry);
@@ -336,7 +377,8 @@ function achievementBlocks(section: SectionOf<'achievements'>, options: Options,
     const spaceBefore = gi === 0 ? 0 : ptToPx(ctx.settings.spacing.entry);
     if (group.kind === 'stat') {
       const rows: AchievementEntry[][] = [];
-      for (let i = 0; i < group.items.length; i += columns) rows.push(group.items.slice(i, i + columns));
+      for (let i = 0; i < group.items.length; i += columns)
+        rows.push(group.items.slice(i, i + columns));
       return {
         key: `${section.id}:stats:${group.items[0]!.id}`,
         kind: 'stats',
@@ -352,7 +394,9 @@ function achievementBlocks(section: SectionOf<'achievements'>, options: Options,
                   <div className="rf-stat" key={s.id} data-entry-id={s.id}>
                     <div className="rf-stat-value">{s.value.trim()}</div>
                     {s.label.trim() && <div className="rf-stat-label">{s.label.trim()}</div>}
-                    {s.description.trim() && <div className="rf-stat-desc">{s.description.trim()}</div>}
+                    {s.description.trim() && (
+                      <div className="rf-stat-desc">{s.description.trim()}</div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -390,7 +434,11 @@ function achievementBlocks(section: SectionOf<'achievements'>, options: Options,
   });
 }
 
-function certificationBlocks(section: SectionOf<'certifications'>, options: Options, ctx: BuildContext): DocBlock[] {
+function certificationBlocks(
+  section: SectionOf<'certifications'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
     const head = (
       <EntryHead
@@ -399,9 +447,9 @@ function certificationBlocks(section: SectionOf<'certifications'>, options: Opti
         aside={singleDateAside(e.date, options, ctx)}
         lines={[
           joinedLine([
-              e.credentialId.trim() ? `Credential ${e.credentialId.trim()}` : '',
-              e.url.trim() ? <CompactLink url={e.url} /> : null,
-            ]),
+            e.credentialId.trim() ? `Credential ${e.credentialId.trim()}` : '',
+            e.url.trim() ? <CompactLink url={e.url} /> : null,
+          ]),
         ]}
         description={e.description}
       />
@@ -410,7 +458,11 @@ function certificationBlocks(section: SectionOf<'certifications'>, options: Opti
   });
 }
 
-function awardBlocks(section: SectionOf<'awards'>, options: Options, ctx: BuildContext): DocBlock[] {
+function awardBlocks(
+  section: SectionOf<'awards'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
     const head = (
       <EntryHead
@@ -424,11 +476,21 @@ function awardBlocks(section: SectionOf<'awards'>, options: Options, ctx: BuildC
   });
 }
 
-function publicationBlocks(section: SectionOf<'publications'>, options: Options, ctx: BuildContext): DocBlock[] {
+function publicationBlocks(
+  section: SectionOf<'publications'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
     const head = (
       <EntryHead
-        title={e.url.trim() ? <Link href={e.url}>{e.title.trim() || 'Untitled publication'}</Link> : e.title.trim() || 'Untitled publication'}
+        title={
+          e.url.trim() ? (
+            <Link href={e.url}>{e.title.trim() || 'Untitled publication'}</Link>
+          ) : (
+            e.title.trim() || 'Untitled publication'
+          )
+        }
         aside={singleDateAside(e.date, options, ctx)}
         lines={[joinedLine([e.authors.trim(), e.publisher.trim()])]}
         description={e.description}
@@ -438,9 +500,14 @@ function publicationBlocks(section: SectionOf<'publications'>, options: Options,
   });
 }
 
-function customBlocks(section: SectionOf<'custom'>, options: Options, ctx: BuildContext): DocBlock[] {
+function customBlocks(
+  section: SectionOf<'custom'>,
+  options: Options,
+  ctx: BuildContext,
+): DocBlock[] {
   return section.entries.map((e, i) => {
-    const link = options.linkDisplay !== 'none' && e.url.trim() ? <CompactLink url={e.url} /> : null;
+    const link =
+      options.linkDisplay !== 'none' && e.url.trim() ? <CompactLink url={e.url} /> : null;
     const head = (
       <EntryHead
         title={e.title.trim() || 'Untitled entry'}
@@ -477,7 +544,9 @@ function keyValueBlocks(
               <span key={item.id} data-entry-id={item.id}>
                 {i > 0 && <span className="rf-sep">{sep}</span>}
                 <span className="rf-inline-key">{item.key.trim()}</span>
-                {item.value.trim() && <span className="rf-inline-value"> ({item.value.trim()})</span>}
+                {item.value.trim() && (
+                  <span className="rf-inline-value"> ({item.value.trim()})</span>
+                )}
               </span>
             ))}
           </p>

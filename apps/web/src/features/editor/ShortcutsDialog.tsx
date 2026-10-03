@@ -27,7 +27,9 @@ export function ShortcutsDialog() {
                 <span className="text-ink">{s.label}</span>
                 <span className="flex flex-col items-end gap-1">
                   <Kbd keys={s.keys} />
-                  {s.alternatives?.map((alt) => <Kbd key={alt.join('+')} keys={alt} />)}
+                  {s.alternatives?.map((alt) => (
+                    <Kbd key={alt.join('+')} keys={alt} />
+                  ))}
                 </span>
               </li>
             ))}

@@ -48,9 +48,12 @@ export function validateResume(resume: Resume): ValidationIssue[] {
         message,
         location: 'Personal information',
       });
-    if (contact.kind === 'email' && !isValidEmail(value)) push('This does not look like an email address.');
-    else if (contact.kind === 'phone' && !isValidPhone(value)) push('Use digits, spaces and an optional leading +.');
-    else if (LINK_CONTACT_KINDS.has(contact.kind) && !isValidUrl(value)) push('This link cannot be opened. Check the address.');
+    if (contact.kind === 'email' && !isValidEmail(value))
+      push('This does not look like an email address.');
+    else if (contact.kind === 'phone' && !isValidPhone(value))
+      push('Use digits, spaces and an optional leading +.');
+    else if (LINK_CONTACT_KINDS.has(contact.kind) && !isValidUrl(value))
+      push('This link cannot be opened. Check the address.');
   }
 
   for (const section of resume.sections) {
@@ -64,7 +67,14 @@ function validateSection(section: Section, issues: ValidationIssue[]): void {
     const location = `${section.title || 'Untitled section'} › ${entryTitle(section, entry)}`;
     const record = entry as unknown as Record<string, unknown>;
     const push = (field: string, severity: IssueSeverity, message: string) =>
-      issues.push({ targetId: entry.id, field, severity, message, sectionId: section.id, location });
+      issues.push({
+        targetId: entry.id,
+        field,
+        severity,
+        message,
+        sectionId: section.id,
+        location,
+      });
 
     for (const field of entryFields(section, entry)) {
       const value = record[field.key];
@@ -76,7 +86,10 @@ function validateSection(section: Section, issues: ValidationIssue[]): void {
       }
       if (field.kind === 'date-range' && value && typeof value === 'object') {
         const range = value as DateRange;
-        if (!isValidPartialDate(range.start) || (!range.current && !isValidPartialDate(range.end))) {
+        if (
+          !isValidPartialDate(range.start) ||
+          (!range.current && !isValidPartialDate(range.end))
+        ) {
           push(field.key, 'error', 'Use a year, or a month and year.');
         } else if (isRangeInverted(range)) {
           push(field.key, 'warning', 'The start date is after the end date.');
@@ -110,6 +123,12 @@ export function checkGpa(gpa: string, scale: string): string | null {
   return null;
 }
 
-export function issuesFor(issues: ValidationIssue[], targetId: string, field?: string): ValidationIssue[] {
-  return issues.filter((i) => i.targetId === targetId && (field === undefined || i.field === field));
+export function issuesFor(
+  issues: ValidationIssue[],
+  targetId: string,
+  field?: string,
+): ValidationIssue[] {
+  return issues.filter(
+    (i) => i.targetId === targetId && (field === undefined || i.field === field),
+  );
 }

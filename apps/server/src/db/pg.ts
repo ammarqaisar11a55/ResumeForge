@@ -4,7 +4,8 @@ import type { Db } from './types';
 export function createPgDb(connectionString: string): Db {
   const pool = new pg.Pool({ connectionString, max: 10 });
 
-  const wrap = (client: pg.Pool | pg.PoolClient): Db['query'] =>
+  const wrap =
+    (client: pg.Pool | pg.PoolClient): Db['query'] =>
     async (sql, params = []) => {
       const result = await client.query(sql, params as unknown[]);
       return { rows: result.rows };

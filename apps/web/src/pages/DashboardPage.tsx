@@ -29,7 +29,8 @@ const SORTS: Record<SortKey, (a: ResumeSummary, b: ResumeSummary) => number> = {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { summaries, loaded, refresh, create, duplicate, rename, remove, restore, importJson } = useLibraryStore();
+  const { summaries, loaded, refresh, create, duplicate, rename, remove, restore, importJson } =
+    useLibraryStore();
   const syncState = useBackendStore((s) => s.syncState);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('updated');
@@ -54,7 +55,9 @@ export default function DashboardPage() {
     const q = query.trim().toLowerCase();
     return summaries
       .filter((s) => templateFilter === 'all' || s.template === templateFilter)
-      .filter((s) => !q || [s.title, s.fullName, s.headline].some((v) => v.toLowerCase().includes(q)))
+      .filter(
+        (s) => !q || [s.title, s.fullName, s.headline].some((v) => v.toLowerCase().includes(q)),
+      )
       .sort(SORTS[sort]);
   }, [summaries, query, sort, templateFilter]);
 
@@ -106,15 +109,27 @@ export default function DashboardPage() {
             <h1 className="type-title text-3xl text-ink">My resumes</h1>
             {loaded && summaries.length > 0 && (
               <p className="mt-1 text-sm text-muted">
-                {pluralize(summaries.length, 'resume')}, saved {syncState === 'idle' || syncState === 'syncing' ? 'in this browser and on the server' : 'in this browser'}.
+                {pluralize(summaries.length, 'resume')}, saved{' '}
+                {syncState === 'idle' || syncState === 'syncing'
+                  ? 'in this browser and on the server'
+                  : 'in this browser'}
+                .
               </p>
             )}
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary" icon={<FileUp className="size-4" />} onClick={() => fileInput.current?.click()}>
+            <Button
+              variant="secondary"
+              icon={<FileUp className="size-4" />}
+              onClick={() => fileInput.current?.click()}
+            >
               Import
             </Button>
-            <Button variant="primary" icon={<Plus className="size-4" />} onClick={() => setNewOpen(true)}>
+            <Button
+              variant="primary"
+              icon={<Plus className="size-4" />}
+              onClick={() => setNewOpen(true)}
+            >
               Create new resume
             </Button>
           </div>
@@ -150,7 +165,10 @@ export default function DashboardPage() {
           <>
             <div className="mt-8 flex flex-wrap items-center gap-2 border-y border-line py-3">
               <div className="relative min-w-56 flex-1">
-                <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted" aria-hidden />
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted"
+                  aria-hidden
+                />
                 <TextInput
                   type="search"
                   aria-label="Search resumes"
@@ -165,7 +183,10 @@ export default function DashboardPage() {
                 className="w-44"
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value as 'all' | TemplateId)}
-                options={[{ value: 'all', label: 'All templates' }, ...TEMPLATE_LIST.map((t) => ({ value: t.id, label: t.name }))]}
+                options={[
+                  { value: 'all', label: 'All templates' },
+                  ...TEMPLATE_LIST.map((t) => ({ value: t.id, label: t.name })),
+                ]}
               />
               <Select
                 aria-label="Sort resumes"
@@ -226,14 +247,20 @@ function EmptyLibrary({ onCreate, onDemo }: { onCreate: () => void; onDemo: () =
       <div className="max-w-md">
         <h2 className="type-title text-2xl text-ink">Your first resume starts here</h2>
         <p className="mt-3 leading-relaxed text-muted">
-          Start blank and fill in each section, or open an example resume to see how a dense, multi-page technical CV comes
-          together. Everything stays in this browser until you choose otherwise.
+          Start blank and fill in each section, or open an example resume to see how a dense,
+          multi-page technical CV comes together. Everything stays in this browser until you choose
+          otherwise.
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
           <Button variant="primary" size="lg" icon={<Plus className="size-4" />} onClick={onCreate}>
             Create new resume
           </Button>
-          <Button variant="secondary" size="lg" icon={<Sparkles className="size-4" />} onClick={onDemo}>
+          <Button
+            variant="secondary"
+            size="lg"
+            icon={<Sparkles className="size-4" />}
+            onClick={onDemo}
+          >
             Open the example
           </Button>
         </div>

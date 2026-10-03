@@ -1,6 +1,13 @@
 import { ChevronDown, Copy, Trash2 } from 'lucide-react';
 import { memo, useState } from 'react';
-import { entrySubtitle, entryTitle, type AnyEntry, type Section, type SectionType, type ValidationIssue } from '@resumeforge/core';
+import {
+  entrySubtitle,
+  entryTitle,
+  type AnyEntry,
+  type Section,
+  type SectionType,
+  type ValidationIssue,
+} from '@resumeforge/core';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { IconButton } from '../../../components/ui/IconButton';
 import { cn } from '../../../lib/cn';
@@ -27,11 +34,24 @@ interface EntryCardProps {
 }
 
 export const EntryCard = memo(
-  function EntryCard({ sectionId, sectionType, entry, index, handle, dragging, issues, noun, header }: EntryCardProps) {
+  function EntryCard({
+    sectionId,
+    sectionType,
+    entry,
+    index,
+    handle,
+    dragging,
+    issues,
+    noun,
+    header,
+  }: EntryCardProps) {
     const open = useSidebarStore((s) => Boolean(s.openEntries[entry.id]));
     const toggle = useSidebarStore((s) => s.toggleEntry);
     const selected = useEditorStore(
-      (s) => s.selection.kind === 'section' && s.selection.sectionId === sectionId && s.selection.entryId === entry.id,
+      (s) =>
+        s.selection.kind === 'section' &&
+        s.selection.sectionId === sectionId &&
+        s.selection.entryId === entry.id,
     );
     const [confirming, setConfirming] = useState(false);
     const section = { type: sectionType } as Section;
@@ -40,7 +60,8 @@ export const EntryCard = memo(
     const errorCount = issues.filter((i) => i.severity === 'error').length;
     const warningCount = issues.length - errorCount;
 
-    const remove = () => (entryHasContent(entry) ? setConfirming(true) : removeEntry(sectionId, entry.id));
+    const remove = () =>
+      entryHasContent(entry) ? setConfirming(true) : removeEntry(sectionId, entry.id);
 
     return (
       <div
@@ -66,7 +87,10 @@ export const EntryCard = memo(
               <span className="truncate text-[13px] font-medium text-ink">{title}</span>
               {(errorCount > 0 || warningCount > 0) && (
                 <span
-                  className={cn('size-1.5 shrink-0 rounded-full', errorCount ? 'bg-danger' : 'bg-accent')}
+                  className={cn(
+                    'size-1.5 shrink-0 rounded-full',
+                    errorCount ? 'bg-danger' : 'bg-accent',
+                  )}
                   role="img"
                   aria-label={`${issues.length} ${issues.length === 1 ? 'issue' : 'issues'} to review`}
                 />
@@ -74,20 +98,35 @@ export const EntryCard = memo(
             </span>
             {subtitle && <span className="w-full truncate text-xs text-muted">{subtitle}</span>}
           </button>
-          <IconButton label={`Duplicate ${noun}`} size="xs" onClick={() => duplicateEntry(sectionId, entry.id)}>
+          <IconButton
+            label={`Duplicate ${noun}`}
+            size="xs"
+            onClick={() => duplicateEntry(sectionId, entry.id)}
+          >
             <Copy className="size-3.5" />
           </IconButton>
           <IconButton label={`Delete ${noun}`} size="xs" onClick={remove}>
             <Trash2 className="size-3.5" />
           </IconButton>
-          <IconButton label={open ? `Collapse ${noun}` : `Expand ${noun}`} size="xs" onClick={() => toggle(entry.id)}>
-            <ChevronDown className={cn('size-3.5 transition-transform duration-200', open && 'rotate-180')} />
+          <IconButton
+            label={open ? `Collapse ${noun}` : `Expand ${noun}`}
+            size="xs"
+            onClick={() => toggle(entry.id)}
+          >
+            <ChevronDown
+              className={cn('size-3.5 transition-transform duration-200', open && 'rotate-180')}
+            />
           </IconButton>
         </div>
         {open && (
           <div className="flex flex-col gap-3 border-t border-line px-3 pt-3 pb-3.5">
             {header}
-            <EntryForm sectionId={sectionId} sectionType={sectionType} entry={entry} issues={issues} />
+            <EntryForm
+              sectionId={sectionId}
+              sectionType={sectionType}
+              entry={entry}
+              issues={issues}
+            />
           </div>
         )}
         <ConfirmDialog

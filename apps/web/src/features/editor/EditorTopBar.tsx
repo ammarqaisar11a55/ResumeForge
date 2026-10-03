@@ -18,7 +18,14 @@ import { LogoMark } from '../../components/Logo';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Button } from '../../components/ui/Button';
 import { IconButton } from '../../components/ui/IconButton';
-import { Menu, MenuContent, MenuItem, MenuLabel, MenuSeparator, MenuTrigger } from '../../components/ui/Menu';
+import {
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuLabel,
+  MenuSeparator,
+  MenuTrigger,
+} from '../../components/ui/Menu';
 import { renameResume, setTemplate } from '../../state/editorActions';
 import { selectCanRedo, selectCanUndo, useEditorStore } from '../../state/editorStore';
 import { useUiStore } from '../../state/uiStore';
@@ -35,7 +42,13 @@ interface EditorTopBarProps {
   designAsDrawer: boolean;
 }
 
-export function EditorTopBar({ onPrint, onDownload, exporting, compact, designAsDrawer }: EditorTopBarProps) {
+export function EditorTopBar({
+  onPrint,
+  onDownload,
+  exporting,
+  compact,
+  designAsDrawer,
+}: EditorTopBarProps) {
   const title = useEditorStore((s) => s.resume?.metadata.title ?? '');
   const template = useEditorStore((s) => s.resume?.template ?? 'classic');
   const canUndo = useEditorStore(selectCanUndo);
@@ -65,10 +78,20 @@ export function EditorTopBar({ onPrint, onDownload, exporting, compact, designAs
       </div>
 
       <div className="flex items-center gap-0.5">
-        <IconButton label="Undo" shortcut={SHORTCUTS.undo.keys} disabled={!canUndo} onClick={() => runHistory('undo')}>
+        <IconButton
+          label="Undo"
+          shortcut={SHORTCUTS.undo.keys}
+          disabled={!canUndo}
+          onClick={() => runHistory('undo')}
+        >
           <Undo2 className="size-4" />
         </IconButton>
-        <IconButton label="Redo" shortcut={SHORTCUTS.redo.keys} disabled={!canRedo} onClick={() => runHistory('redo')}>
+        <IconButton
+          label="Redo"
+          shortcut={SHORTCUTS.redo.keys}
+          disabled={!canRedo}
+          onClick={() => runHistory('redo')}
+        >
           <Redo2 className="size-4" />
         </IconButton>
       </div>
@@ -103,19 +126,35 @@ export function EditorTopBar({ onPrint, onDownload, exporting, compact, designAs
             label={designOpen ? 'Hide design panel' : 'Show design panel'}
             shortcut={SHORTCUTS['toggle-design'].keys}
             active={designOpen && !ui.previewMode}
-            onClick={designAsDrawer ? () => ui.setDesignDrawerOpen(!ui.designDrawerOpen) : ui.toggleDesign}
+            onClick={
+              designAsDrawer ? () => ui.setDesignDrawerOpen(!ui.designDrawerOpen) : ui.toggleDesign
+            }
           >
             <PanelRight className="size-4" />
           </IconButton>
-          <IconButton label="Focus preview" shortcut={SHORTCUTS.preview.keys} active={ui.previewMode} onClick={ui.togglePreviewMode}>
+          <IconButton
+            label="Focus preview"
+            shortcut={SHORTCUTS.preview.keys}
+            active={ui.previewMode}
+            onClick={ui.togglePreviewMode}
+          >
             <Eye className="size-4" />
           </IconButton>
-          <IconButton label="Keyboard shortcuts" shortcut={SHORTCUTS.help.keys} onClick={() => ui.setShortcutsOpen(true)}>
+          <IconButton
+            label="Keyboard shortcuts"
+            shortcut={SHORTCUTS.help.keys}
+            onClick={() => ui.setShortcutsOpen(true)}
+          >
             <Keyboard className="size-4" />
           </IconButton>
           <ThemeToggle size="sm" />
           <span className="mx-1 h-5 w-px bg-line" aria-hidden />
-          <Button variant="secondary" size="sm" icon={<Printer className="size-4" />} onClick={onPrint}>
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<Printer className="size-4" />}
+            onClick={onPrint}
+          >
             Print
           </Button>
         </>
@@ -139,7 +178,10 @@ export function EditorTopBar({ onPrint, onDownload, exporting, compact, designAs
             <MenuItem icon={<Printer className="size-4" />} onSelect={onPrint}>
               Print resume
             </MenuItem>
-            <MenuItem icon={<Keyboard className="size-4" />} onSelect={() => ui.setShortcutsOpen(true)}>
+            <MenuItem
+              icon={<Keyboard className="size-4" />}
+              onSelect={() => ui.setShortcutsOpen(true)}
+            >
               Keyboard shortcuts
             </MenuItem>
             <MenuItem icon={<Moon className="size-4" />} onSelect={ui.toggleTheme}>

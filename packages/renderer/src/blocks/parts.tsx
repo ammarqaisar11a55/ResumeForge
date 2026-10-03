@@ -33,16 +33,21 @@ export const SEPARATORS: Record<NonNullable<SectionOptions['separator']>, string
   slash: ' / ',
 };
 
-const isPresent = (item: ReactNode) => item !== null && item !== undefined && item !== false && item !== '';
+const isPresent = (item: ReactNode) =>
+  item !== null && item !== undefined && item !== false && item !== '';
 
 /** Join non-empty nodes with a separator span. */
-export function Joined({ items, separator = ' · ' }: { items: ReactNode[]; separator?: string }): ReactNode {
+export function Joined({
+  items,
+  separator = ' · ',
+}: {
+  items: ReactNode[];
+  separator?: string;
+}): ReactNode {
   const present = items.filter(isPresent);
   return present.map((item, i) => (
     <Fragment key={i}>
-      {i > 0 && (
-        <span className="rf-sep">{separator}</span>
-      )}
+      {i > 0 && <span className="rf-sep">{separator}</span>}
       {item}
     </Fragment>
   ));
@@ -54,11 +59,24 @@ export function joinedLine(items: ReactNode[], separator?: string): ReactNode {
   return present.length ? <Joined items={present} separator={separator} /> : null;
 }
 
-export function Link({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
+export function Link({
+  href,
+  children,
+  className,
+}: {
+  href: string;
+  children: ReactNode;
+  className?: string;
+}) {
   const url = normalizeUrl(href);
   if (!url) return <span className={className}>{children}</span>;
   return (
-    <a className={className ? `rf-link ${className}` : 'rf-link'} href={url} target="_blank" rel="noopener noreferrer">
+    <a
+      className={className ? `rf-link ${className}` : 'rf-link'}
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children}
     </a>
   );
@@ -143,7 +161,15 @@ export interface EntryFragmentProps {
  * An entry is atom 0 (its head) followed by one atom per bullet. A fragment
  * renders a contiguous slice of those atoms.
  */
-export function EntryFragment({ entryId, head, bullets, from, to, continued, className }: EntryFragmentProps) {
+export function EntryFragment({
+  entryId,
+  head,
+  bullets,
+  from,
+  to,
+  continued,
+  className,
+}: EntryFragmentProps) {
   const visibleBullets = bullets.filter((b) => b.text.trim());
   const bulletSlice = visibleBullets.slice(Math.max(from - 1, 0), Math.max(to - 1, 0));
   return (

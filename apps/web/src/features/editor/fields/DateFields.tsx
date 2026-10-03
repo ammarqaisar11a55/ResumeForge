@@ -1,5 +1,10 @@
 import { useId, useState } from 'react';
-import { MONTH_NAMES, parsePartialDate, type DateRange, type ValidationIssue } from '@resumeforge/core';
+import {
+  MONTH_NAMES,
+  parsePartialDate,
+  type DateRange,
+  type ValidationIssue,
+} from '@resumeforge/core';
 import { cn } from '../../../lib/cn';
 import { inputClass } from '../../../components/ui/Field';
 import { Switch } from '../../../components/ui/Switch';
@@ -14,7 +19,13 @@ interface PartialDateInputProps {
 }
 
 /** Month (optional) + year. Emits "YYYY", "YYYY-MM" or "". */
-export function PartialDateInput({ value, onChange, label, disabled, invalid }: PartialDateInputProps) {
+export function PartialDateInput({
+  value,
+  onChange,
+  label,
+  disabled,
+  invalid,
+}: PartialDateInputProps) {
   const id = useId();
   const parsed = parsePartialDate(value);
   const [year, setYear] = useState(parsed ? String(parsed.year) : value.slice(0, 4));
@@ -77,8 +88,17 @@ function IssueMessage({ issues }: { issues: ValidationIssue[] }) {
   const issue = issues.find((i) => i.severity === 'error') ?? issues[0];
   if (!issue) return null;
   return (
-    <p className={cn('flex items-start gap-1.5 text-xs', issue.severity === 'error' ? 'text-danger' : 'text-warning')}>
-      {issue.severity === 'error' ? <AlertCircle className="mt-px size-3.5 shrink-0" aria-hidden /> : <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />}
+    <p
+      className={cn(
+        'flex items-start gap-1.5 text-xs',
+        issue.severity === 'error' ? 'text-danger' : 'text-warning',
+      )}
+    >
+      {issue.severity === 'error' ? (
+        <AlertCircle className="mt-px size-3.5 shrink-0" aria-hidden />
+      ) : (
+        <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
+      )}
       {issue.message}
     </p>
   );
@@ -98,7 +118,12 @@ export function DateField({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-ink">{label}</span>
-      <PartialDateInput label="Date" value={value} onChange={onChange} invalid={issues.some((i) => i.severity === 'error')} />
+      <PartialDateInput
+        label="Date"
+        value={value}
+        onChange={onChange}
+        invalid={issues.some((i) => i.severity === 'error')}
+      />
       <IssueMessage issues={issues} />
     </div>
   );
@@ -122,17 +147,33 @@ export function DateRangeField({
     <div className="flex flex-col gap-2">
       <span className="text-[13px] font-medium text-ink">{label}</span>
       <div className="grid grid-cols-2 gap-2.5">
-        <PartialDateInput label="Start" value={value.start} invalid={invalid} onChange={(start) => onChange({ ...value, start })} />
+        <PartialDateInput
+          label="Start"
+          value={value.start}
+          invalid={invalid}
+          onChange={(start) => onChange({ ...value, start })}
+        />
         {value.current ? (
           <div className="flex flex-col gap-1">
             <span className="mb-1 text-xs text-muted">End</span>
-            <div className="flex h-9 items-center rounded-md border border-dashed border-line-strong px-2.5 text-sm text-muted">Present</div>
+            <div className="flex h-9 items-center rounded-md border border-dashed border-line-strong px-2.5 text-sm text-muted">
+              Present
+            </div>
           </div>
         ) : (
-          <PartialDateInput label="End" value={value.end} invalid={invalid} onChange={(end) => onChange({ ...value, end })} />
+          <PartialDateInput
+            label="End"
+            value={value.end}
+            invalid={invalid}
+            onChange={(end) => onChange({ ...value, end })}
+          />
         )}
       </div>
-      <Switch label={currentLabel} checked={value.current} onCheckedChange={(current) => onChange({ ...value, current })} />
+      <Switch
+        label={currentLabel}
+        checked={value.current}
+        onCheckedChange={(current) => onChange({ ...value, current })}
+      />
       <IssueMessage issues={issues} />
     </div>
   );

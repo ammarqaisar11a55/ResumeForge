@@ -24,13 +24,19 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   }
   const body = error as { type?: string; status?: number };
   if (body?.type === 'entity.too.large') {
-    res.status(413).json({ error: { code: 'payload_too_large', message: 'The request is too large.' } });
+    res
+      .status(413)
+      .json({ error: { code: 'payload_too_large', message: 'The request is too large.' } });
     return;
   }
   if (body?.type === 'entity.parse.failed') {
-    res.status(400).json({ error: { code: 'invalid_json', message: 'The request body is not valid JSON.' } });
+    res
+      .status(400)
+      .json({ error: { code: 'invalid_json', message: 'The request body is not valid JSON.' } });
     return;
   }
   console.error('Unhandled error', error);
-  res.status(500).json({ error: { code: 'internal_error', message: 'Something went wrong on the server.' } });
+  res
+    .status(500)
+    .json({ error: { code: 'internal_error', message: 'Something went wrong on the server.' } });
 };

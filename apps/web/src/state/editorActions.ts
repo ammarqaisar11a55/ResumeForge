@@ -37,7 +37,11 @@ function findSection(draft: Draft<Resume>, sectionId: string): Draft<Section> | 
   return draft.sections.find((s) => s.id === sectionId);
 }
 
-function findEntry(draft: Draft<Resume>, sectionId: string, entryId: string): EntryRecord | undefined {
+function findEntry(
+  draft: Draft<Resume>,
+  sectionId: string,
+  entryId: string,
+): EntryRecord | undefined {
   const section = findSection(draft, sectionId);
   return (section?.entries as unknown as EntryRecord[] | undefined)?.find((e) => e.id === entryId);
 }
@@ -52,7 +56,9 @@ function sectionLabel(sectionId: string): string {
 /* ------------------------------------------------------------------------ */
 
 export function renameResume(title: string) {
-  commit('Rename resume', (d) => void (d.metadata.title = title), { coalesceKey: 'metadata.title' });
+  commit('Rename resume', (d) => void (d.metadata.title = title), {
+    coalesceKey: 'metadata.title',
+  });
 }
 
 export function setTemplate(template: TemplateId) {
@@ -63,10 +69,17 @@ export function setTemplate(template: TemplateId) {
 /* Personal information                                                     */
 /* ------------------------------------------------------------------------ */
 
-export function updatePersonal<K extends 'fullName' | 'headline'>(field: K, value: PersonalInfo[K]) {
-  commit(field === 'fullName' ? 'Edit name' : 'Edit professional title', (d) => void (d.personalInfo[field] = value), {
-    coalesceKey: `personal.${field}`,
-  });
+export function updatePersonal<K extends 'fullName' | 'headline'>(
+  field: K,
+  value: PersonalInfo[K],
+) {
+  commit(
+    field === 'fullName' ? 'Edit name' : 'Edit professional title',
+    (d) => void (d.personalInfo[field] = value),
+    {
+      coalesceKey: `personal.${field}`,
+    },
+  );
 }
 
 export function addContact(kind: ContactKind): string {
@@ -76,14 +89,21 @@ export function addContact(kind: ContactKind): string {
 }
 
 export function updateContact(id: string, patch: Partial<Omit<ContactItem, 'id'>>) {
-  const label = 'visible' in patch ? (patch.visible ? 'Show contact detail' : 'Hide contact detail') : 'Edit contact detail';
+  const label =
+    'visible' in patch
+      ? patch.visible
+        ? 'Show contact detail'
+        : 'Hide contact detail'
+      : 'Edit contact detail';
   commit(
     label,
     (d) => {
       const contact = d.personalInfo.contacts.find((c) => c.id === id);
       if (contact) Object.assign(contact, patch);
     },
-    'visible' in patch ? undefined : { coalesceKey: `contact.${id}.${Object.keys(patch).join(',')}` },
+    'visible' in patch
+      ? undefined
+      : { coalesceKey: `contact.${id}.${Object.keys(patch).join(',')}` },
   );
 }
 
@@ -144,7 +164,11 @@ export function moveSection(from: number, to: number) {
 
 export function updateSection(sectionId: string, patch: { title?: string; visible?: boolean }) {
   const label =
-    patch.visible === undefined ? 'Rename section' : patch.visible ? 'Show section' : 'Hide section';
+    patch.visible === undefined
+      ? 'Rename section'
+      : patch.visible
+        ? 'Show section'
+        : 'Hide section';
   commit(
     label,
     (d) => {
@@ -155,7 +179,11 @@ export function updateSection(sectionId: string, patch: { title?: string; visibl
   );
 }
 
-export function setSectionOption<K extends keyof SectionOptions>(sectionId: string, key: K, value: SectionOptions[K]) {
+export function setSectionOption<K extends keyof SectionOptions>(
+  sectionId: string,
+  key: K,
+  value: SectionOptions[K],
+) {
   commit('Change section layout', (d) => {
     const section = findSection(d, sectionId);
     if (section) (section.options as SectionOptions)[key] = value;
@@ -193,16 +221,18 @@ export function removeEntry(sectionId: string, entryId: string) {
   commit(`Delete ${sectionLabel(sectionId)}`, (d) => {
     const section = findSection(d, sectionId);
     if (section) {
-      (section as { entries: EntryRecord[] }).entries = (section.entries as unknown as EntryRecord[]).filter(
-        (e) => e.id !== entryId,
-      );
+      (section as { entries: EntryRecord[] }).entries = (
+        section.entries as unknown as EntryRecord[]
+      ).filter((e) => e.id !== entryId);
     }
   });
 }
 
 export function duplicateEntry(sectionId: string, entryId: string): string | null {
   const section = useEditorStore.getState().resume?.sections.find((s) => s.id === sectionId);
-  const entry = (section?.entries as unknown as EntryRecord[] | undefined)?.find((e) => e.id === entryId);
+  const entry = (section?.entries as unknown as EntryRecord[] | undefined)?.find(
+    (e) => e.id === entryId,
+  );
   if (!section || !entry) return null;
   const copy = cloneEntry(entry as never) as EntryRecord;
   commit(`Duplicate ${sectionLabel(sectionId)}`, (d) => {
@@ -218,7 +248,11 @@ export function moveEntry(sectionId: string, from: number, to: number) {
   commit(`Reorder ${sectionLabel(sectionId)}s`, (d) => {
     const section = findSection(d, sectionId);
     if (section) {
-      (section as { entries: unknown[] }).entries = moveItem(section.entries as unknown[], from, to);
+      (section as { entries: unknown[] }).entries = moveItem(
+        section.entries as unknown[],
+        from,
+        to,
+      );
     }
   });
 }
@@ -227,13 +261,24 @@ export function moveEntry(sectionId: string, from: number, to: number) {
 /* Bullets inside entries                                                   */
 /* ------------------------------------------------------------------------ */
 
-function bulletList(d: Draft<Resume>, sectionId: string, entryId: string, field: string): Bullet[] | undefined {
+function bulletList(
+  d: Draft<Resume>,
+  sectionId: string,
+  entryId: string,
+  field: string,
+): Bullet[] | undefined {
   const entry = findEntry(d, sectionId, entryId);
   const list = entry?.[field];
   return Array.isArray(list) ? (list as Bullet[]) : undefined;
 }
 
-export function addBullet(sectionId: string, entryId: string, field: string, afterIndex?: number, text = ''): string {
+export function addBullet(
+  sectionId: string,
+  entryId: string,
+  field: string,
+  afterIndex?: number,
+  text = '',
+): string {
   const bullet: Bullet = { id: createId(), text };
   commit('Add bullet point', (d) => {
     const list = bulletList(d, sectionId, entryId, field);
@@ -244,7 +289,13 @@ export function addBullet(sectionId: string, entryId: string, field: string, aft
   return bullet.id;
 }
 
-export function updateBullet(sectionId: string, entryId: string, field: string, bulletId: string, text: string) {
+export function updateBullet(
+  sectionId: string,
+  entryId: string,
+  field: string,
+  bulletId: string,
+  text: string,
+) {
   commit(
     'Edit bullet point',
     (d) => {
@@ -263,7 +314,13 @@ export function removeBullet(sectionId: string, entryId: string, field: string, 
   });
 }
 
-export function moveBullet(sectionId: string, entryId: string, field: string, from: number, to: number) {
+export function moveBullet(
+  sectionId: string,
+  entryId: string,
+  field: string,
+  from: number,
+  to: number,
+) {
   commit('Reorder bullet points', (d) => {
     const entry = findEntry(d, sectionId, entryId);
     const list = bulletList(d, sectionId, entryId, field);
@@ -301,14 +358,18 @@ export function setMargin(side: 'top' | 'right' | 'bottom' | 'left' | 'all', val
     (d) => {
       const page = (d.settings.page ??= {});
       const margins = (page.margins ??= {});
-      if (side === 'all') Object.assign(margins, { top: value, right: value, bottom: value, left: value });
+      if (side === 'all')
+        Object.assign(margins, { top: value, right: value, bottom: value, left: value });
       else margins[side] = value;
     },
     { coalesceKey: `settings.margins.${side}` },
   );
 }
 
-export function setDocumentOption<K extends 'dateFormat' | 'bulletStyle'>(key: K, value: DocumentSettings[K]) {
+export function setDocumentOption<K extends 'dateFormat' | 'bulletStyle'>(
+  key: K,
+  value: DocumentSettings[K],
+) {
   commit('Change formatting', (d) => void ((d.settings as SettingsOverrides)[key] = value));
 }
 

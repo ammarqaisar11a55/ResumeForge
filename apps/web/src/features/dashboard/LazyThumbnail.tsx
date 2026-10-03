@@ -5,7 +5,15 @@ import { Skeleton } from '../../components/ui/Skeleton';
 import { resumeService } from '../../services';
 
 /** Renders a real first-page thumbnail once the card scrolls into view. */
-export function LazyThumbnail({ id, updatedAt, width }: { id: string; updatedAt: string; width: number }) {
+export function LazyThumbnail({
+  id,
+  updatedAt,
+  width,
+}: {
+  id: string;
+  updatedAt: string;
+  width: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(() => typeof IntersectionObserver === 'undefined');
 
@@ -39,7 +47,11 @@ export function LazyThumbnail({ id, updatedAt, width }: { id: string; updatedAt:
   const height = width * (297 / 210);
   return (
     <div ref={ref} style={{ width, minHeight: height }}>
-      {resume ? <ResumeThumbnail resume={resume} width={width} /> : <Skeleton className="rounded-none" />}
+      {resume ? (
+        <ResumeThumbnail resume={resume} width={width} />
+      ) : (
+        <Skeleton className="rounded-none" />
+      )}
     </div>
   );
 }

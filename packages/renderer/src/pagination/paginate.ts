@@ -74,7 +74,13 @@ interface PlanContext {
  * space remaining on the current page. Ignores keep-with-next, which the
  * caller handles.
  */
-function planBlock(block: MeasuredBlock, from: number, remaining: number, isFirst: boolean, ctx: PlanContext): Plan {
+function planBlock(
+  block: MeasuredBlock,
+  from: number,
+  remaining: number,
+  isFirst: boolean,
+  ctx: PlanContext,
+): Plan {
   const n = block.segments.length;
   const space = isFirst ? 0 : block.spaceBefore;
   const rest = fragmentHeight(block, from, n);
@@ -96,7 +102,11 @@ function planBlock(block: MeasuredBlock, from: number, remaining: number, isFirs
   return { kind: 'move' };
 }
 
-export function paginate(blocks: MeasuredBlock[], pageHeight: number, options: PaginateOptions = {}): PageLayout[] {
+export function paginate(
+  blocks: MeasuredBlock[],
+  pageHeight: number,
+  options: PaginateOptions = {},
+): PageLayout[] {
   const ctx: PlanContext = {
     pageHeight,
     minRemainingToSplit: (options.minRemainingToSplit ?? 0.22) * pageHeight,
@@ -139,7 +149,9 @@ export function paginate(blocks: MeasuredBlock[], pageHeight: number, options: P
       const next = blocks[i + 1];
       const fits = height <= remaining + EPSILON;
       const followerFits =
-        !next || next.segments.length === 0 || planBlock(next, 0, remaining - height, false, ctx).kind !== 'move';
+        !next ||
+        next.segments.length === 0 ||
+        planBlock(next, 0, remaining - height, false, ctx).kind !== 'move';
       if (!isFirst && (!fits || !followerFits)) {
         newPage();
         continue;
@@ -187,6 +199,9 @@ export function paginate(blocks: MeasuredBlock[], pageHeight: number, options: P
 /** Stable signature of a layout, used to skip redundant state updates. */
 export function layoutSignature(pages: PageLayout[]): string {
   return pages
-    .map((p) => p.fragments.map((f) => `${f.key}[${f.from}-${f.to}]`).join(',') + (p.overflow ? '!' : ''))
+    .map(
+      (p) =>
+        p.fragments.map((f) => `${f.key}[${f.from}-${f.to}]`).join(',') + (p.overflow ? '!' : ''),
+    )
     .join('|');
 }

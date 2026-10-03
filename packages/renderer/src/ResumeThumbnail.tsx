@@ -11,7 +11,11 @@ export interface ResumeThumbnailProps {
 }
 
 /** First page of a resume, rendered with the real renderer and scaled down. */
-export const ResumeThumbnail = memo(function ResumeThumbnail({ resume, width, className }: ResumeThumbnailProps) {
+export const ResumeThumbnail = memo(function ResumeThumbnail({
+  resume,
+  width,
+  className,
+}: ResumeThumbnailProps) {
   const settings = resolveSettings(resume.template, resume.settings);
   const page = pageSizeMm(settings);
   const pageWidthPx = mmToPx(page.width);
@@ -19,11 +23,18 @@ export const ResumeThumbnail = memo(function ResumeThumbnail({ resume, width, cl
   return (
     <div
       className={className}
-      style={{ width, height: mmToPx(page.height) * scale, overflow: 'hidden', position: 'relative' }}
+      style={{
+        width,
+        height: mmToPx(page.height) * scale,
+        overflow: 'hidden',
+        position: 'relative',
+      }}
       aria-hidden="true"
       inert
     >
-      <div style={{ width: pageWidthPx, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+      <div
+        style={{ width: pageWidthPx, transform: `scale(${scale})`, transformOrigin: 'top left' }}
+      >
         <ResumeDocument resume={resume} maxPages={1} />
       </div>
     </div>

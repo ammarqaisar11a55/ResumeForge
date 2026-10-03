@@ -1,5 +1,6 @@
 export const isMac =
-  typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+  typeof navigator !== 'undefined' &&
+  /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
 
 /** Label for the primary modifier key. */
 export const MOD_LABEL = isMac ? '⌘' : 'Ctrl';

@@ -30,7 +30,9 @@ export function ConfirmDialog({
         <AlertDialog.Overlay className={overlayClass} />
         <AlertDialog.Content className={cn(panelClass, 'max-w-sm')}>
           <AlertDialog.Title className="type-title text-lg text-ink">{title}</AlertDialog.Title>
-          <AlertDialog.Description className="mt-2 text-sm leading-relaxed text-muted">{description}</AlertDialog.Description>
+          <AlertDialog.Description className="mt-2 text-sm leading-relaxed text-muted">
+            {description}
+          </AlertDialog.Description>
           <div className="mt-5 flex justify-end gap-2">
             <AlertDialog.Cancel asChild>
               <Button variant="secondary">Cancel</Button>

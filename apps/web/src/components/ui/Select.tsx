@@ -13,7 +13,10 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 }
 
 /** Native select: fully keyboard and screen-reader accessible on every platform. */
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({ options, className, ...props }, ref) {
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+  { options, className, ...props },
+  ref,
+) {
   return (
     <div className={cn('relative min-w-0', className)}>
       <select ref={ref} className={cn(inputClass, 'h-9 appearance-none pr-8')} {...props}>
@@ -23,7 +26,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-muted" aria-hidden />
+      <ChevronDown
+        className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-muted"
+        aria-hidden
+      />
     </div>
   );
 });

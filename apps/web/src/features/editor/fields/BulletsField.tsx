@@ -26,7 +26,9 @@ export function BulletsField({ label, sectionId, entryId, field, bullets }: Bull
 
   useEffect(() => {
     if (!focusId.current) return;
-    const el = listRef.current?.querySelector<HTMLTextAreaElement>(`[data-bullet-id="${focusId.current}"]`);
+    const el = listRef.current?.querySelector<HTMLTextAreaElement>(
+      `[data-bullet-id="${focusId.current}"]`,
+    );
     if (el) {
       el.focus();
       el.setSelectionRange(el.value.length, el.value.length);
@@ -48,8 +50,18 @@ export function BulletsField({ label, sectionId, entryId, field, bullets }: Bull
         {(id, index, { handle, isDragging }) => {
           const bullet = bullets[index]!;
           return (
-            <div className={isDragging ? 'flex items-start gap-1 rounded-md bg-surface shadow-pop' : 'flex items-start gap-1'}>
-              <DragHandle handle={handle} label={`Reorder bullet ${index + 1}`} className="mt-1.5" />
+            <div
+              className={
+                isDragging
+                  ? 'flex items-start gap-1 rounded-md bg-surface shadow-pop'
+                  : 'flex items-start gap-1'
+              }
+            >
+              <DragHandle
+                handle={handle}
+                label={`Reorder bullet ${index + 1}`}
+                className="mt-1.5"
+              />
               <div className="min-w-0 flex-1">
                 <RichTextArea
                   data-bullet-id={id}

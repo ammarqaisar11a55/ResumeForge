@@ -3,7 +3,13 @@ import { memo, useState } from 'react';
 import { getSectionDefinition, type Section } from '@resumeforge/core';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { IconButton } from '../../../components/ui/IconButton';
-import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '../../../components/ui/Menu';
+import {
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuSeparator,
+  MenuTrigger,
+} from '../../../components/ui/Menu';
 import { cn } from '../../../lib/cn';
 import { MOD_LABEL } from '../../../lib/platform';
 import { duplicateSection, removeSection, updateSection } from '../../../state/editorActions';
@@ -25,7 +31,9 @@ export const SectionCard = memo(function SectionCard({
 }) {
   const open = useSidebarStore((s) => Boolean(s.openSections[section.id]));
   const toggle = useSidebarStore((s) => s.toggleSection);
-  const selected = useEditorStore((s) => s.selection.kind === 'section' && s.selection.sectionId === section.id);
+  const selected = useEditorStore(
+    (s) => s.selection.kind === 'section' && s.selection.sectionId === section.id,
+  );
   const [confirming, setConfirming] = useState(false);
   const def = getSectionDefinition(section.type);
   const Icon = SECTION_ICONS[def.icon];
@@ -43,7 +51,12 @@ export const SectionCard = memo(function SectionCard({
         dragging && 'relative z-10 shadow-pop',
       )}
     >
-      <div className={cn('group flex items-center gap-1.5 py-2 pr-2 pl-1.5', !section.visible && 'text-muted')}>
+      <div
+        className={cn(
+          'group flex items-center gap-1.5 py-2 pr-2 pl-1.5',
+          !section.visible && 'text-muted',
+        )}
+      >
         <DragHandle handle={handle} label={`Reorder section ${title}`} />
         <Icon className="size-4 shrink-0 text-muted" aria-hidden />
         <button
@@ -55,7 +68,12 @@ export const SectionCard = memo(function SectionCard({
             select();
           }}
         >
-          <span className={cn('truncate text-sm font-semibold', section.visible ? 'text-ink' : 'text-muted line-through decoration-1')}>
+          <span
+            className={cn(
+              'truncate text-sm font-semibold',
+              section.visible ? 'text-ink' : 'text-muted line-through decoration-1',
+            )}
+          >
             {title}
           </span>
           {count !== null && <span className="tabular shrink-0 text-xs text-muted">{count}</span>}
@@ -74,7 +92,10 @@ export const SectionCard = memo(function SectionCard({
             </IconButton>
           </MenuTrigger>
           <MenuContent>
-            <MenuItem icon={<Copy className="size-4" />} onSelect={() => duplicateSection(section.id)}>
+            <MenuItem
+              icon={<Copy className="size-4" />}
+              onSelect={() => duplicateSection(section.id)}
+            >
               Duplicate section
             </MenuItem>
             <MenuItem
@@ -87,14 +108,21 @@ export const SectionCard = memo(function SectionCard({
             <MenuItem
               destructive
               icon={<Trash2 className="size-4" />}
-              onSelect={() => (sectionHasContent(section) ? setConfirming(true) : removeSection(section.id))}
+              onSelect={() =>
+                sectionHasContent(section) ? setConfirming(true) : removeSection(section.id)
+              }
             >
               Delete section
             </MenuItem>
           </MenuContent>
         </Menu>
-        <IconButton label={open ? `Collapse ${title}` : `Expand ${title}`} onClick={() => toggle(section.id)}>
-          <ChevronDown className={cn('size-4 transition-transform duration-200', open && 'rotate-180')} />
+        <IconButton
+          label={open ? `Collapse ${title}` : `Expand ${title}`}
+          onClick={() => toggle(section.id)}
+        >
+          <ChevronDown
+            className={cn('size-4 transition-transform duration-200', open && 'rotate-180')}
+          />
         </IconButton>
       </div>
       {open && (

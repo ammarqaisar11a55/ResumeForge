@@ -27,7 +27,11 @@ export default defineConfig({
       cwd: '../..',
       port: API_PORT,
       reuseExistingServer: false,
-      env: { PORT: String(API_PORT), DATA_DIR: 'memory', CORS_ORIGIN: `http://localhost:${WEB_PORT}` },
+      env: {
+        PORT: String(API_PORT),
+        DATA_DIR: 'memory',
+        CORS_ORIGIN: `http://localhost:${WEB_PORT}`,
+      },
       timeout: 60_000,
     },
     {

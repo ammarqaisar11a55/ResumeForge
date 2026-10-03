@@ -42,15 +42,15 @@ The web app also runs on its own (`npm run dev:web`). Resumes are then kept in t
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | API and web app with hot reload |
-| `npm run build` | Production build of the web app (`apps/web/dist`) and the API (`apps/server/dist`) |
-| `npm test` | Unit and integration tests for every package (Vitest) |
-| `npm run test:e2e` | End-to-end tests in Chrome (Playwright). Starts its own servers. |
-| `npm run typecheck` | TypeScript across all workspaces |
-| `npm run lint` | ESLint |
-| `npm run db:migrate` | Apply database migrations |
+| Command              | What it does                                                                       |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| `npm run dev`        | API and web app with hot reload                                                    |
+| `npm run build`      | Production build of the web app (`apps/web/dist`) and the API (`apps/server/dist`) |
+| `npm test`           | Unit and integration tests for every package (Vitest)                              |
+| `npm run test:e2e`   | End-to-end tests in Chrome (Playwright). Starts its own servers.                   |
+| `npm run typecheck`  | TypeScript across all workspaces                                                   |
+| `npm run lint`       | ESLint                                                                             |
+| `npm run db:migrate` | Apply database migrations                                                          |
 
 Production runs as a single process that serves the API and the built web app:
 
@@ -109,29 +109,29 @@ PostgreSQL stores each resume's document as `jsonb`, next to relational tables r
 
 ### API
 
-| Method | Path | |
-| --- | --- | --- |
-| `GET` | `/api/health` | Capabilities: persistence and PDF |
-| `GET` | `/api/resumes` | Summaries |
-| `GET` / `PUT` / `DELETE` | `/api/resumes/:id` | Read, upsert, soft delete |
-| `GET` / `POST` | `/api/resumes/:id/versions` | List or create a labelled version |
-| `GET` | `/api/resumes/:id/versions/:n` | Read a version |
-| `POST` | `/api/export/pdf` | Render a PDF from paginated document markup |
-| `GET` | `/api/export` | Export history |
+| Method                   | Path                           |                                             |
+| ------------------------ | ------------------------------ | ------------------------------------------- |
+| `GET`                    | `/api/health`                  | Capabilities: persistence and PDF           |
+| `GET`                    | `/api/resumes`                 | Summaries                                   |
+| `GET` / `PUT` / `DELETE` | `/api/resumes/:id`             | Read, upsert, soft delete                   |
+| `GET` / `POST`           | `/api/resumes/:id/versions`    | List or create a labelled version           |
+| `GET`                    | `/api/resumes/:id/versions/:n` | Read a version                              |
+| `POST`                   | `/api/export/pdf`              | Render a PDF from paginated document markup |
+| `GET`                    | `/api/export`                  | Export history                              |
 
 PDF rendering treats the submitted markup as untrusted: scripts and embeds are stripped, a CSP blocks script execution, every network request from the page is refused (fonts are inlined as data URIs), and each render runs in a fresh browser context.
 
 ## Keyboard shortcuts
 
-| Action | Shortcut |
-| --- | --- |
-| Undo / redo | `Ctrl+Z` / `Ctrl+Shift+Z` or `Ctrl+Y` |
-| Save now | `Ctrl+S` |
-| Print | `Ctrl+P` |
-| Download PDF | `Ctrl+Shift+E` |
-| Focus preview | `Ctrl+Shift+F` |
-| Toggle sections / design panel | `Ctrl+\` / `Ctrl+Shift+\` |
-| Shortcut help | `?` |
+| Action                         | Shortcut                              |
+| ------------------------------ | ------------------------------------- |
+| Undo / redo                    | `Ctrl+Z` / `Ctrl+Shift+Z` or `Ctrl+Y` |
+| Save now                       | `Ctrl+S`                              |
+| Print                          | `Ctrl+P`                              |
+| Download PDF                   | `Ctrl+Shift+E`                        |
+| Focus preview                  | `Ctrl+Shift+F`                        |
+| Toggle sections / design panel | `Ctrl+\` / `Ctrl+Shift+\`             |
+| Shortcut help                  | `?`                                   |
 
 On macOS use `⌘` instead of `Ctrl`.
 
@@ -139,15 +139,15 @@ On macOS use `⌘` instead of `Ctrl`.
 
 Server environment variables (see `apps/server/.env.example`):
 
-| Variable | Default | |
-| --- | --- | --- |
-| `PORT` | `4000` | API port |
-| `DATABASE_URL` | none | PostgreSQL connection string. Unset uses embedded PGlite. |
-| `DATA_DIR` | `.data` | PGlite location (`memory` for a throwaway database) |
-| `CORS_ORIGIN` | `http://localhost:5173` | Allowed browser origins, comma separated |
-| `CHROME_PATH` | auto-detected | Chrome or Chromium executable for PDF export |
-| `CHROME_NO_SANDBOX` | `false` | Needed when running Chrome as root in some containers |
-| `WEB_DIST` | none | Serve the built web app from the API process |
+| Variable            | Default                 |                                                           |
+| ------------------- | ----------------------- | --------------------------------------------------------- |
+| `PORT`              | `4000`                  | API port                                                  |
+| `DATABASE_URL`      | none                    | PostgreSQL connection string. Unset uses embedded PGlite. |
+| `DATA_DIR`          | `.data`                 | PGlite location (`memory` for a throwaway database)       |
+| `CORS_ORIGIN`       | `http://localhost:5173` | Allowed browser origins, comma separated                  |
+| `CHROME_PATH`       | auto-detected           | Chrome or Chromium executable for PDF export              |
+| `CHROME_NO_SANDBOX` | `false`                 | Needed when running Chrome as root in some containers     |
+| `WEB_DIST`          | none                    | Serve the built web app from the API process              |
 
 Web build variables: `VITE_API_URL` (default `/api`) and `VITE_ENABLE_API=false` for a fully offline build.
 

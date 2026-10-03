@@ -13,8 +13,9 @@ export default function TemplatesPage() {
         <div className="mx-auto max-w-6xl px-4 pt-10 pb-14 sm:px-6">
           <h1 className="type-display text-[clamp(2.4rem,6vw,3.6rem)] text-ink">Templates</h1>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">
-            Each template is a set of typographic decisions applied to the same structured content. All three keep a single
-            column and plain text, so applicant tracking systems read them in order.
+            Each template is a set of typographic decisions applied to the same structured content.
+            All three keep a single column and plain text, so applicant tracking systems read them
+            in order.
           </p>
         </div>
       </div>

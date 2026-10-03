@@ -17,14 +17,7 @@ import type {
  */
 
 export type FieldKind =
-  | 'text'
-  | 'textarea'
-  | 'url'
-  | 'date'
-  | 'date-range'
-  | 'tags'
-  | 'bullets'
-  | 'select';
+  'text' | 'textarea' | 'url' | 'date' | 'date-range' | 'tags' | 'bullets' | 'select';
 
 export interface FieldDef {
   key: string;
@@ -159,10 +152,22 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
       details: [],
     }),
     fields: () => [
-      { key: 'degree', label: 'Degree', kind: 'text', span: 2, placeholder: 'Bachelor of Science in Software Engineering' },
+      {
+        key: 'degree',
+        label: 'Degree',
+        kind: 'text',
+        span: 2,
+        placeholder: 'Bachelor of Science in Software Engineering',
+      },
       { key: 'institution', label: 'Institution', kind: 'text', placeholder: 'University name' },
       { key: 'location', label: 'Location', kind: 'text', placeholder: 'City, Country' },
-      { key: 'dates', label: 'Dates', kind: 'date-range', span: 2, currentLabel: 'Currently studying' },
+      {
+        key: 'dates',
+        label: 'Dates',
+        kind: 'date-range',
+        span: 2,
+        currentLabel: 'Currently studying',
+      },
       { key: 'gpa', label: 'Result', kind: 'text', placeholder: '3.89' },
       {
         key: 'gpaLabel',
@@ -175,8 +180,20 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
           { value: 'Percentage', label: 'Percentage' },
         ],
       },
-      { key: 'gpaScale', label: 'Out of (optional)', kind: 'text', placeholder: '4.00', hint: 'Printed after the result, e.g. 3.89/4.00' },
-      { key: 'description', label: 'Description', kind: 'textarea', span: 2, placeholder: 'Relevant coursework, thesis, honours…' },
+      {
+        key: 'gpaScale',
+        label: 'Out of (optional)',
+        kind: 'text',
+        placeholder: '4.00',
+        hint: 'Printed after the result, e.g. 3.89/4.00',
+      },
+      {
+        key: 'description',
+        label: 'Description',
+        kind: 'textarea',
+        span: 2,
+        placeholder: 'Relevant coursework, thesis, honours…',
+      },
       { key: 'details', label: 'Additional details', kind: 'bullets', span: 2 },
     ],
     entryTitle: (e) => e.degree || e.institution || 'Untitled education',
@@ -221,7 +238,13 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
           { value: 'Volunteer', label: 'Volunteer' },
         ],
       },
-      { key: 'dates', label: 'Dates', kind: 'date-range', span: 2, currentLabel: 'I currently work here' },
+      {
+        key: 'dates',
+        label: 'Dates',
+        kind: 'date-range',
+        span: 2,
+        currentLabel: 'I currently work here',
+      },
       { key: 'url', label: 'Company website', kind: 'url', span: 2, placeholder: 'company.com' },
       { key: 'description', label: 'Description', kind: 'textarea', span: 2 },
       { key: 'bullets', label: 'Highlights', kind: 'bullets', span: 2 },
@@ -256,10 +279,22 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
       { key: 'name', label: 'Project name', kind: 'text', placeholder: 'Markdown Viewer' },
       { key: 'kind', label: 'Project type', kind: 'text', placeholder: 'Desktop App' },
       { key: 'role', label: 'Role', kind: 'text', span: 2, placeholder: 'Backend lead, team of 2' },
-      { key: 'technologies', label: 'Technologies', kind: 'tags', span: 2, placeholder: 'Add a technology and press Enter' },
+      {
+        key: 'technologies',
+        label: 'Technologies',
+        kind: 'tags',
+        span: 2,
+        placeholder: 'Add a technology and press Enter',
+      },
       { key: 'githubUrl', label: 'GitHub URL', kind: 'url', placeholder: 'github.com/you/project' },
       { key: 'liveUrl', label: 'Live URL', kind: 'url', placeholder: 'project.vercel.app' },
-      { key: 'otherUrl', label: 'Other URL', kind: 'url', span: 2, placeholder: 'Demo video, paper, store listing…' },
+      {
+        key: 'otherUrl',
+        label: 'Other URL',
+        kind: 'url',
+        span: 2,
+        placeholder: 'Demo video, paper, store listing…',
+      },
       { key: 'dates', label: 'Dates', kind: 'date-range', span: 2, currentLabel: 'Ongoing' },
       { key: 'description', label: 'Short description', kind: 'textarea', span: 2 },
       { key: 'bullets', label: 'Highlights', kind: 'bullets', span: 2 },
@@ -285,7 +320,13 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
     createEntry: () => ({ id: createId(), name: '', skills: [] }),
     fields: () => [
       { key: 'name', label: 'Category', kind: 'text', span: 2, placeholder: 'Languages' },
-      { key: 'skills', label: 'Skills', kind: 'tags', span: 2, placeholder: 'Add a skill and press Enter' },
+      {
+        key: 'skills',
+        label: 'Skills',
+        kind: 'tags',
+        span: 2,
+        placeholder: 'Add a skill and press Enter',
+      },
     ],
     entryTitle: (e) => e.name || 'Untitled category',
     entrySubtitle: (e) => `${e.skills.length} ${e.skills.length === 1 ? 'skill' : 'skills'}`,
@@ -311,17 +352,32 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
     icon: 'trophy',
     entryNoun: 'achievement',
     singleEntry: false,
-    createEntry: () => ({ id: createId(), kind: 'stat', value: '', label: '', description: '', text: '' }),
+    createEntry: () => ({
+      id: createId(),
+      kind: 'stat',
+      value: '',
+      label: '',
+      description: '',
+      text: '',
+    }),
     fields: (e: AchievementEntry) =>
       e.kind === 'stat'
         ? [
             { key: 'value', label: 'Figure', kind: 'text', placeholder: '1,050+' },
             { key: 'label', label: 'Label', kind: 'text', placeholder: 'LeetCode problems solved' },
-            { key: 'description', label: 'Description', kind: 'text', span: 2, placeholder: 'Optional supporting detail' },
+            {
+              key: 'description',
+              label: 'Description',
+              kind: 'text',
+              span: 2,
+              placeholder: 'Optional supporting detail',
+            },
           ]
         : [{ key: 'text', label: 'Achievement', kind: 'textarea', span: 2 }],
     entryTitle: (e) =>
-      e.kind === 'stat' ? [e.value, e.label].filter(Boolean).join(' ') || 'Untitled figure' : e.text.slice(0, 60) || 'Untitled achievement',
+      e.kind === 'stat'
+        ? [e.value, e.label].filter(Boolean).join(' ') || 'Untitled figure'
+        : e.text.slice(0, 60) || 'Untitled achievement',
     entrySubtitle: (e) => (e.kind === 'stat' ? 'Figure' : 'Text'),
     defaultOptions: { statColumns: 3, textAsBullets: false },
     options: [
@@ -346,9 +402,23 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
     icon: 'badge-check',
     entryNoun: 'certification',
     singleEntry: false,
-    createEntry: () => ({ id: createId(), name: '', issuer: '', date: '', credentialId: '', url: '', description: '' }),
+    createEntry: () => ({
+      id: createId(),
+      name: '',
+      issuer: '',
+      date: '',
+      credentialId: '',
+      url: '',
+      description: '',
+    }),
     fields: () => [
-      { key: 'name', label: 'Certification', kind: 'text', span: 2, placeholder: 'AWS Certified Cloud Practitioner' },
+      {
+        key: 'name',
+        label: 'Certification',
+        kind: 'text',
+        span: 2,
+        placeholder: 'AWS Certified Cloud Practitioner',
+      },
       { key: 'issuer', label: 'Issuer', kind: 'text', placeholder: 'Amazon Web Services' },
       { key: 'date', label: 'Issued', kind: 'date' },
       { key: 'credentialId', label: 'Credential ID', kind: 'text' },
@@ -388,7 +458,15 @@ export const SECTION_DEFINITIONS: { [T in SectionType]: SectionDefinition<T> } =
     icon: 'book-open',
     entryNoun: 'publication',
     singleEntry: false,
-    createEntry: () => ({ id: createId(), title: '', publisher: '', authors: '', date: '', url: '', description: '' }),
+    createEntry: () => ({
+      id: createId(),
+      title: '',
+      publisher: '',
+      authors: '',
+      date: '',
+      url: '',
+      description: '',
+    }),
     fields: () => [
       { key: 'title', label: 'Title', kind: 'text', span: 2 },
       { key: 'publisher', label: 'Publisher / venue', kind: 'text' },

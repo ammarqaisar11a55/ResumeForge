@@ -22,7 +22,8 @@ interface ResumeRow {
   updated_at: Date | string;
 }
 
-const iso = (value: Date | string) => (value instanceof Date ? value.toISOString() : new Date(value).toISOString());
+const iso = (value: Date | string) =>
+  value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 
 function toSummary(row: ResumeRow): ResumeSummary {
   return {
@@ -77,7 +78,10 @@ export class ResumeRepository {
    * user. A version snapshot is recorded when the last one is older than the
    * auto-version interval, giving a restorable history without a row per keystroke.
    */
-  async upsert(userId: string, resume: Resume): Promise<{ created: boolean; version: number | null } | null> {
+  async upsert(
+    userId: string,
+    resume: Resume,
+  ): Promise<{ created: boolean; version: number | null } | null> {
     return this.db.transaction(async (tx) => {
       const { rows } = await tx.query<{ inserted: boolean; current_version: number }>(
         `INSERT INTO resumes (id, user_id, title, template_id, schema_version, data, page_count, created_at, updated_at)
@@ -130,11 +134,19 @@ export class ResumeRepository {
 
   async listVersions(userId: string, id: string): Promise<VersionSummary[] | null> {
     if (!(await this.owns(userId, id))) return null;
-    const { rows } = await this.db.query<{ version: number; label: string | null; created_at: Date | string }>(
+    const { rows } = await this.db.query<{
+      version: number;
+      label: string | null;
+      created_at: Date | string;
+    }>(
       'SELECT version, label, created_at FROM resume_versions WHERE resume_id = $1 ORDER BY version DESC',
       [id],
     );
-    return rows.map((r) => ({ version: Number(r.version), label: r.label, createdAt: iso(r.created_at) }));
+    return rows.map((r) => ({
+      version: Number(r.version),
+      label: r.label,
+      createdAt: iso(r.created_at),
+    }));
   }
 
   async getVersion(userId: string, id: string, version: number): Promise<Resume | null> {
@@ -147,7 +159,11 @@ export class ResumeRepository {
   }
 
   /** Explicit, labelled snapshot ("Sent to Acme"). */
-  async createVersion(userId: string, id: string, label: string | null): Promise<VersionSummary | null> {
+  async createVersion(
+    userId: string,
+    id: string,
+    label: string | null,
+  ): Promise<VersionSummary | null> {
     if (!(await this.owns(userId, id))) return null;
     return this.db.transaction(async (tx) => {
       const version = await this.snapshot(tx, id, label);
@@ -170,10 +186,10 @@ export class ResumeRepository {
   }
 
   private async owns(userId: string, id: string): Promise<boolean> {
-    const { rows } = await this.db.query('SELECT 1 FROM resumes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL', [
-      id,
-      userId,
-    ]);
+    const { rows } = await this.db.query(
+      'SELECT 1 FROM resumes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
+      [id, userId],
+    );
     return rows.length > 0;
   }
 }

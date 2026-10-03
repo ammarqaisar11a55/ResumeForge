@@ -102,7 +102,9 @@ export function contrastRatio(a: string, b: string): number {
   const lum = (hex: string) => {
     const n = hex.replace('#', '');
     const channels = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255);
-    const [r, g, bl] = channels.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    const [r, g, bl] = channels.map((c) =>
+      c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4,
+    );
     return 0.2126 * r! + 0.7152 * g! + 0.0722 * bl!;
   };
   const la = lum(a);

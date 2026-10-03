@@ -17,7 +17,11 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Logo({ to = '/', className }: { to?: string; className?: string }) {
   return (
-    <Link to={to} className={cn('inline-flex items-center gap-2 rounded-md', className)} aria-label="ResumeForge home">
+    <Link
+      to={to}
+      className={cn('inline-flex items-center gap-2 rounded-md', className)}
+      aria-label="ResumeForge home"
+    >
       <LogoMark />
       <span className="type-title text-[17px] text-ink">ResumeForge</span>
     </Link>

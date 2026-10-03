@@ -20,7 +20,17 @@ export interface SliderFieldProps {
  * Slider with a linked numeric input. Values are clamped into [min, max] so
  * the document can never be pushed into an unreadable state.
  */
-export function SliderField({ label, value, min, max, step, unit, onChange, precision, className }: SliderFieldProps) {
+export function SliderField({
+  label,
+  value,
+  min,
+  max,
+  step,
+  unit,
+  onChange,
+  precision,
+  className,
+}: SliderFieldProps) {
   const id = useId();
   const digits = precision ?? (step < 0.01 ? 3 : step < 1 ? 2 : 0);
   const [draft, setDraft] = useState(value.toFixed(digits));

@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { createDemoResume, createResume, type Resume } from '@resumeforge/core';
 import { ApiError, NetworkError, type ApiClient } from '../services/api/apiClient';
 import { ResumeService } from '../services/resumeService';
-import { CorruptResumeError, LocalResumeStore, StorageFullError } from '../services/storage/localResumeStore';
+import {
+  CorruptResumeError,
+  LocalResumeStore,
+  StorageFullError,
+} from '../services/storage/localResumeStore';
 
 describe('LocalResumeStore', () => {
   it('saves, lists, loads and removes resumes', () => {
@@ -11,7 +15,12 @@ describe('LocalResumeStore', () => {
     const b = createResume({ title: 'Second' });
     store.save(a);
     store.save(b);
-    expect(store.list().map((s) => s.title).sort()).toEqual(['Second', 'Software Engineering Internship']);
+    expect(
+      store
+        .list()
+        .map((s) => s.title)
+        .sort(),
+    ).toEqual(['Second', 'Software Engineering Internship']);
     expect(store.get(a.id)?.resume).toEqual(a);
     store.remove(a.id);
     expect(store.get(a.id)).toBeNull();
@@ -30,7 +39,9 @@ describe('LocalResumeStore', () => {
     const store = new LocalResumeStore(localStorage);
     localStorage.setItem('resumeforge:v1:resume:broken', '{"id": "broken", "sections": [');
     expect(() => store.get('broken')).toThrow(CorruptResumeError);
-    const backups = Object.keys(localStorage).filter((k) => k.startsWith('resumeforge:v1:backup:broken:'));
+    const backups = Object.keys(localStorage).filter((k) =>
+      k.startsWith('resumeforge:v1:backup:broken:'),
+    );
     expect(backups).toHaveLength(1);
   });
 
@@ -125,7 +136,9 @@ describe('ResumeService sync', () => {
   });
 
   it('treats gateway errors as the server being unreachable', async () => {
-    const { api } = fakeApi({ saveResume: vi.fn(async () => Promise.reject(new ApiError('Bad gateway', 502))) });
+    const { api } = fakeApi({
+      saveResume: vi.fn(async () => Promise.reject(new ApiError('Bad gateway', 502))),
+    });
     const service = new ResumeService(new LocalResumeStore(localStorage), api, localStorage);
     service.setBackend({ persistence: true, pdf: false });
     service.save(createResume());

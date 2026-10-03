@@ -17,7 +17,18 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 const SIZES = { xs: 'size-6', sm: 'size-7', md: 'size-9' };
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  { label, shortcut, size = 'sm', active, className, children, tooltipSide, noTooltip, type = 'button', ...props },
+  {
+    label,
+    shortcut,
+    size = 'sm',
+    active,
+    className,
+    children,
+    tooltipSide,
+    noTooltip,
+    type = 'button',
+    ...props
+  },
   ref,
 ) {
   const button = (

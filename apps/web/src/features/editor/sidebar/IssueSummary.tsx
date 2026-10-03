@@ -62,7 +62,11 @@ export function IssueSummary() {
                       const sidebar = useSidebarStore.getState();
                       const editor = useEditorStore.getState();
                       if (issue.sectionId) {
-                        editor.select({ kind: 'section', sectionId: issue.sectionId, entryId: issue.targetId });
+                        editor.select({
+                          kind: 'section',
+                          sectionId: issue.sectionId,
+                          entryId: issue.targetId,
+                        });
                         sidebar.reveal(issue.sectionId, issue.targetId);
                       } else {
                         editor.select({ kind: 'header' });
@@ -78,7 +82,9 @@ export function IssueSummary() {
                     <span className="flex min-w-0 flex-col">
                       <span className="text-[13px] text-ink">{issue.message}</span>
                       <span className={cn('truncate text-xs text-muted')}>
-                        {issue.targetId === PERSONAL_TARGET ? 'Personal information' : issue.location}
+                        {issue.targetId === PERSONAL_TARGET
+                          ? 'Personal information'
+                          : issue.location}
                       </span>
                     </span>
                   </button>

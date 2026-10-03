@@ -15,7 +15,13 @@ import { Menu, MenuContent, MenuItem, MenuTrigger } from '../../../components/ui
 import { Select } from '../../../components/ui/Select';
 import { TextInput } from '../../../components/ui/TextInput';
 import { cn } from '../../../lib/cn';
-import { addContact, moveContact, removeContact, updateContact, updatePersonal } from '../../../state/editorActions';
+import {
+  addContact,
+  moveContact,
+  removeContact,
+  updateContact,
+  updatePersonal,
+} from '../../../state/editorActions';
 import { useEditorStore } from '../../../state/editorStore';
 import { DragHandle, SortableList } from '../fields/SortableList';
 import { useIssues } from '../issuesContext';
@@ -33,7 +39,10 @@ export function PersonalInfoCard() {
   if (!personal) return null;
 
   return (
-    <div className={cn('border-b border-line', selected && 'shadow-[inset_2px_0_0_var(--ui-accent)]')} data-editor-section="__header">
+    <div
+      className={cn('border-b border-line', selected && 'shadow-[inset_2px_0_0_var(--ui-accent)]')}
+      data-editor-section="__header"
+    >
       <div className="flex items-center gap-2 px-3 py-2.5">
         <span className="flex size-6 items-center justify-center text-muted" aria-hidden>
           <UserRound className="size-4" />
@@ -48,10 +57,17 @@ export function PersonalInfoCard() {
           }}
         >
           <span className="text-sm font-semibold text-ink">Personal information</span>
-          <span className="w-full truncate text-xs text-muted">{personal.fullName || 'Name, title and contact details'}</span>
+          <span className="w-full truncate text-xs text-muted">
+            {personal.fullName || 'Name, title and contact details'}
+          </span>
         </button>
-        <IconButton label={open ? 'Collapse personal information' : 'Expand personal information'} onClick={() => setOpen(!open)}>
-          <ChevronDown className={cn('size-4 transition-transform duration-200', open && 'rotate-180')} />
+        <IconButton
+          label={open ? 'Collapse personal information' : 'Expand personal information'}
+          onClick={() => setOpen(!open)}
+        >
+          <ChevronDown
+            className={cn('size-4 transition-transform duration-200', open && 'rotate-180')}
+          />
         </IconButton>
       </div>
 
@@ -70,7 +86,10 @@ export function PersonalInfoCard() {
               />
             )}
           </Field>
-          <Field label="Professional title" hint="Shown under your name, e.g. role and school or company.">
+          <Field
+            label="Professional title"
+            hint="Shown under your name, e.g. role and school or company."
+          >
             {({ id, describedBy }) => (
               <TextInput
                 id={id}
@@ -112,7 +131,11 @@ export function PersonalInfoCard() {
               itemName="contact detail"
             >
               {(id, index, { handle, isDragging }) => (
-                <ContactRow contact={personal.contacts[index]!} handle={handle} dragging={isDragging} />
+                <ContactRow
+                  contact={personal.contacts[index]!}
+                  handle={handle}
+                  dragging={isDragging}
+                />
               )}
             </SortableList>
           </div>
@@ -168,7 +191,11 @@ function ContactRow({
             aria-label={`${label} display text`}
             className="h-8 text-[13px]"
             value={contact.label}
-            placeholder={contact.value ? `Shown as ${contactText({ ...contact, label: '' })}` : 'Display text (optional)'}
+            placeholder={
+              contact.value
+                ? `Shown as ${contactText({ ...contact, label: '' })}`
+                : 'Display text (optional)'
+            }
             onChange={(e) => updateContact(contact.id, { label: e.target.value })}
           />
         ) : (

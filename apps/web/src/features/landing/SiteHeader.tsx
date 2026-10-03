@@ -10,7 +10,10 @@ export function SiteHeader() {
     <header className="relative z-20">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Logo />
-        <nav aria-label="Main" className="hidden flex-1 items-center gap-6 text-sm text-muted md:flex">
+        <nav
+          aria-label="Main"
+          className="hidden flex-1 items-center gap-6 text-sm text-muted md:flex"
+        >
           <a href="/#features" className="hover:text-ink">
             Features
           </a>
@@ -67,15 +70,20 @@ export function SiteFooter() {
           <a href="/#features" className="text-muted hover:text-ink">
             Features
           </a>
-          <a href={REPOSITORY_URL} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-ink">
+          <a
+            href={REPOSITORY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted hover:text-ink"
+          >
             Source code
           </a>
         </nav>
         <div className="flex flex-col gap-2 text-sm">
           <span className="font-semibold text-ink">Your data</span>
           <p className="leading-relaxed text-muted">
-            Resumes are saved in your browser, and on your own ResumeForge server when one is connected. Nothing is sent
-            anywhere else.
+            Resumes are saved in your browser, and on your own ResumeForge server when one is
+            connected. Nothing is sent anywhere else.
           </p>
         </div>
       </div>
@@ -83,7 +91,12 @@ export function SiteFooter() {
         <span>© {new Date().getFullYear()} ResumeForge</span>
         <span>
           Built by{' '}
-          <a href={DEVELOPER_URL} target="_blank" rel="noopener noreferrer" className="font-medium text-muted underline-offset-2 hover:text-ink hover:underline">
+          <a
+            href={DEVELOPER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-muted underline-offset-2 hover:text-ink hover:underline"
+          >
             {DEVELOPER_NAME}
           </a>
         </span>

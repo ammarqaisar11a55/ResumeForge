@@ -35,9 +35,17 @@ export function NewResumeDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} title="Create a resume" description="You can change the template and every setting later.">
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Create a resume"
+      description="You can change the template and every setting later."
+    >
       <form onSubmit={submit} className="flex flex-col gap-4">
-        <Field label="Resume name" hint="Only you see this, e.g. the role or company you are applying to.">
+        <Field
+          label="Resume name"
+          hint="Only you see this, e.g. the role or company you are applying to."
+        >
           {({ id, describedBy }) => (
             <TextInput
               id={id}
@@ -69,7 +77,9 @@ export function NewResumeDialog({
                 key={t.id}
                 className={cn(
                   'flex cursor-pointer flex-col gap-0.5 rounded-md border p-2.5 text-left transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus',
-                  template === t.id ? 'border-accent bg-accent-soft/50' : 'border-line hover:border-line-strong',
+                  template === t.id
+                    ? 'border-accent bg-accent-soft/50'
+                    : 'border-line hover:border-line-strong',
                 )}
               >
                 <input
@@ -80,7 +90,9 @@ export function NewResumeDialog({
                   onChange={() => setTemplate(t.id)}
                   className="sr-only"
                 />
-                <span className="text-[13px] font-semibold text-ink">{t.name.replace('Forge ', '')}</span>
+                <span className="text-[13px] font-semibold text-ink">
+                  {t.name.replace('Forge ', '')}
+                </span>
                 <span className="text-[11px] leading-snug text-muted">{t.highlights[0]}</span>
               </label>
             ))}

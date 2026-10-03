@@ -18,7 +18,11 @@ interface LibraryState {
   summaries: ResumeSummary[];
   loaded: boolean;
   refresh: () => void;
-  create: (options: { title?: string; template?: TemplateId; startFrom: 'blank' | 'demo' }) => Resume;
+  create: (options: {
+    title?: string;
+    template?: TemplateId;
+    startFrom: 'blank' | 'demo';
+  }) => Resume;
   duplicate: (id: string) => Promise<Resume | null>;
   rename: (id: string, title: string) => Promise<void>;
   remove: (id: string) => Promise<Resume | null>;

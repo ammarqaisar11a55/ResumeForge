@@ -56,7 +56,13 @@ export function MenuItem({
         destructive ? 'text-danger' : 'text-ink',
       )}
     >
-      {icon && <span className={cn('flex size-4 items-center justify-center', !destructive && 'text-muted')}>{icon}</span>}
+      {icon && (
+        <span
+          className={cn('flex size-4 items-center justify-center', !destructive && 'text-muted')}
+        >
+          {icon}
+        </span>
+      )}
       <span className="flex-1">{children}</span>
       {shortcut && <span className="text-xs text-faint">{shortcut}</span>}
     </Dropdown.Item>
@@ -68,5 +74,9 @@ export function MenuSeparator() {
 }
 
 export function MenuLabel({ children }: { children: ReactNode }) {
-  return <Dropdown.Label className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted">{children}</Dropdown.Label>;
+  return (
+    <Dropdown.Label className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted">
+      {children}
+    </Dropdown.Label>
+  );
 }

@@ -10,7 +10,8 @@ const AUTOSAVE_DELAY_MS = 600;
  * Returns false if the write failed, e.g. because storage is full.
  */
 export function flushSave(): boolean {
-  const { resume, revision, savedRevision, markSaving, markSaved, markSaveError } = useEditorStore.getState();
+  const { resume, revision, savedRevision, markSaving, markSaved, markSaveError } =
+    useEditorStore.getState();
   if (!resume || revision === savedRevision) return true;
   markSaving();
   try {

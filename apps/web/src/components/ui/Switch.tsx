@@ -11,11 +11,21 @@ export interface SwitchProps {
   hideLabel?: boolean;
 }
 
-export function Switch({ checked, onCheckedChange, label, description, className, hideLabel }: SwitchProps) {
+export function Switch({
+  checked,
+  onCheckedChange,
+  label,
+  description,
+  className,
+  hideLabel,
+}: SwitchProps) {
   const id = useId();
   return (
     <div className={cn('flex items-center justify-between gap-3', className)}>
-      <label htmlFor={id} className={cn('flex min-w-0 flex-col text-[13px]', hideLabel && 'sr-only')}>
+      <label
+        htmlFor={id}
+        className={cn('flex min-w-0 flex-col text-[13px]', hideLabel && 'sr-only')}
+      >
         <span className="font-medium text-ink">{label}</span>
         {description && <span className="text-xs text-muted">{description}</span>}
       </label>

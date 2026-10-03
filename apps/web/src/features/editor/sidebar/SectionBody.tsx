@@ -1,5 +1,11 @@
 import { BarChart3, Plus, Type } from 'lucide-react';
-import { getSectionDefinition, issuesFor, type AchievementEntry, type AnyEntry, type Section } from '@resumeforge/core';
+import {
+  getSectionDefinition,
+  issuesFor,
+  type AchievementEntry,
+  type AnyEntry,
+  type Section,
+} from '@resumeforge/core';
 import { Button } from '../../../components/ui/Button';
 import { Field } from '../../../components/ui/Field';
 import { Segmented } from '../../../components/ui/Segmented';
@@ -40,7 +46,8 @@ export function SectionBody({ section }: { section: Section }) {
         <>
           {entries.length === 0 && (
             <p className="rounded-md border border-dashed border-line-strong px-3 py-3 text-xs leading-relaxed text-muted">
-              Nothing here yet. Add your first {def.entryNoun} below. Empty sections are left out of the resume.
+              Nothing here yet. Add your first {def.entryNoun} below. Empty sections are left out of
+              the resume.
             </p>
           )}
           <SortableList
@@ -80,15 +87,28 @@ export function SectionBody({ section }: { section: Section }) {
           </SortableList>
           {section.type === 'achievements' ? (
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" icon={<BarChart3 className="size-4" />} onClick={() => add({ kind: 'stat' })}>
+              <Button
+                size="sm"
+                icon={<BarChart3 className="size-4" />}
+                onClick={() => add({ kind: 'stat' })}
+              >
                 Add figure
               </Button>
-              <Button size="sm" icon={<Type className="size-4" />} onClick={() => add({ kind: 'text' })}>
+              <Button
+                size="sm"
+                icon={<Type className="size-4" />}
+                onClick={() => add({ kind: 'text' })}
+              >
                 Add text
               </Button>
             </div>
           ) : (
-            <Button size="sm" className="self-start" icon={<Plus className="size-4" />} onClick={() => add()}>
+            <Button
+              size="sm"
+              className="self-start"
+              icon={<Plus className="size-4" />}
+              onClick={() => add()}
+            >
               Add {def.entryNoun}
             </Button>
           )}

@@ -28,7 +28,9 @@ export function MobileTabs() {
             tab === id ? 'text-ink' : 'text-muted',
           )}
         >
-          {tab === id && <span className="absolute top-0 h-0.5 w-10 rounded-full bg-accent" aria-hidden />}
+          {tab === id && (
+            <span className="absolute top-0 h-0.5 w-10 rounded-full bg-accent" aria-hidden />
+          )}
           <Icon className="size-5" aria-hidden />
           {label}
         </button>

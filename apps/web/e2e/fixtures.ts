@@ -6,7 +6,8 @@ export async function seedResumes(page: Page, resumes: Resume[]) {
   await page.addInitScript((docs: Resume[]) => {
     if (sessionStorage.getItem('seeded')) return;
     sessionStorage.setItem('seeded', '1');
-    for (const doc of docs) localStorage.setItem(`resumeforge:v1:resume:${doc.id}`, JSON.stringify(doc));
+    for (const doc of docs)
+      localStorage.setItem(`resumeforge:v1:resume:${doc.id}`, JSON.stringify(doc));
     localStorage.removeItem('resumeforge:v1:index');
   }, resumes);
 }

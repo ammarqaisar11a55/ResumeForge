@@ -8,7 +8,8 @@ export function entryHasContent(entry: AnyEntry): boolean {
     if (IGNORED.has(key)) return false;
     if (typeof value === 'string') return value.trim() !== '';
     if (Array.isArray(value)) return value.length > 0;
-    if (value && typeof value === 'object') return Object.values(value).some((v) => typeof v === 'string' && v.trim() !== '');
+    if (value && typeof value === 'object')
+      return Object.values(value).some((v) => typeof v === 'string' && v.trim() !== '');
     return false;
   });
 }

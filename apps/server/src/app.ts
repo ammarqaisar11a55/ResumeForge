@@ -52,7 +52,11 @@ export function createApp({ config, db, pdf }: AppDependencies): Express {
     api.use('/resumes', resumesRouter(new ResumeRepository(db)));
   } else {
     api.use('/resumes', () => {
-      throw new HttpError(503, 'persistence_unavailable', 'This server has no database configured.');
+      throw new HttpError(
+        503,
+        'persistence_unavailable',
+        'This server has no database configured.',
+      );
     });
   }
   api.use('/export', exportsRouter(pdf, db ? new ExportRepository(db) : null));

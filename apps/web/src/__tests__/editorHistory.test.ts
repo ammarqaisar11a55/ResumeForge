@@ -99,7 +99,8 @@ describe('section and entry operations', () => {
     const count = projects.entries.length;
     const firstId = projects.entries[0]!.id;
     const copyId = duplicateEntry(projects.id, firstId)!;
-    const after = () => resume().sections.find((s) => s.id === projects.id) as SectionOf<'projects'>;
+    const after = () =>
+      resume().sections.find((s) => s.id === projects.id) as SectionOf<'projects'>;
     expect(after().entries).toHaveLength(count + 1);
     expect(after().entries[1]!.id).toBe(copyId);
     expect(after().entries[1]!.name).toBe(after().entries[0]!.name);
@@ -118,8 +119,11 @@ describe('section and entry operations', () => {
   it('adds and reorders bullet points with no limit', () => {
     const projects = resume().sections.find((s) => s.type === 'projects')!;
     const entryId = projects.entries[0]!.id;
-    for (let i = 0; i < 25; i++) addBullet(projects.id, entryId, 'bullets', undefined, `Bullet ${i}`);
-    const bullets = () => (resume().sections.find((s) => s.id === projects.id) as SectionOf<'projects'>).entries[0]!.bullets;
+    for (let i = 0; i < 25; i++)
+      addBullet(projects.id, entryId, 'bullets', undefined, `Bullet ${i}`);
+    const bullets = () =>
+      (resume().sections.find((s) => s.id === projects.id) as SectionOf<'projects'>).entries[0]!
+        .bullets;
     expect(bullets()).toHaveLength(27);
     const last = bullets().at(-1)!.id;
     moveBullet(projects.id, entryId, 'bullets', 26, 0);
@@ -168,7 +172,11 @@ describe('a blank resume', () => {
     const id = addEntry(education.id)!;
     updateEntry(education.id, id, 'degree', 'BSc Computer Science');
     updateEntry(education.id, id, 'dates', { start: '2022', end: '', current: true });
-    const entry = (resume().sections.find((s) => s.id === education.id) as SectionOf<'education'>).entries[0]!;
-    expect(entry).toMatchObject({ degree: 'BSc Computer Science', dates: { start: '2022', current: true } });
+    const entry = (resume().sections.find((s) => s.id === education.id) as SectionOf<'education'>)
+      .entries[0]!;
+    expect(entry).toMatchObject({
+      degree: 'BSc Computer Science',
+      dates: { start: '2022', current: true },
+    });
   });
 });

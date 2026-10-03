@@ -48,9 +48,20 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
   let app: ReturnType<typeof createApp>;
 
   beforeAll(async () => {
-    db = await openDatabase({ databaseUrl: null, dataDir: 'memory', defaultUserId: DEFAULT_USER_ID });
-    renderer = new PdfRenderer({ executablePath: chrome!, noSandbox: process.env.CHROME_NO_SANDBOX === 'true' });
-    app = createApp({ config: { corsOrigins: [], defaultUserId: DEFAULT_USER_ID, webDist: null }, db, pdf: renderer });
+    db = await openDatabase({
+      databaseUrl: null,
+      dataDir: 'memory',
+      defaultUserId: DEFAULT_USER_ID,
+    });
+    renderer = new PdfRenderer({
+      executablePath: chrome!,
+      noSandbox: process.env.CHROME_NO_SANDBOX === 'true',
+    });
+    app = createApp({
+      config: { corsOrigins: [], defaultUserId: DEFAULT_USER_ID, webDist: null },
+      db,
+      pdf: renderer,
+    });
   });
 
   afterAll(async () => {
@@ -66,7 +77,13 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
     ]);
     const res = await request(app)
       .post('/api/export/pdf')
-      .send({ title: 'Alex Morgan Resume', html, page: { widthMm: 210, heightMm: 297 }, fonts: ['archivo'], pageCount: 3 })
+      .send({
+        title: 'Alex Morgan Resume',
+        html,
+        page: { widthMm: 210, heightMm: 297 },
+        fonts: ['archivo'],
+        pageCount: 3,
+      })
       .buffer(true)
       .parse((response, done) => {
         const chunks: Buffer[] = [];
@@ -81,12 +98,17 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
     expect(pdfPageCount(pdf)).toBe(3);
     expect(pdf.toString('latin1')).toContain('https://github.com/alexmorgan-dev');
     // A4 is 595.3 x 841.9 points; Chrome snaps to device pixels.
-    const [, width, height] = pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
+    const [, width, height] =
+      pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
     expect(Number(width)).toBeCloseTo(595.3, 0);
     expect(Number(height)).toBeCloseTo(841.9, 0);
 
     const history = await request(app).get('/api/export').expect(200);
-    expect(history.body.exports[0]).toMatchObject({ format: 'pdf', status: 'succeeded', pageCount: 3 });
+    expect(history.body.exports[0]).toMatchObject({
+      format: 'pdf',
+      status: 'succeeded',
+      pageCount: 3,
+    });
   });
 
   it('rejects documents that are not ResumeForge output', async () => {
@@ -97,11 +119,21 @@ describe.skipIf(!chrome)('pdf export with Chrome', () => {
   });
 
   it('blocks network access from the document', async () => {
-    const html = documentHtml(['<img src="http://127.0.0.1:9/tracker.png"><p>Offline</p>'], [215.9, 279.4]);
-    const pdf = await renderer.render({ html, title: 'x', widthMm: 215.9, heightMm: 279.4, fonts: [] });
+    const html = documentHtml(
+      ['<img src="http://127.0.0.1:9/tracker.png"><p>Offline</p>'],
+      [215.9, 279.4],
+    );
+    const pdf = await renderer.render({
+      html,
+      title: 'x',
+      widthMm: 215.9,
+      heightMm: 279.4,
+      fonts: [],
+    });
     expect(pdfPageCount(pdf)).toBe(1);
     // US Letter: 612 x 792 points.
-    const [, width, height] = pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
+    const [, width, height] =
+      pdf.toString('latin1').match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/) ?? [];
     expect(Number(width)).toBeCloseTo(612, 0);
     expect(Number(height)).toBeCloseTo(792, 0);
   });

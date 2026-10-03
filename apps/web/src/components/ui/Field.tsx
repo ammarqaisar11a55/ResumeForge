@@ -15,7 +15,15 @@ export interface FieldProps {
 }
 
 /** Label, control, hint and validation message wired together for assistive tech. */
-export function Field({ label, hint, issues = [], className, children, labelAside, hideLabel }: FieldProps) {
+export function Field({
+  label,
+  hint,
+  issues = [],
+  className,
+  children,
+  labelAside,
+  hideLabel,
+}: FieldProps) {
   const id = useId();
   const messageId = `${id}-message`;
   const issue = issues.find((i) => i.severity === 'error') ?? issues[0];
@@ -28,7 +36,11 @@ export function Field({ label, hint, issues = [], className, children, labelAsid
         </label>
         {labelAside}
       </div>
-      {children({ id, describedBy: hasMessage ? messageId : undefined, invalid: issue?.severity === 'error' })}
+      {children({
+        id,
+        describedBy: hasMessage ? messageId : undefined,
+        invalid: issue?.severity === 'error',
+      })}
       {issue ? (
         <p
           id={messageId}

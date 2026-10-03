@@ -59,7 +59,10 @@ export function TagsField({ label, value, onChange, placeholder }: TagsFieldProp
       >
         <ul className="contents" aria-label={`${label} list`}>
           {value.map((tag, i) => (
-            <li key={`${tag}-${i}`} className="flex h-6 items-center gap-0.5 rounded bg-raised pr-0.5 pl-2 text-[13px] text-ink">
+            <li
+              key={`${tag}-${i}`}
+              className="flex h-6 items-center gap-0.5 rounded bg-raised pr-0.5 pl-2 text-[13px] text-ink"
+            >
               {tag}
               <button
                 type="button"

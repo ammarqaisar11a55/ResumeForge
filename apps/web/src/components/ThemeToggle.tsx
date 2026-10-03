@@ -19,7 +19,11 @@ export function ThemeToggle({ size = 'md' }: { size?: 'sm' | 'md' }) {
   const toggleTheme = useUiStore((s) => s.toggleTheme);
   const dark = useIsDark();
   return (
-    <IconButton label={dark ? 'Switch to light theme' : 'Switch to dark theme'} size={size} onClick={toggleTheme}>
+    <IconButton
+      label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      size={size}
+      onClick={toggleTheme}
+    >
       {dark ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </IconButton>
   );

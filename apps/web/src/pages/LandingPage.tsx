@@ -68,7 +68,11 @@ function HeroCopy({ children }: { children: React.ReactNode }) {
 function HeroDocument() {
   const [template, setTemplate] = useState<TemplateId>('classic');
   const resumes = useMemo(
-    () => Object.fromEntries(TEMPLATE_LIST.map((t) => [t.id, createDemoResume(t.id)])) as Record<TemplateId, ReturnType<typeof createDemoResume>>,
+    () =>
+      Object.fromEntries(TEMPLATE_LIST.map((t) => [t.id, createDemoResume(t.id)])) as Record<
+        TemplateId,
+        ReturnType<typeof createDemoResume>
+      >,
     [],
   );
   const wide = useMediaQuery('(min-width: 640px)');
@@ -94,7 +98,10 @@ function HeroDocument() {
         <div className="relative animate-rise">
           <motion.div
             className="shadow-page"
-            style={{ height: width * (297 / 210), ...(reduce ? {} : { y: frontY, rotate: frontRotate }) }}
+            style={{
+              height: width * (297 / 210),
+              ...(reduce ? {} : { y: frontY, rotate: frontRotate }),
+            }}
           >
             <ResumeThumbnail resume={resumes[template]} width={width} />
           </motion.div>
@@ -114,7 +121,10 @@ function HeroDocument() {
 /** A small diagram of the page-break rule, drawn with real type. */
 function BreakSpecimen() {
   return (
-    <figure className="rounded-[10px] border border-line bg-canvas p-6" aria-labelledby="break-caption">
+    <figure
+      className="rounded-[10px] border border-line bg-canvas p-6"
+      aria-labelledby="break-caption"
+    >
       <div className="mx-auto flex max-w-sm flex-col gap-3">
         <div className="bg-white px-5 pt-4 pb-3 text-[#1a1a1a] shadow-page">
           <div className="mb-2 h-1.5 w-3/4 rounded-sm bg-[#d4d4d4]" />
@@ -159,10 +169,13 @@ export function LandingPage() {
         <SiteHeader />
         <section className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-10 pb-20 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-16 lg:pb-28">
           <HeroCopy>
-            <h1 className="type-display text-[clamp(2.6rem,7vw,4.6rem)] text-ink">Build a resume worth remembering.</h1>
+            <h1 className="type-display text-[clamp(2.6rem,7vw,4.6rem)] text-ink">
+              Build a resume worth remembering.
+            </h1>
             <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-muted">
-              ResumeForge is a resume editor that works like a document tool. Fill in structured sections and watch real
-              pages lay themselves out, page breaks and all. What you see is the PDF you send.
+              ResumeForge is a resume editor that works like a document tool. Fill in structured
+              sections and watch real pages lay themselves out, page breaks and all. What you see is
+              the PDF you send.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -179,7 +192,9 @@ export function LandingPage() {
                 View templates
               </Link>
             </div>
-            <p className="mt-5 text-sm text-faint">Free to use. No account needed: your resumes stay in your browser.</p>
+            <p className="mt-5 text-sm text-faint">
+              Free to use. No account needed: your resumes stay in your browser.
+            </p>
           </HeroCopy>
           <HeroDocument />
         </section>
@@ -219,8 +234,12 @@ export function LandingPage() {
 
       <section id="templates" className="mx-auto max-w-6xl scroll-mt-8 px-4 py-24 sm:px-6">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="type-title max-w-lg text-[2rem] leading-tight text-ink">Three templates, one set of content</h2>
-          <p className="max-w-sm text-[15px] text-muted">Switch at any time. Your content never changes, only how it is set.</p>
+          <h2 className="type-title max-w-lg text-[2rem] leading-tight text-ink">
+            Three templates, one set of content
+          </h2>
+          <p className="max-w-sm text-[15px] text-muted">
+            Switch at any time. Your content never changes, only how it is set.
+          </p>
         </Reveal>
         <div className="mt-12">
           <TemplateShowcase width={280} />
@@ -232,8 +251,9 @@ export function LandingPage() {
           <div>
             <h2 className="type-title text-2xl text-ink">Open source, built in the open</h2>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-muted">
-              ResumeForge is a React and TypeScript monorepo with a shared rendering engine, an Express and PostgreSQL API
-              and headless Chrome PDF export. Read the code, file an issue or run it yourself.
+              ResumeForge is a React and TypeScript monorepo with a shared rendering engine, an
+              Express and PostgreSQL API and headless Chrome PDF export. Read the code, file an
+              issue or run it yourself.
             </p>
           </div>
           <div className="flex flex-col gap-3 md:items-end md:justify-center">
@@ -253,7 +273,10 @@ export function LandingPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
             >
-              Designed and built by <span className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4">{DEVELOPER_NAME}</span>
+              Designed and built by{' '}
+              <span className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4">
+                {DEVELOPER_NAME}
+              </span>
               <ArrowUpRight className="size-3.5" aria-hidden />
             </a>
           </div>
@@ -262,7 +285,10 @@ export function LandingPage() {
 
       <section className="bg-ink text-surface">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <WordReveal text="Your next resume starts on page one." className="type-display text-[clamp(2rem,4vw,3rem)]" />
+          <WordReveal
+            text="Your next resume starts on page one."
+            className="type-display text-[clamp(2rem,4vw,3rem)]"
+          />
           <Link
             to="/app?new"
             className="inline-flex h-12 shrink-0 items-center gap-2 rounded-md bg-accent px-6 text-[15px] font-semibold text-on-accent hover:brightness-105"

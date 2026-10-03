@@ -20,7 +20,10 @@ export function ColorField({ label, value, onChange, minContrast }: ColorFieldPr
     setSynced(value);
     setDraft(value);
   }
-  const lowContrast = minContrast !== undefined && HEX_RE.test(value) && contrastRatio(value, '#ffffff') < minContrast;
+  const lowContrast =
+    minContrast !== undefined &&
+    HEX_RE.test(value) &&
+    contrastRatio(value, '#ffffff') < minContrast;
 
   return (
     <div className="flex flex-col gap-1">
@@ -47,7 +50,11 @@ export function ColorField({ label, value, onChange, minContrast }: ColorFieldPr
           className="tabular h-7 w-20 rounded-md border border-line-strong bg-surface px-1.5 text-[13px] uppercase focus:border-focus focus:outline-none"
         />
       </div>
-      {lowContrast && <p className="text-xs text-warning">Low contrast on white paper. Text may be hard to read when printed.</p>}
+      {lowContrast && (
+        <p className="text-xs text-warning">
+          Low contrast on white paper. Text may be hard to read when printed.
+        </p>
+      )}
     </div>
   );
 }

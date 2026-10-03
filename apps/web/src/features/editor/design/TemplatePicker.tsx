@@ -22,10 +22,17 @@ export function TemplatePicker({ value }: { value: TemplateId }) {
             onClick={() => !selected && setTemplate(template.id)}
             className={cn(
               'flex items-stretch gap-3 rounded-md border p-2 text-left transition-colors duration-150',
-              selected ? 'border-accent bg-accent-soft/50' : 'border-line hover:border-line-strong hover:bg-raised',
+              selected
+                ? 'border-accent bg-accent-soft/50'
+                : 'border-line hover:border-line-strong hover:bg-raised',
             )}
           >
-            <TemplateSpecimen id={template.id} accent={d.colors.accent} divider={d.colors.divider} font={fontStack(d.typography.headingFont)} />
+            <TemplateSpecimen
+              id={template.id}
+              accent={d.colors.accent}
+              divider={d.colors.divider}
+              font={fontStack(d.typography.headingFont)}
+            />
             <span className="flex min-w-0 flex-1 flex-col justify-center">
               <span className="flex items-center gap-1.5 text-[13px] font-semibold text-ink">
                 {template.name}
@@ -40,7 +47,17 @@ export function TemplatePicker({ value }: { value: TemplateId }) {
   );
 }
 
-function TemplateSpecimen({ id, accent, divider, font }: { id: TemplateId; accent: string; divider: string; font: string }) {
+function TemplateSpecimen({
+  id,
+  accent,
+  divider,
+  font,
+}: {
+  id: TemplateId;
+  accent: string;
+  divider: string;
+  font: string;
+}) {
   return (
     <span
       aria-hidden
@@ -48,7 +65,10 @@ function TemplateSpecimen({ id, accent, divider, font }: { id: TemplateId; accen
       style={{ fontFamily: font }}
     >
       <span
-        className={cn('text-[11px] leading-none font-bold text-[#1a1a1a]', id === 'minimal' && 'text-center font-semibold')}
+        className={cn(
+          'text-[11px] leading-none font-bold text-[#1a1a1a]',
+          id === 'minimal' && 'text-center font-semibold',
+        )}
       >
         Aa
       </span>

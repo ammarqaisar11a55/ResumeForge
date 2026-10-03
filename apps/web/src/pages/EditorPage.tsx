@@ -41,7 +41,11 @@ export default function EditorPage() {
         if (!loaded) return setState('missing');
         useEditorStore.getState().load(loaded.resume);
         document.title = `${loaded.resume.metadata.title} — ResumeForge`;
-        if (loaded.repairNotice) toast.warning('This resume was repaired', { description: loaded.repairNotice, duration: 12_000 });
+        if (loaded.repairNotice)
+          toast.warning('This resume was repaired', {
+            description: loaded.repairNotice,
+            duration: 12_000,
+          });
         setState('ready');
       })
       .catch((error: Error) => {
@@ -80,13 +84,18 @@ export default function EditorPage() {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-canvas p-6 text-center">
         <FileQuestion className="size-10 text-faint" aria-hidden />
-        <h1 className="type-title text-xl text-ink">{state === 'missing' ? 'Resume not found' : 'This resume could not be opened'}</h1>
+        <h1 className="type-title text-xl text-ink">
+          {state === 'missing' ? 'Resume not found' : 'This resume could not be opened'}
+        </h1>
         <p className="max-w-sm text-sm text-muted">
           {state === 'missing'
             ? 'It may have been deleted, or it was created in another browser.'
             : `${loadError} Your other resumes are unaffected.`}
         </p>
-        <Link to="/app" className="mt-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-on-primary">
+        <Link
+          to="/app"
+          className="mt-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-on-primary"
+        >
           Back to my resumes
         </Link>
       </main>
@@ -95,7 +104,12 @@ export default function EditorPage() {
 
   return (
     <IssuesProvider>
-      <EditorLayout documentRef={documentRef} onPrint={print} onDownload={() => void exportPdf()} exporting={exporting} />
+      <EditorLayout
+        documentRef={documentRef}
+        onPrint={print}
+        onDownload={() => void exportPdf()}
+        exporting={exporting}
+      />
       <ShortcutsDialog />
     </IssuesProvider>
   );
@@ -114,8 +128,15 @@ function EditorLayout({
 }) {
   const isWide = useIsWide();
   const isDesktop = useIsDesktop();
-  const { showSections, showDesign, previewMode, designDrawerOpen, mobileTab, togglePreviewMode, setDesignDrawerOpen } =
-    useUiStore();
+  const {
+    showSections,
+    showDesign,
+    previewMode,
+    designDrawerOpen,
+    mobileTab,
+    togglePreviewMode,
+    setDesignDrawerOpen,
+  } = useUiStore();
   const resumeKey = useEditorStore((s) => s.resume?.id);
   const designAsDrawer = isDesktop && !isWide;
 
@@ -125,8 +146,8 @@ function EditorLayout({
       fallback={(error) => (
         <div className="flex h-full items-center justify-center bg-canvas p-8 text-center text-sm text-muted">
           <p>
-            The preview could not render this content ({error.message}). Your data is safe; undo the last change or keep
-            editing.
+            The preview could not render this content ({error.message}). Your data is safe; undo the
+            last change or keep editing.
           </p>
         </div>
       )}
@@ -147,13 +168,19 @@ function EditorLayout({
       {isDesktop ? (
         <div className="relative flex min-h-0 flex-1">
           {showSections && !previewMode && (
-            <aside className="w-[340px] shrink-0 border-r border-line bg-surface" aria-label="Sections">
+            <aside
+              className="w-[340px] shrink-0 border-r border-line bg-surface"
+              aria-label="Sections"
+            >
               <SectionsPanel />
             </aside>
           )}
           <main className="min-w-0 flex-1">{preview}</main>
           {!previewMode && isWide && showDesign && (
-            <aside className="w-[300px] shrink-0 border-l border-line bg-surface" aria-label="Design">
+            <aside
+              className="w-[300px] shrink-0 border-l border-line bg-surface"
+              aria-label="Design"
+            >
               <DesignPanel />
             </aside>
           )}
@@ -192,7 +219,14 @@ function EditorLayout({
               <SectionsPanel />
             </div>
             {/* The preview stays mounted so print and export always have a document. */}
-            <div className={cn('h-full', mobileTab !== 'preview' && 'invisible absolute inset-0 -z-10')}>{preview}</div>
+            <div
+              className={cn(
+                'h-full',
+                mobileTab !== 'preview' && 'invisible absolute inset-0 -z-10',
+              )}
+            >
+              {preview}
+            </div>
             <div className={cn('h-full', mobileTab !== 'design' && 'hidden')}>
               <DesignPanel />
             </div>

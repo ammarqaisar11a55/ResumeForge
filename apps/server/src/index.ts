@@ -17,7 +17,11 @@ try {
 const pdf = config.chromePath
   ? new PdfRenderer({ executablePath: config.chromePath, noSandbox: config.chromeNoSandbox })
   : null;
-console.log(pdf ? `PDF export: ${config.chromePath}` : 'PDF export disabled: Chrome not found (set CHROME_PATH).');
+console.log(
+  pdf
+    ? `PDF export: ${config.chromePath}`
+    : 'PDF export disabled: Chrome not found (set CHROME_PATH).',
+);
 
 const app = createApp({ config, db, pdf });
 const server = app.listen(config.port, () => {

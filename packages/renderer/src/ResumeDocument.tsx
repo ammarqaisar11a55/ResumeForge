@@ -79,7 +79,8 @@ function BlockList({
   const groups: { sectionId: string | null; items: PlacedBlock[] }[] = [];
   for (const item of items) {
     const last = groups[groups.length - 1];
-    if (last && last.sectionId === item.block.sectionId && item.block.sectionId !== null) last.items.push(item);
+    if (last && last.sectionId === item.block.sectionId && item.block.sectionId !== null)
+      last.items.push(item);
     else groups.push({ sectionId: item.block.sectionId, items: [item] });
   }
 
@@ -100,7 +101,11 @@ function BlockList({
     if (group.sectionId === null) return group.items.map(renderBlock);
     const type = sectionTypes.get(group.sectionId) ?? 'custom';
     return (
-      <section key={`${group.sectionId}:${i}`} className={`rf-section rf-section--${type}`} data-section-id={group.sectionId}>
+      <section
+        key={`${group.sectionId}:${i}`}
+        className={`rf-section rf-section--${type}`}
+        data-section-id={group.sectionId}
+      >
         {group.items.map(renderBlock)}
       </section>
     );
@@ -120,10 +125,16 @@ export const ResumeDocument = memo(
     { resume, maxPages, onLayout, className },
     ref,
   ) {
-    const settings = useMemo(() => resolveSettings(resume.template, resume.settings), [resume.template, resume.settings]);
+    const settings = useMemo(
+      () => resolveSettings(resume.template, resume.settings),
+      [resume.template, resume.settings],
+    );
     const blocks = useMemo(() => buildBlocks(resume, { settings }), [resume, settings]);
     const metrics = useMemo(() => pageMetrics(settings), [settings]);
-    const sectionTypes = useMemo(() => new Map(resume.sections.map((s) => [s.id, s.type])), [resume.sections]);
+    const sectionTypes = useMemo(
+      () => new Map(resume.sections.map((s) => [s.id, s.type])),
+      [resume.sections],
+    );
     const fontsVersion = useFontsVersion();
 
     const measureRef = useRef<HTMLDivElement>(null);
@@ -135,7 +146,9 @@ export const ResumeDocument = memo(
       if (!root) return;
       const measured = measureBlocks(root, blocks);
       const pages = paginate(measured, metrics.contentHeightPx);
-      setLayout((prev) => (prev && layoutSignature(prev) === layoutSignature(pages) ? prev : pages));
+      setLayout((prev) =>
+        prev && layoutSignature(prev) === layoutSignature(pages) ? prev : pages,
+      );
     }, [blocks, metrics.contentHeightPx, fontsVersion, portalTarget]);
 
     const pages = useMemo(() => {
@@ -145,7 +158,13 @@ export const ResumeDocument = memo(
         {
           used: 0,
           overflow: false,
-          fragments: blocks.map((b, i) => ({ key: b.key, from: 0, to: b.atomCount, continued: false, firstOnPage: i === 0 })),
+          fragments: blocks.map((b, i) => ({
+            key: b.key,
+            from: 0,
+            to: b.atomCount,
+            continued: false,
+            firstOnPage: i === 0,
+          })),
         },
       ];
       return source.map((page) => ({
@@ -156,7 +175,13 @@ export const ResumeDocument = memo(
           if (!block) return [];
           const to = Math.min(f.to, block.atomCount);
           if (to <= f.from) return [];
-          return [{ block, range: { from: f.from, to, continued: f.continued }, firstOnPage: f.firstOnPage }];
+          return [
+            {
+              block,
+              range: { from: f.from, to, continued: f.continued },
+              firstOnPage: f.firstOnPage,
+            },
+          ];
         }),
       }));
     }, [layout, blocks]);
@@ -175,7 +200,11 @@ export const ResumeDocument = memo(
     const measureLayer: ReactNode = (
       <div className="rf-measure" aria-hidden="true">
         <div className={docClass} style={docStyle}>
-          <div className="rf-page-content" ref={measureRef} style={{ width: metrics.contentWidthPx }}>
+          <div
+            className="rf-page-content"
+            ref={measureRef}
+            style={{ width: metrics.contentWidthPx }}
+          >
             <BlockList
               measuring
               sectionTypes={sectionTypes}

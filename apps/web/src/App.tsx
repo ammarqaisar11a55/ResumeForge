@@ -34,7 +34,12 @@ function Root() {
 const router = createBrowserRouter([
   {
     element: <Root />,
-    errorElement: <AppErrorScreen error={new Error('This page failed to load.')} onRetry={() => window.location.reload()} />,
+    errorElement: (
+      <AppErrorScreen
+        error={new Error('This page failed to load.')}
+        onRetry={() => window.location.reload()}
+      />
+    ),
     children: [
       { path: '/', element: <LandingPage /> },
       { path: '/templates', element: <TemplatesPage /> },

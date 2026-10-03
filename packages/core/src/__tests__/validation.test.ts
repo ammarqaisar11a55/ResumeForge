@@ -21,7 +21,9 @@ describe('dates', () => {
     expect(formatDateRange(range, 'short')).toBe('Sep 2023 – Present');
     expect(formatDateRange(range, 'long')).toBe('September 2023 – Present');
     expect(formatDateRange(range, 'numeric')).toBe('09/2023 – Present');
-    expect(formatDateRange({ start: '2021', end: '2023', current: false }, 'short')).toBe('2021 – 2023');
+    expect(formatDateRange({ start: '2021', end: '2023', current: false }, 'short')).toBe(
+      '2021 – 2023',
+    );
     expect(formatDateRange({ start: '', end: '', current: false }, 'year')).toBe('');
   });
 
@@ -46,8 +48,14 @@ describe('urls', () => {
 
   it('derives display text so users never type it twice', () => {
     expect(displayUrl('https://www.linkedin.com/in/someone/')).toBe('linkedin.com/in/someone');
-    expect(describeLink('github.com/alex/quillmark')).toEqual({ source: 'GitHub', text: 'quillmark' });
-    expect(describeLink('https://roomly.vercel.app')).toEqual({ source: '', text: 'roomly.vercel.app' });
+    expect(describeLink('github.com/alex/quillmark')).toEqual({
+      source: 'GitHub',
+      text: 'quillmark',
+    });
+    expect(describeLink('https://roomly.vercel.app')).toEqual({
+      source: '',
+      text: 'roomly.vercel.app',
+    });
   });
 
   it('builds hrefs per contact kind', () => {
@@ -55,8 +63,12 @@ describe('urls', () => {
     expect(contactHref({ kind: 'phone', value: '+92 300 123 4567' })).toBe('tel:+923001234567');
     expect(contactHref({ kind: 'location', value: 'Lahore' })).toBe('');
     expect(contactHref({ kind: 'github', value: 'github.com/me' })).toBe('https://github.com/me');
-    expect(contactText({ kind: 'github', value: 'https://github.com/me', label: '' })).toBe('github.com/me');
-    expect(contactText({ kind: 'github', value: 'https://github.com/me', label: 'GitHub' })).toBe('GitHub');
+    expect(contactText({ kind: 'github', value: 'https://github.com/me', label: '' })).toBe(
+      'github.com/me',
+    );
+    expect(contactText({ kind: 'github', value: 'https://github.com/me', label: 'GitHub' })).toBe(
+      'GitHub',
+    );
   });
 });
 
@@ -104,7 +116,10 @@ describe('validation', () => {
 
 describe('settings', () => {
   it('merges overrides over template defaults', () => {
-    const settings = resolveSettings('classic', { typography: { baseSize: 11 }, colors: { accent: '#123456' } });
+    const settings = resolveSettings('classic', {
+      typography: { baseSize: 11 },
+      colors: { accent: '#123456' },
+    });
     expect(settings.typography.baseSize).toBe(11);
     expect(settings.typography.bodyFont).toBe('archivo');
     expect(settings.colors.accent).toBe('#123456');
@@ -112,7 +127,10 @@ describe('settings', () => {
   });
 
   it('clamps values into readable bounds', () => {
-    const settings = resolveSettings('classic', { typography: { baseSize: 2, lineHeight: 9 }, page: { margins: { top: -5 } } });
+    const settings = resolveSettings('classic', {
+      typography: { baseSize: 2, lineHeight: 9 },
+      page: { margins: { top: -5 } },
+    });
     expect(settings.typography.baseSize).toBe(8);
     expect(settings.typography.lineHeight).toBe(1.8);
     expect(settings.page.margins.top).toBe(6);

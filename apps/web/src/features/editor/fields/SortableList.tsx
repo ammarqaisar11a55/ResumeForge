@@ -10,7 +10,12 @@ import {
   type DraggableSyntheticListeners,
 } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -41,7 +46,13 @@ interface SortableListProps {
  * Vertical drag-and-drop list with pointer, touch and keyboard support
  * (focus a handle, press Space, move with the arrow keys, Space to drop).
  */
-export function SortableList({ ids, onMove, children, className, itemName = 'item' }: SortableListProps) {
+export function SortableList({
+  ids,
+  onMove,
+  children,
+  className,
+  itemName = 'item',
+}: SortableListProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -64,11 +75,16 @@ export function SortableList({ ids, onMove, children, className, itemName = 'ite
       onDragEnd={onDragEnd}
       accessibility={{
         announcements: {
-          onDragStart: ({ active }) => `Picked up ${itemName} ${position(active.id)} of ${ids.length}.`,
+          onDragStart: ({ active }) =>
+            `Picked up ${itemName} ${position(active.id)} of ${ids.length}.`,
           onDragOver: ({ active, over }) =>
-            over ? `${itemName} ${position(active.id)} is over position ${position(over.id)}.` : `${itemName} is no longer over a position.`,
+            over
+              ? `${itemName} ${position(active.id)} is over position ${position(over.id)}.`
+              : `${itemName} is no longer over a position.`,
           onDragEnd: ({ over }) =>
-            over ? `Dropped ${itemName} at position ${position(over.id)} of ${ids.length}.` : `Dropped ${itemName}.`,
+            over
+              ? `Dropped ${itemName} at position ${position(over.id)} of ${ids.length}.`
+              : `Dropped ${itemName}.`,
           onDragCancel: () => `Reordering cancelled.`,
         },
       }}
@@ -86,14 +102,32 @@ export function SortableList({ ids, onMove, children, className, itemName = 'ite
   );
 }
 
-function SortableRow({ id, children }: { id: string; children: (state: SortableItemState) => ReactNode }) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging, isSorting } =
-    useSortable({ id });
+function SortableRow({
+  id,
+  children,
+}: {
+  id: string;
+  children: (state: SortableItemState) => ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+    isSorting,
+  } = useSortable({ id });
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={cn('relative', isDragging && 'z-10', isSorting && !isDragging && 'transition-transform')}
+      className={cn(
+        'relative',
+        isDragging && 'z-10',
+        isSorting && !isDragging && 'transition-transform',
+      )}
       data-dragging={isDragging || undefined}
     >
       {children({ isDragging, handle: { attributes, listeners, activator: setActivatorNodeRef } })}
@@ -101,7 +135,15 @@ function SortableRow({ id, children }: { id: string; children: (state: SortableI
   );
 }
 
-export function DragHandle({ handle, label, className }: { handle: DragHandleProps; label: string; className?: string }) {
+export function DragHandle({
+  handle,
+  label,
+  className,
+}: {
+  handle: DragHandleProps;
+  label: string;
+  className?: string;
+}) {
   const { activator, attributes, listeners } = handle;
   return (
     <button

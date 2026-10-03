@@ -29,7 +29,15 @@ export function RenameDialog({
     <Dialog open={open} onOpenChange={onOpenChange} title="Rename resume">
       <form onSubmit={submit} className="flex flex-col gap-4">
         <Field label="Resume name">
-          {({ id }) => <TextInput id={id} autoFocus value={title} onChange={(e) => setTitle(e.target.value)} onFocus={(e) => e.target.select()} />}
+          {({ id }) => (
+            <TextInput
+              id={id}
+              autoFocus
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onFocus={(e) => e.target.select()}
+            />
+          )}
         </Field>
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={() => onOpenChange(false)}>

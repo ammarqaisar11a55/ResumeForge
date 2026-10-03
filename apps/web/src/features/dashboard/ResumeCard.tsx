@@ -13,7 +13,13 @@ export interface ResumeCardActions {
   onDelete: (summary: ResumeSummary) => void;
 }
 
-export function ResumeCard({ summary, actions }: { summary: ResumeSummary; actions: ResumeCardActions }) {
+export function ResumeCard({
+  summary,
+  actions,
+}: {
+  summary: ResumeSummary;
+  actions: ResumeCardActions;
+}) {
   const href = `/app/resume/${summary.id}`;
   return (
     <article className="group relative flex flex-col" data-testid="resume-card">
@@ -27,12 +33,16 @@ export function ResumeCard({ summary, actions }: { summary: ResumeSummary; actio
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-[15px] font-semibold text-ink">
             {/* Stretched link: the whole card opens the editor, without nesting the thumbnail's own links. */}
-            <Link to={href} className="rounded before:absolute before:inset-0 before:content-[''] hover:underline focus-visible:underline">
+            <Link
+              to={href}
+              className="rounded before:absolute before:inset-0 before:content-[''] hover:underline focus-visible:underline"
+            >
               {summary.title}
             </Link>
           </h3>
           <p className="mt-0.5 truncate text-xs text-muted">
-            {pluralize(Math.max(summary.pageCount, 1), 'page')} in {TEMPLATES[summary.template]?.name ?? 'Forge Classic'}
+            {pluralize(Math.max(summary.pageCount, 1), 'page')} in{' '}
+            {TEMPLATES[summary.template]?.name ?? 'Forge Classic'}
           </p>
           <p className="mt-0.5 text-xs text-faint">
             Edited <time dateTime={summary.updatedAt}>{formatRelativeTime(summary.updatedAt)}</time>
@@ -45,17 +55,30 @@ export function ResumeCard({ summary, actions }: { summary: ResumeSummary; actio
             </IconButton>
           </MenuTrigger>
           <MenuContent>
-            <MenuItem icon={<PenLine className="size-4" />} onSelect={() => actions.onRename(summary)}>
+            <MenuItem
+              icon={<PenLine className="size-4" />}
+              onSelect={() => actions.onRename(summary)}
+            >
               Rename
             </MenuItem>
-            <MenuItem icon={<Copy className="size-4" />} onSelect={() => actions.onDuplicate(summary)}>
+            <MenuItem
+              icon={<Copy className="size-4" />}
+              onSelect={() => actions.onDuplicate(summary)}
+            >
               Duplicate
             </MenuItem>
-            <MenuItem icon={<FileJson className="size-4" />} onSelect={() => actions.onExportJson(summary)}>
+            <MenuItem
+              icon={<FileJson className="size-4" />}
+              onSelect={() => actions.onExportJson(summary)}
+            >
               Download backup (JSON)
             </MenuItem>
             <MenuSeparator />
-            <MenuItem destructive icon={<Trash2 className="size-4" />} onSelect={() => actions.onDelete(summary)}>
+            <MenuItem
+              destructive
+              icon={<Trash2 className="size-4" />}
+              onSelect={() => actions.onDelete(summary)}
+            >
               Delete
             </MenuItem>
           </MenuContent>

@@ -4,7 +4,9 @@ import { seedResumes } from './fixtures';
 
 test('landing page links into the app, templates, source and portfolio', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Build a resume worth remembering.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'Build a resume worth remembering.',
+  );
   await expect(page.getByRole('link', { name: /ammarqaisar11a55\/ResumeForge/ })).toHaveAttribute(
     'href',
     'https://github.com/ammarqaisar11a55/ResumeForge',
@@ -23,7 +25,10 @@ test('landing page links into the app, templates, source and portfolio', async (
 });
 
 test('phone layout uses tabs and keeps the page faithful to A4', async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+  });
   const page = await context.newPage();
   const resume = createDemoResume();
   await seedResumes(page, [resume]);
@@ -35,7 +40,9 @@ test('phone layout uses tabs and keeps the page faithful to A4', async ({ browse
     .first()
     .evaluate((el) => el.getBoundingClientRect().height / el.getBoundingClientRect().width);
   expect(ratio).toBeCloseTo(297 / 210, 2);
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > window.innerWidth,
+  );
   expect(overflow).toBe(false);
   await context.close();
 });

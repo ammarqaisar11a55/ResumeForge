@@ -11,7 +11,15 @@ let app: ReturnType<typeof createApp>;
 
 beforeAll(async () => {
   db = await openDatabase({ databaseUrl: null, dataDir: 'memory', defaultUserId: DEFAULT_USER_ID });
-  app = createApp({ config: { corsOrigins: ['http://localhost:5173'], defaultUserId: DEFAULT_USER_ID, webDist: null }, db, pdf: null });
+  app = createApp({
+    config: {
+      corsOrigins: ['http://localhost:5173'],
+      defaultUserId: DEFAULT_USER_ID,
+      webDist: null,
+    },
+    db,
+    pdf: null,
+  });
 });
 
 afterAll(async () => {
@@ -34,7 +42,10 @@ describe('health', () => {
 describe('resumes', () => {
   it('creates, reads, lists, updates and deletes a resume', async () => {
     const resume = createDemoResume();
-    const created = await request(app).put(`/api/resumes/${resume.id}`).send({ resume }).expect(201);
+    const created = await request(app)
+      .put(`/api/resumes/${resume.id}`)
+      .send({ resume })
+      .expect(201);
     expect(created.body).toMatchObject({ id: resume.id, created: true, version: 1 });
 
     const fetched = await request(app).get(`/api/resumes/${resume.id}`).expect(200);
@@ -42,14 +53,28 @@ describe('resumes', () => {
 
     const list = await request(app).get('/api/resumes').expect(200);
     expect(list.body.resumes).toContainEqual(
-      expect.objectContaining({ id: resume.id, title: resume.metadata.title, fullName: 'Alex Morgan', template: 'classic' }),
+      expect.objectContaining({
+        id: resume.id,
+        title: resume.metadata.title,
+        fullName: 'Alex Morgan',
+        template: 'classic',
+      }),
     );
 
-    const updated = { ...resume, metadata: { ...resume.metadata, title: 'Renamed' }, updatedAt: new Date().toISOString() };
-    const put = await request(app).put(`/api/resumes/${resume.id}`).send({ resume: updated }).expect(200);
+    const updated = {
+      ...resume,
+      metadata: { ...resume.metadata, title: 'Renamed' },
+      updatedAt: new Date().toISOString(),
+    };
+    const put = await request(app)
+      .put(`/api/resumes/${resume.id}`)
+      .send({ resume: updated })
+      .expect(200);
     // Autosaves within the snapshot interval do not create a version per save.
     expect(put.body).toMatchObject({ created: false, version: null });
-    expect((await request(app).get(`/api/resumes/${resume.id}`)).body.resume.metadata.title).toBe('Renamed');
+    expect((await request(app).get(`/api/resumes/${resume.id}`)).body.resume.metadata.title).toBe(
+      'Renamed',
+    );
 
     await request(app).delete(`/api/resumes/${resume.id}`).expect(204);
     await request(app).get(`/api/resumes/${resume.id}`).expect(404);
@@ -71,13 +96,20 @@ describe('resumes', () => {
     expect(bad.body.error.code).toBe('invalid_resume');
     const other = createResume();
     await request(app).put(`/api/resumes/${resume.id}`).send({ resume: other }).expect(400);
-    await request(app).put(`/api/resumes/${resume.id}`).set('Content-Type', 'application/json').send('{oops').expect(400);
+    await request(app)
+      .put(`/api/resumes/${resume.id}`)
+      .set('Content-Type', 'application/json')
+      .send('{oops')
+      .expect(400);
   });
 
   it('keeps labelled versions', async () => {
     const resume = createResume({ title: 'Versioned' });
     await request(app).put(`/api/resumes/${resume.id}`).send({ resume }).expect(201);
-    const labelled = await request(app).post(`/api/resumes/${resume.id}/versions`).send({ label: 'Sent to Acme' }).expect(201);
+    const labelled = await request(app)
+      .post(`/api/resumes/${resume.id}/versions`)
+      .send({ label: 'Sent to Acme' })
+      .expect(201);
     expect(labelled.body.version).toMatchObject({ version: 2, label: 'Sent to Acme' });
     const versions = await request(app).get(`/api/resumes/${resume.id}/versions`).expect(200);
     expect(versions.body.versions.map((v: { version: number }) => v.version)).toEqual([2, 1]);

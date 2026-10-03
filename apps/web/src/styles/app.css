@@ -218,7 +218,6 @@
     transition-delay: 1100ms;
   }
 
-
   /* Pages sitting on the desk. Crop marks sit outside the trim box. */
   .rf-preview .rf-document {
     display: flex;
@@ -248,8 +247,10 @@
       linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) top right / 1px 10px no-repeat,
       linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom left / 10px 1px no-repeat,
       linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom left / 1px 10px no-repeat,
-      linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom right / 10px 1px no-repeat,
-      linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom right / 1px 10px no-repeat;
+      linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom right / 10px 1px
+        no-repeat,
+      linear-gradient(var(--ui-line-strong), var(--ui-line-strong)) bottom right / 1px 10px
+        no-repeat;
   }
 
   .rf-preview.rf-preview--marks .rf-page::after {

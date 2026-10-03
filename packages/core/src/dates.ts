@@ -9,7 +9,20 @@ export interface PartialDate {
 
 const PARTIAL_DATE_RE = /^(\d{4})(?:-(\d{2}))?$/;
 
-const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS_SHORT = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 const MONTHS_LONG = [
   'January',
   'February',
@@ -68,7 +81,11 @@ export function formatPartialDate(value: string, format: DateFormat): string {
  * Format a range as it appears on the page, e.g. "2023 – Present".
  * Returns an empty string when there is nothing to show.
  */
-export function formatDateRange(range: DateRange, format: DateFormat, presentLabel = 'Present'): string {
+export function formatDateRange(
+  range: DateRange,
+  format: DateFormat,
+  presentLabel = 'Present',
+): string {
   const start = range.start ? formatPartialDate(range.start, format) : '';
   const end = range.current ? presentLabel : range.end ? formatPartialDate(range.end, format) : '';
   if (start && end) return start === end ? start : `${start} – ${end}`;

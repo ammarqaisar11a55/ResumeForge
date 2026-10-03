@@ -1,4 +1,11 @@
-import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from 'motion/react';
 import { useRef } from 'react';
 
 /** Thin molten rule across the top of the page that tracks reading progress. */
@@ -15,7 +22,15 @@ export function ScrollProgress() {
   );
 }
 
-function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
+function Word({
+  children,
+  progress,
+  range,
+}: {
+  children: string;
+  progress: MotionValue<number>;
+  range: [number, number];
+}) {
   const opacity = useTransform(progress, range, [0.18, 1]);
   return (
     <motion.span style={{ opacity }} className="inline-block whitespace-pre">

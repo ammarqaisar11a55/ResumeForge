@@ -18,7 +18,11 @@ export function measureBlocks(root: HTMLElement, blocks: DocBlock[]): MeasuredBl
   const scale = root.offsetWidth > 0 ? rootRect.width / root.offsetWidth || 1 : 1;
 
   return blocks.map((block) => {
-    const base = { key: block.key, spaceBefore: block.spaceBefore, keepWithNext: block.keepWithNext };
+    const base = {
+      key: block.key,
+      spaceBefore: block.spaceBefore,
+      keepWithNext: block.keepWithNext,
+    };
     const el = elements.get(block.key);
     if (!el) return { ...base, lead: 0, trail: 0, segments: [] };
 

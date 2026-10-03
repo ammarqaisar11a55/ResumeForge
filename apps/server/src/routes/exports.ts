@@ -15,7 +15,10 @@ const ExportBody = z.object({
     .string()
     .min(1)
     .max(MAX_HTML_BYTES)
-    .refine((html) => /^\s*<div[^>]*class="rf-document[\s"]/.test(html), 'Expected a rendered ResumeForge document.'),
+    .refine(
+      (html) => /^\s*<div[^>]*class="rf-document[\s"]/.test(html),
+      'Expected a rendered ResumeForge document.',
+    ),
   page: z.object({
     widthMm: z.number().min(100).max(500),
     heightMm: z.number().min(100).max(500),
@@ -25,26 +28,55 @@ const ExportBody = z.object({
 });
 
 function asciiFileName(title: string): string {
-  return title.replace(/[^\w.-]+/g, '-').replace(/-+/g, '-').slice(0, 100) || 'Resume';
+  return (
+    title
+      .replace(/[^\w.-]+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 100) || 'Resume'
+  );
 }
 
-export function exportsRouter(renderer: PdfRenderer | null, exports: ExportRepository | null): Router {
+export function exportsRouter(
+  renderer: PdfRenderer | null,
+  exports: ExportRepository | null,
+): Router {
   const router = Router();
 
   router.post('/pdf', async (req, res) => {
     if (!renderer) {
-      throw new HttpError(503, 'pdf_unavailable', 'PDF export needs Chrome or Chromium on the server. Set CHROME_PATH.');
+      throw new HttpError(
+        503,
+        'pdf_unavailable',
+        'PDF export needs Chrome or Chromium on the server. Set CHROME_PATH.',
+      );
     }
     const body = ExportBody.safeParse(req.body);
     if (!body.success) {
-      throw new HttpError(400, 'invalid_body', body.error.issues[0]?.message ?? 'Invalid export request.');
+      throw new HttpError(
+        400,
+        'invalid_body',
+        body.error.issues[0]?.message ?? 'Invalid export request.',
+      );
     }
     const { html, title, page, fonts, pageCount } = body.data;
     const resumeId = body.data.resumeId && isUuid(body.data.resumeId) ? body.data.resumeId : null;
     try {
-      const pdf = await renderer.render({ html, title, widthMm: page.widthMm, heightMm: page.heightMm, fonts });
+      const pdf = await renderer.render({
+        html,
+        title,
+        widthMm: page.widthMm,
+        heightMm: page.heightMm,
+        fonts,
+      });
       await exports
-        ?.record(userId(req), { resumeId, format: 'pdf', pageCount: pageCount ?? null, byteSize: pdf.length, status: 'succeeded', error: null })
+        ?.record(userId(req), {
+          resumeId,
+          format: 'pdf',
+          pageCount: pageCount ?? null,
+          byteSize: pdf.length,
+          status: 'succeeded',
+          error: null,
+        })
         .catch((error) => console.warn('Could not record export', error));
       res
         .status(200)
@@ -64,13 +96,21 @@ export function exportsRouter(renderer: PdfRenderer | null, exports: ExportRepos
         })
         .catch(() => undefined);
       console.error('PDF export failed', error);
-      throw new HttpError(500, 'pdf_failed', 'The PDF could not be generated. Try again in a moment.');
+      throw new HttpError(
+        500,
+        'pdf_failed',
+        'The PDF could not be generated. Try again in a moment.',
+      );
     }
   });
 
   router.get('/', async (req, res) => {
-    if (!exports) throw new HttpError(503, 'persistence_unavailable', 'Export history needs a database.');
-    const resumeId = typeof req.query.resumeId === 'string' && isUuid(req.query.resumeId) ? req.query.resumeId : undefined;
+    if (!exports)
+      throw new HttpError(503, 'persistence_unavailable', 'Export history needs a database.');
+    const resumeId =
+      typeof req.query.resumeId === 'string' && isUuid(req.query.resumeId)
+        ? req.query.resumeId
+        : undefined;
     res.json({ exports: await exports.list(userId(req), resumeId) });
   });
 

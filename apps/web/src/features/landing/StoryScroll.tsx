@@ -1,5 +1,11 @@
 import { FileDown } from 'lucide-react';
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'motion/react';
 import { useMemo, useRef, useState } from 'react';
 import { createDemoResume, TEMPLATE_LIST, TEMPLATES, type TemplateId } from '@resumeforge/core';
 import { ResumeThumbnail } from '@resumeforge/renderer';
@@ -53,11 +59,14 @@ function PinnedStory({ steps }: { steps: Step[] }) {
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
     const step = Math.min(steps.length - 1, Math.floor(p * steps.length));
     const local = p * steps.length - step;
-    const sections = step === 0 ? Math.max(1, Math.ceil(local * demo.sections.length)) : demo.sections.length;
+    const sections =
+      step === 0 ? Math.max(1, Math.ceil(local * demo.sections.length)) : demo.sections.length;
     // Step 2 cycles through the templates; the export step returns to Classic.
     const template = step === 1 ? TEMPLATE_ORDER[Math.min(2, Math.floor(local * 3))]! : 'classic';
     setFrame((prev) =>
-      prev.step === step && prev.sections === sections && prev.template === template ? prev : { step, sections, template },
+      prev.step === step && prev.sections === sections && prev.template === template
+        ? prev
+        : { step, sections, template },
     );
   });
 
@@ -77,7 +86,10 @@ function PinnedStory({ steps }: { steps: Step[] }) {
       <div className="sticky top-0 grid h-dvh grid-cols-[1fr_1.1fr] items-center gap-16">
         <div className="relative flex gap-6">
           <div className="relative w-0.5 shrink-0 bg-line" aria-hidden>
-            <motion.div className="absolute inset-0 origin-top bg-ink" style={{ scaleY: railScale }} />
+            <motion.div
+              className="absolute inset-0 origin-top bg-ink"
+              style={{ scaleY: railScale }}
+            />
           </div>
           <ol className="flex flex-col gap-10">
             {steps.map((step, i) => {
@@ -86,11 +98,16 @@ function PinnedStory({ steps }: { steps: Step[] }) {
                 <li
                   key={step.title}
                   aria-current={active ? 'step' : undefined}
-                  className={cn('transition-opacity duration-300', active ? 'opacity-100' : 'opacity-35')}
+                  className={cn(
+                    'transition-opacity duration-300',
+                    active ? 'opacity-100' : 'opacity-35',
+                  )}
                 >
                   <span className="type-display text-4xl text-accent-ink tabular">{i + 1}</span>
                   <h3 className="mt-2 text-xl font-semibold text-ink">{step.title}</h3>
-                  <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-muted">{step.body}</p>
+                  <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-muted">
+                    {step.body}
+                  </p>
                   {i === 1 && active && (
                     <p className="mt-3 text-sm font-semibold text-ink" aria-live="polite">
                       Now showing {TEMPLATES[frame.template].name}

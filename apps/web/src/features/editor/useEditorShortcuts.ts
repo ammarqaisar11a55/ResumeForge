@@ -12,11 +12,15 @@ export interface ShortcutHandlers {
 }
 
 export function runHistory(direction: 'undo' | 'redo') {
-  const label = direction === 'undo' ? useEditorStore.getState().undo() : useEditorStore.getState().redo();
-  toast(label ? `${direction === 'undo' ? 'Undone' : 'Redone'}: ${label}` : `Nothing to ${direction}`, {
-    id: 'history',
-    duration: 1600,
-  });
+  const label =
+    direction === 'undo' ? useEditorStore.getState().undo() : useEditorStore.getState().redo();
+  toast(
+    label ? `${direction === 'undo' ? 'Undone' : 'Redone'}: ${label}` : `Nothing to ${direction}`,
+    {
+      id: 'history',
+      duration: 1600,
+    },
+  );
 }
 
 /** Global editor keyboard shortcuts. */

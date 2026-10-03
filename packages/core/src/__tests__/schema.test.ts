@@ -10,7 +10,13 @@ describe('resume creation', () => {
     const resume = createResume({ title: 'Backend roles' });
     expect(ResumeSchema.safeParse(resume).success).toBe(true);
     expect(resume.metadata.title).toBe('Backend roles');
-    expect(resume.sections.map((s) => s.type)).toEqual(['summary', 'education', 'experience', 'projects', 'skills']);
+    expect(resume.sections.map((s) => s.type)).toEqual([
+      'summary',
+      'education',
+      'experience',
+      'projects',
+      'skills',
+    ]);
     // The summary is a single-entry section so it is editable immediately.
     expect(resume.sections[0]!.entries).toHaveLength(1);
   });
@@ -22,7 +28,10 @@ describe('resume creation', () => {
   });
 
   it('fills missing fields with defaults when parsing partial documents', () => {
-    const parsed = ResumeSchema.parse({ id: 'abc', sections: [{ id: 's1', type: 'skills', entries: [{ id: 'e1', name: 'Tools' }] }] });
+    const parsed = ResumeSchema.parse({
+      id: 'abc',
+      sections: [{ id: 's1', type: 'skills', entries: [{ id: 'e1', name: 'Tools' }] }],
+    });
     expect(parsed.metadata.title).toBe('Untitled resume');
     expect(parsed.template).toBe('classic');
     const skills = parsed.sections[0]!;

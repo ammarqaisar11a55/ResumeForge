@@ -29,7 +29,10 @@ export async function checkBackend(): Promise<void> {
     resumeService.setBackend(capabilities);
     await resumeService.sync();
   } catch {
-    useBackendStore.setState({ status: 'offline', capabilities: { persistence: false, pdf: false } });
+    useBackendStore.setState({
+      status: 'offline',
+      capabilities: { persistence: false, pdf: false },
+    });
     resumeService.setBackend(null);
     retryTimer = setTimeout(() => void checkBackend(), 60_000);
   }

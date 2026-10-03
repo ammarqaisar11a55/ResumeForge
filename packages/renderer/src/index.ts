@@ -1,7 +1,13 @@
 export { buildBlocks, type BuildContext } from './blocks/buildBlocks';
 export { RichText } from './blocks/parts';
 export type { BlockKind, DocBlock, FragmentRange } from './blocks/types';
-export { documentClassName, documentStyle, pageMetrics, pageStyle, type PageMetrics } from './layout';
+export {
+  documentClassName,
+  documentStyle,
+  pageMetrics,
+  pageStyle,
+  type PageMetrics,
+} from './layout';
 export { measureBlocks } from './pagination/measure';
 export {
   fragmentHeight,

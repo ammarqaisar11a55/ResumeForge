@@ -21,7 +21,8 @@ function renderEditor(resume: Resume) {
 }
 
 const preview = () => screen.getByRole('region', { name: 'Resume preview' });
-const stored = (id: string) => JSON.parse(localStorage.getItem(`resumeforge:v1:resume:${id}`) ?? 'null') as Resume;
+const stored = (id: string) =>
+  JSON.parse(localStorage.getItem(`resumeforge:v1:resume:${id}`) ?? 'null') as Resume;
 
 afterEach(() => {
   useEditorStore.getState().unload();
@@ -38,7 +39,9 @@ describe('editor flow', () => {
     await user.type(name, 'Sam Lee');
     expect(within(preview()).getByRole('heading', { level: 1 })).toHaveTextContent('Sam Lee');
 
-    await waitFor(() => expect(stored(resume.id).personalInfo.fullName).toBe('Sam Lee'), { timeout: 3000 });
+    await waitFor(() => expect(stored(resume.id).personalInfo.fullName).toBe('Sam Lee'), {
+      timeout: 3000,
+    });
     await waitFor(() => expect(screen.getByTestId('save-status')).toHaveTextContent('Saved'));
   });
 
@@ -56,14 +59,18 @@ describe('editor flow', () => {
     // A new section opens with one entry; fill it so it appears on the page.
     await user.type(await screen.findByLabelText('Award'), "Dean's Honour List");
     expect(within(preview()).getByText("Dean's Honour List")).toBeInTheDocument();
-    expect(within(preview()).getByRole('heading', { level: 2, name: 'Awards' })).toBeInTheDocument();
+    expect(
+      within(preview()).getByRole('heading', { level: 2, name: 'Awards' }),
+    ).toBeInTheDocument();
 
     // Click somewhere neutral so the shortcut is not captured by the input.
     await user.click(document.body);
     await user.keyboard('{Control>}z{/Control}');
     await user.keyboard('{Control>}z{/Control}');
     await user.keyboard('{Control>}z{/Control}');
-    await waitFor(() => expect(within(sections).queryByRole('button', { name: /^Awards/ })).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(within(sections).queryByRole('button', { name: /^Awards/ })).not.toBeInTheDocument(),
+    );
     expect(within(preview()).queryByText("Dean's Honour List")).not.toBeInTheDocument();
 
     await user.keyboard('{Control>}{Shift>}z{/Shift}{/Control}');

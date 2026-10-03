@@ -9,10 +9,12 @@ export function AppErrorScreen({ error, onRetry }: { error: Error; onRetry: () =
         <LogoMark />
         <h1 className="type-title mt-4 text-xl text-ink">ResumeForge hit an unexpected error</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          Your resumes are stored in this browser and have not been affected. Reload the page to continue. If this keeps
-          happening, download a JSON backup from the dashboard.
+          Your resumes are stored in this browser and have not been affected. Reload the page to
+          continue. If this keeps happening, download a JSON backup from the dashboard.
         </p>
-        <pre className="mt-4 max-h-32 overflow-auto rounded-md bg-sunken p-3 text-xs text-muted">{error.message}</pre>
+        <pre className="mt-4 max-h-32 overflow-auto rounded-md bg-sunken p-3 text-xs text-muted">
+          {error.message}
+        </pre>
         <div className="mt-5 flex gap-2">
           <Button variant="primary" onClick={() => window.location.reload()}>
             Reload ResumeForge

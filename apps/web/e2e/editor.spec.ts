@@ -13,7 +13,9 @@ test.describe('multi-page rendering', () => {
 
     const pages = page.locator('.rf-preview .rf-page');
     expect(await pages.count()).toBeGreaterThanOrEqual(2);
-    const boxes = await pages.evaluateAll((els) => els.map((el) => el.getBoundingClientRect()).map((r) => ({ w: r.width, h: r.height })));
+    const boxes = await pages.evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect()).map((r) => ({ w: r.width, h: r.height })),
+    );
     for (const box of boxes) {
       // 210 x 297 mm at 96 dpi.
       expect(Math.abs(box.w - A4.width)).toBeLessThan(1);
@@ -22,7 +24,9 @@ test.describe('multi-page rendering', () => {
     await expect(page.locator('.rf-preview .rf-page[data-overflow]')).toHaveCount(0);
   });
 
-  test('keeps headings with their content and never clips text on long resumes', async ({ page }) => {
+  test('keeps headings with their content and never clips text on long resumes', async ({
+    page,
+  }) => {
     const resume = longResume();
     await seedResumes(page, [resume]);
     await openEditor(page, resume.id);
@@ -55,13 +59,19 @@ test.describe('multi-page rendering', () => {
     await openEditor(page, resume.id);
     expect(await pageCount(page)).toBe(1);
 
-    await page.getByRole('button', { name: /^Projects/ }).first().click();
+    await page
+      .getByRole('button', { name: /^Projects/ })
+      .first()
+      .click();
     const addProject = page.getByRole('button', { name: 'Add project' });
     for (let i = 0; i < 9; i++) {
       await addProject.click();
       const name = page.getByLabel('Project name').last();
       await name.fill(`Project ${i + 1}`);
-      await page.getByLabel('Short description').last().fill('A deliberately long description. '.repeat(14));
+      await page
+        .getByLabel('Short description')
+        .last()
+        .fill('A deliberately long description. '.repeat(14));
     }
     await expect.poll(() => pageCount(page)).toBeGreaterThanOrEqual(2);
     const grown = await pageCount(page);
@@ -156,7 +166,8 @@ test.describe('export', () => {
           node.addEventListener('load', () => {
             const frame = node.contentWindow!;
             frame.print = () => {
-              (window as Window & { __printed?: number }).__printed = frame.document.querySelectorAll('.rf-page').length;
+              (window as Window & { __printed?: number }).__printed =
+                frame.document.querySelectorAll('.rf-page').length;
             };
           });
         }
@@ -164,7 +175,9 @@ test.describe('export', () => {
     });
     const previewPages = await pageCount(page);
     await page.getByRole('button', { name: 'Print' }).click();
-    await expect.poll(() => page.evaluate(() => (window as Window & { __printed?: number }).__printed)).toBe(previewPages);
+    await expect
+      .poll(() => page.evaluate(() => (window as Window & { __printed?: number }).__printed))
+      .toBe(previewPages);
   });
 });
 
@@ -175,7 +188,10 @@ test.describe('themes', () => {
     await openEditor(page, resume.id);
     await page.getByRole('button', { name: /Switch to dark theme/ }).click();
     await expect(page.locator('html')).toHaveClass(/dark/);
-    const paper = await page.locator('.rf-preview .rf-page').first().evaluate((el) => getComputedStyle(el).backgroundColor);
+    const paper = await page
+      .locator('.rf-preview .rf-page')
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(paper).toBe('rgb(255, 255, 255)');
     await page.reload();
     await expect(page.locator('html')).toHaveClass(/dark/);

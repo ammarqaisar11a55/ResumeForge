@@ -17,7 +17,12 @@ import { SliderField } from '../../../components/ui/SliderField';
 import { ColorField } from '../../../components/ui/ColorField';
 import { Segmented } from '../../../components/ui/Segmented';
 import { Switch } from '../../../components/ui/Switch';
-import { resetSettings, setDocumentOption, setMargin, setSetting } from '../../../state/editorActions';
+import {
+  resetSettings,
+  setDocumentOption,
+  setMargin,
+  setSetting,
+} from '../../../state/editorActions';
 import { useEditorStore } from '../../../state/editorStore';
 import { useUiStore } from '../../../state/uiStore';
 import { SectionDesign } from './SectionDesign';
@@ -28,7 +33,15 @@ const FONT_OPTIONS = FONT_IDS.map((id) => ({
   label: `${FONTS[id].name} (${FONTS[id].category === 'serif' ? 'serif' : 'sans'})`,
 }));
 
-export function Group({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
+export function Group({
+  title,
+  children,
+  action,
+}: {
+  title: string;
+  children: ReactNode;
+  action?: ReactNode;
+}) {
   return (
     <section className="border-b border-line px-4 py-4" aria-label={title}>
       <div className="mb-3 flex items-center justify-between">
@@ -40,7 +53,13 @@ export function Group({ title, children, action }: { title: string; children: Re
   );
 }
 
-function ResetButton({ group, label }: { group: Parameters<typeof resetSettings>[0]; label: string }) {
+function ResetButton({
+  group,
+  label,
+}: {
+  group: Parameters<typeof resetSettings>[0];
+  label: string;
+}) {
   return (
     <button
       type="button"
@@ -66,7 +85,17 @@ function Slider({
   onChange: (value: number) => void;
 }) {
   const l = SETTING_LIMITS[limit];
-  return <SliderField label={label} min={l.min} max={l.max} step={l.step} unit={l.unit} value={value} onChange={onChange} />;
+  return (
+    <SliderField
+      label={label}
+      min={l.min}
+      max={l.max}
+      step={l.step}
+      unit={l.unit}
+      value={value}
+      onChange={onChange}
+    />
+  );
 }
 
 /** Right panel: contextual formatting for the selection, then document-wide design. */
@@ -75,9 +104,16 @@ export function DesignPanel() {
   const selection = useEditorStore((s) => s.selection);
   if (!resume) return null;
   const settings = resolveSettings(resume.template, resume.settings);
-  const section = selection.kind === 'section' ? resume.sections.find((s) => s.id === selection.sectionId) : undefined;
+  const section =
+    selection.kind === 'section'
+      ? resume.sections.find((s) => s.id === selection.sectionId)
+      : undefined;
   const contextTitle =
-    selection.kind === 'header' ? 'Header' : section ? section.title || getSectionDefinition(section.type).label : 'Document';
+    selection.kind === 'header'
+      ? 'Header'
+      : section
+        ? section.title || getSectionDefinition(section.type).label
+        : 'Document';
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -144,9 +180,24 @@ function HeaderDesign({ settings }: { settings: DocumentSettings }) {
         />
       </Group>
       <Group title="Name">
-        <Slider label="Name size" limit="nameSize" value={t.nameSize} onChange={(v) => setSetting('typography', 'nameSize', v)} />
-        <Slider label="Name weight" limit="nameWeight" value={t.nameWeight} onChange={(v) => setSetting('typography', 'nameWeight', v)} />
-        <Slider label="Space below header" limit="headerSpacing" value={settings.spacing.header} onChange={(v) => setSetting('spacing', 'header', v)} />
+        <Slider
+          label="Name size"
+          limit="nameSize"
+          value={t.nameSize}
+          onChange={(v) => setSetting('typography', 'nameSize', v)}
+        />
+        <Slider
+          label="Name weight"
+          limit="nameWeight"
+          value={t.nameWeight}
+          onChange={(v) => setSetting('typography', 'nameWeight', v)}
+        />
+        <Slider
+          label="Space below header"
+          limit="headerSpacing"
+          value={settings.spacing.header}
+          onChange={(v) => setSetting('spacing', 'header', v)}
+        />
       </Group>
     </>
   );
@@ -158,7 +209,9 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
   const m = settings.page.margins;
   const cropMarks = useUiStore((st) => st.cropMarks);
   const setCropMarks = useUiStore((st) => st.setCropMarks);
-  const [linkedMargins, setLinkedMargins] = useState(m.top === m.right && m.right === m.bottom && m.bottom === m.left);
+  const [linkedMargins, setLinkedMargins] = useState(
+    m.top === m.right && m.right === m.bottom && m.bottom === m.left,
+  );
   const [confirmReset, setConfirmReset] = useState(false);
   const template = TEMPLATES[resume.template];
 
@@ -168,14 +221,19 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
         <TemplatePicker value={resume.template} />
       </Group>
 
-      <Group title="Typography" action={<ResetButton group="typography" label="Reset typography" />}>
+      <Group
+        title="Typography"
+        action={<ResetButton group="typography" label="Reset typography" />}
+      >
         <div className="grid grid-cols-1 gap-3">
           <label className="flex flex-col gap-1.5 text-[13px] font-medium text-ink">
             Body font
             <Select
               value={t.bodyFont}
               options={FONT_OPTIONS}
-              onChange={(e) => setSetting('typography', 'bodyFont', e.target.value as typeof t.bodyFont)}
+              onChange={(e) =>
+                setSetting('typography', 'bodyFont', e.target.value as typeof t.bodyFont)
+              }
             />
           </label>
           <label className="flex flex-col gap-1.5 text-[13px] font-medium text-ink">
@@ -183,43 +241,143 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
             <Select
               value={t.headingFont}
               options={FONT_OPTIONS}
-              onChange={(e) => setSetting('typography', 'headingFont', e.target.value as typeof t.headingFont)}
+              onChange={(e) =>
+                setSetting('typography', 'headingFont', e.target.value as typeof t.headingFont)
+              }
             />
           </label>
         </div>
-        <Slider label="Body size" limit="baseSize" value={t.baseSize} onChange={(v) => setSetting('typography', 'baseSize', v)} />
-        <Slider label="Section heading size" limit="sectionTitleSize" value={t.sectionTitleSize} onChange={(v) => setSetting('typography', 'sectionTitleSize', v)} />
-        <Slider label="Entry title size" limit="entryTitleSize" value={t.entryTitleSize} onChange={(v) => setSetting('typography', 'entryTitleSize', v)} />
-        <Slider label="Name size" limit="nameSize" value={t.nameSize} onChange={(v) => setSetting('typography', 'nameSize', v)} />
-        <Slider label="Line height" limit="lineHeight" value={t.lineHeight} onChange={(v) => setSetting('typography', 'lineHeight', v)} />
-        <Slider label="Letter spacing" limit="letterSpacing" value={t.letterSpacing} onChange={(v) => setSetting('typography', 'letterSpacing', v)} />
+        <Slider
+          label="Body size"
+          limit="baseSize"
+          value={t.baseSize}
+          onChange={(v) => setSetting('typography', 'baseSize', v)}
+        />
+        <Slider
+          label="Section heading size"
+          limit="sectionTitleSize"
+          value={t.sectionTitleSize}
+          onChange={(v) => setSetting('typography', 'sectionTitleSize', v)}
+        />
+        <Slider
+          label="Entry title size"
+          limit="entryTitleSize"
+          value={t.entryTitleSize}
+          onChange={(v) => setSetting('typography', 'entryTitleSize', v)}
+        />
+        <Slider
+          label="Name size"
+          limit="nameSize"
+          value={t.nameSize}
+          onChange={(v) => setSetting('typography', 'nameSize', v)}
+        />
+        <Slider
+          label="Line height"
+          limit="lineHeight"
+          value={t.lineHeight}
+          onChange={(v) => setSetting('typography', 'lineHeight', v)}
+        />
+        <Slider
+          label="Letter spacing"
+          limit="letterSpacing"
+          value={t.letterSpacing}
+          onChange={(v) => setSetting('typography', 'letterSpacing', v)}
+        />
       </Group>
 
       <Group title="Layout" action={<ResetButton group="spacing" label="Reset spacing" />}>
-        <Switch label="Same margin on all sides" checked={linkedMargins} onCheckedChange={setLinkedMargins} />
+        <Switch
+          label="Same margin on all sides"
+          checked={linkedMargins}
+          onCheckedChange={setLinkedMargins}
+        />
         {linkedMargins ? (
-          <Slider label="Margins" limit="margin" value={m.top} onChange={(v) => setMargin('all', v)} />
+          <Slider
+            label="Margins"
+            limit="margin"
+            value={m.top}
+            onChange={(v) => setMargin('all', v)}
+          />
         ) : (
           <>
-            <Slider label="Top margin" limit="margin" value={m.top} onChange={(v) => setMargin('top', v)} />
-            <Slider label="Bottom margin" limit="margin" value={m.bottom} onChange={(v) => setMargin('bottom', v)} />
-            <Slider label="Left margin" limit="margin" value={m.left} onChange={(v) => setMargin('left', v)} />
-            <Slider label="Right margin" limit="margin" value={m.right} onChange={(v) => setMargin('right', v)} />
+            <Slider
+              label="Top margin"
+              limit="margin"
+              value={m.top}
+              onChange={(v) => setMargin('top', v)}
+            />
+            <Slider
+              label="Bottom margin"
+              limit="margin"
+              value={m.bottom}
+              onChange={(v) => setMargin('bottom', v)}
+            />
+            <Slider
+              label="Left margin"
+              limit="margin"
+              value={m.left}
+              onChange={(v) => setMargin('left', v)}
+            />
+            <Slider
+              label="Right margin"
+              limit="margin"
+              value={m.right}
+              onChange={(v) => setMargin('right', v)}
+            />
           </>
         )}
-        <Slider label="Space between sections" limit="sectionSpacing" value={s.section} onChange={(v) => setSetting('spacing', 'section', v)} />
-        <Slider label="Space between entries" limit="entrySpacing" value={s.entry} onChange={(v) => setSetting('spacing', 'entry', v)} />
-        <Slider label="Space between paragraphs" limit="paragraphSpacing" value={s.paragraph} onChange={(v) => setSetting('spacing', 'paragraph', v)} />
-        <Slider label="Space below header" limit="headerSpacing" value={s.header} onChange={(v) => setSetting('spacing', 'header', v)} />
+        <Slider
+          label="Space between sections"
+          limit="sectionSpacing"
+          value={s.section}
+          onChange={(v) => setSetting('spacing', 'section', v)}
+        />
+        <Slider
+          label="Space between entries"
+          limit="entrySpacing"
+          value={s.entry}
+          onChange={(v) => setSetting('spacing', 'entry', v)}
+        />
+        <Slider
+          label="Space between paragraphs"
+          limit="paragraphSpacing"
+          value={s.paragraph}
+          onChange={(v) => setSetting('spacing', 'paragraph', v)}
+        />
+        <Slider
+          label="Space below header"
+          limit="headerSpacing"
+          value={s.header}
+          onChange={(v) => setSetting('spacing', 'header', v)}
+        />
       </Group>
 
       <Group title="Colours" action={<ResetButton group="colors" label="Reset colours" />}>
-        <ColorField label="Text" value={settings.colors.text} minContrast={7} onChange={(v) => setSetting('colors', 'text', v)} />
-        <ColorField label="Secondary text" value={settings.colors.secondary} minContrast={4.5} onChange={(v) => setSetting('colors', 'secondary', v)} />
+        <ColorField
+          label="Text"
+          value={settings.colors.text}
+          minContrast={7}
+          onChange={(v) => setSetting('colors', 'text', v)}
+        />
+        <ColorField
+          label="Secondary text"
+          value={settings.colors.secondary}
+          minContrast={4.5}
+          onChange={(v) => setSetting('colors', 'secondary', v)}
+        />
         {template.supportsAccent && (
-          <ColorField label="Accent" value={settings.colors.accent} minContrast={3} onChange={(v) => setSetting('colors', 'accent', v)} />
+          <ColorField
+            label="Accent"
+            value={settings.colors.accent}
+            minContrast={3}
+            onChange={(v) => setSetting('colors', 'accent', v)}
+          />
         )}
-        <ColorField label="Rules and dividers" value={settings.colors.divider} onChange={(v) => setSetting('colors', 'divider', v)} />
+        <ColorField
+          label="Rules and dividers"
+          value={settings.colors.divider}
+          onChange={(v) => setSetting('colors', 'divider', v)}
+        />
       </Group>
 
       <Group title="Document">
@@ -251,13 +409,17 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
           label="Page numbers"
           description="Shown when the resume has more than one page."
           checked={settings.page.pageNumbers}
-          onCheckedChange={(v) => setSetting('page', 'pageNumbers', v, v ? 'Show page numbers' : 'Hide page numbers')}
+          onCheckedChange={(v) =>
+            setSetting('page', 'pageNumbers', v, v ? 'Show page numbers' : 'Hide page numbers')
+          }
         />
         <label className="flex flex-col gap-1.5 text-[13px] font-medium text-ink">
           Date format
           <Select
             value={settings.dateFormat}
-            onChange={(e) => setDocumentOption('dateFormat', e.target.value as DocumentSettings['dateFormat'])}
+            onChange={(e) =>
+              setDocumentOption('dateFormat', e.target.value as DocumentSettings['dateFormat'])
+            }
             options={[
               { value: 'year', label: '2023 – Present' },
               { value: 'short', label: 'Sep 2023 – Present' },
@@ -292,10 +454,17 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
       </Group>
 
       <div className="px-4 py-5">
-        <Button variant="secondary" size="sm" icon={<RotateCcw className="size-4" />} onClick={() => setConfirmReset(true)}>
+        <Button
+          variant="secondary"
+          size="sm"
+          icon={<RotateCcw className="size-4" />}
+          onClick={() => setConfirmReset(true)}
+        >
           Reset all formatting
         </Button>
-        <p className="mt-2 text-xs text-muted">Restores {template.name} defaults. Your content is not affected.</p>
+        <p className="mt-2 text-xs text-muted">
+          Restores {template.name} defaults. Your content is not affected.
+        </p>
       </div>
       <ConfirmDialog
         open={confirmReset}

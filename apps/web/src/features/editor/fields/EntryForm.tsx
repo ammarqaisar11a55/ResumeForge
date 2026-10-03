@@ -36,26 +36,36 @@ interface EntryFormProps {
  */
 export const EntryForm = memo(
   function EntryForm({ sectionId, sectionType, entry, issues }: EntryFormProps) {
-  const fields = entryFields({ type: sectionType } as Section, entry);
-  const record = entry as unknown as Record<string, unknown>;
-  return (
-    <div className="grid grid-cols-2 gap-x-3 gap-y-3.5">
-      {fields.map((field) => (
-        <div key={field.key} className={cn(field.span === 2 || field.kind === 'bullets' ? 'col-span-2' : 'col-span-2 sm:col-span-1')}>
-          <FieldControl
-            field={field}
-            value={record[field.key]}
-            sectionId={sectionId}
-            entryId={entry.id}
-            issues={issuesFor(issues, entry.id, field.key)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+    const fields = entryFields({ type: sectionType } as Section, entry);
+    const record = entry as unknown as Record<string, unknown>;
+    return (
+      <div className="grid grid-cols-2 gap-x-3 gap-y-3.5">
+        {fields.map((field) => (
+          <div
+            key={field.key}
+            className={cn(
+              field.span === 2 || field.kind === 'bullets'
+                ? 'col-span-2'
+                : 'col-span-2 sm:col-span-1',
+            )}
+          >
+            <FieldControl
+              field={field}
+              value={record[field.key]}
+              sectionId={sectionId}
+              entryId={entry.id}
+              issues={issuesFor(issues, entry.id, field.key)}
+            />
+          </div>
+        ))}
+      </div>
+    );
   },
   (a, b) =>
-    a.entry === b.entry && a.sectionId === b.sectionId && a.sectionType === b.sectionType && issuesKey(a.issues) === issuesKey(b.issues),
+    a.entry === b.entry &&
+    a.sectionId === b.sectionId &&
+    a.sectionType === b.sectionType &&
+    issuesKey(a.issues) === issuesKey(b.issues),
 );
 
 function FieldControl({
@@ -74,9 +84,24 @@ function FieldControl({
   const set = (next: unknown) => updateEntry(sectionId, entryId, field.key, next);
   switch (field.kind) {
     case 'bullets':
-      return <BulletsField label={field.label} sectionId={sectionId} entryId={entryId} field={field.key} bullets={value as Bullet[]} />;
+      return (
+        <BulletsField
+          label={field.label}
+          sectionId={sectionId}
+          entryId={entryId}
+          field={field.key}
+          bullets={value as Bullet[]}
+        />
+      );
     case 'tags':
-      return <TagsField label={field.label} value={value as string[]} onChange={set} placeholder={field.placeholder} />;
+      return (
+        <TagsField
+          label={field.label}
+          value={value as string[]}
+          onChange={set}
+          placeholder={field.placeholder}
+        />
+      );
     case 'date-range':
       return (
         <DateRangeField
@@ -88,7 +113,9 @@ function FieldControl({
         />
       );
     case 'date':
-      return <DateField label={field.label} value={value as string} onChange={set} issues={issues} />;
+      return (
+        <DateField label={field.label} value={value as string} onChange={set} issues={issues} />
+      );
     default:
       return (
         <Field label={field.label} hint={field.hint} issues={issues}>
@@ -107,10 +134,27 @@ function FieldControl({
               );
             }
             if (field.kind === 'url') {
-              return <UrlInput id={id} value={text} onChange={set} placeholder={field.placeholder} describedBy={describedBy} invalid={issues.length > 0} />;
+              return (
+                <UrlInput
+                  id={id}
+                  value={text}
+                  onChange={set}
+                  placeholder={field.placeholder}
+                  describedBy={describedBy}
+                  invalid={issues.length > 0}
+                />
+              );
             }
             if (field.kind === 'select') {
-              return <Select id={id} value={text} onChange={(e) => set(e.target.value)} options={field.choices ?? []} aria-describedby={describedBy} />;
+              return (
+                <Select
+                  id={id}
+                  value={text}
+                  onChange={(e) => set(e.target.value)}
+                  options={field.choices ?? []}
+                  aria-describedby={describedBy}
+                />
+              );
             }
             return (
               <TextInput

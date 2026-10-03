@@ -51,7 +51,11 @@ export async function printDocument(snapshot: DocumentSnapshot, title: string): 
 
   await new Promise<void>((resolve, reject) => {
     iframe.addEventListener('load', () => resolve(), { once: true });
-    iframe.addEventListener('error', () => reject(new Error('The print view could not be prepared.')), { once: true });
+    iframe.addEventListener(
+      'error',
+      () => reject(new Error('The print view could not be prepared.')),
+      { once: true },
+    );
     document.body.appendChild(iframe);
   });
 

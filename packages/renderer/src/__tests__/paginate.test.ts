@@ -49,7 +49,10 @@ describe('paginate', () => {
   });
 
   it('splits a large entry between bullets when plenty of space remains', () => {
-    const pages = paginate([block('a', [500]), block('e', [60, 100, 100, 100, 100, 100, 100])], PAGE);
+    const pages = paginate(
+      [block('a', [500]), block('e', [60, 100, 100, 100, 100, 100, 100])],
+      PAGE,
+    );
     expect(pages).toHaveLength(2);
     const first = pages[0]!.fragments[1]!;
     expect(first).toMatchObject({ key: 'e', from: 0 });
@@ -78,17 +81,23 @@ describe('paginate', () => {
   });
 
   it('produces 1, 2 and 3 page documents as content grows', () => {
-    const entries = (n: number) => Array.from({ length: n }, (_, i) => block(`e${i}`, [40, 25, 25]));
+    const entries = (n: number) =>
+      Array.from({ length: n }, (_, i) => block(`e${i}`, [40, 25, 25]));
     expect(paginate([block('header', [100]), ...entries(5)], PAGE)).toHaveLength(1);
     expect(paginate([block('header', [100]), ...entries(15)], PAGE)).toHaveLength(2);
     expect(paginate([block('header', [100]), ...entries(28)], PAGE)).toHaveLength(3);
   });
 
   it('places every atom exactly once', () => {
-    const blocks = [block('h', [100]), title('t1'), ...Array.from({ length: 40 }, (_, i) => block(`e${i}`, [40, 30, 30, 30]))];
+    const blocks = [
+      block('h', [100]),
+      title('t1'),
+      ...Array.from({ length: 40 }, (_, i) => block(`e${i}`, [40, 30, 30, 30])),
+    ];
     const pages = paginate(blocks, PAGE);
     const placed = new Map<string, number>();
-    for (const f of pages.flatMap((p) => p.fragments)) placed.set(f.key, (placed.get(f.key) ?? 0) + f.to - f.from);
+    for (const f of pages.flatMap((p) => p.fragments))
+      placed.set(f.key, (placed.get(f.key) ?? 0) + f.to - f.from);
     for (const b of blocks) expect(placed.get(b.key)).toBe(b.segments.length);
   });
 });

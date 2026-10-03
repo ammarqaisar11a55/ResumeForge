@@ -30,8 +30,14 @@ export function SummaryEditor({ section }: { section: SectionOf<'summary'> }) {
         aria-describedby={`${id}-guidance`}
         onChange={(text) => updateEntry(section.id, entry.id, 'text', text)}
       />
-      <div id={`${id}-guidance`} className="flex items-center justify-between gap-3 text-xs" aria-live="polite">
-        <span className={cn('font-medium', STATUS_STYLES[guidance.status])}>{guidance.message}</span>
+      <div
+        id={`${id}-guidance`}
+        className="flex items-center justify-between gap-3 text-xs"
+        aria-live="polite"
+      >
+        <span className={cn('font-medium', STATUS_STYLES[guidance.status])}>
+          {guidance.message}
+        </span>
         <span className="tabular shrink-0 text-muted">
           {guidance.words} words · {guidance.characters} characters
         </span>

@@ -37,7 +37,9 @@ export interface LoadedResume {
 function isQuotaError(error: unknown): boolean {
   return (
     error instanceof DOMException &&
-    (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED' || error.code === 22)
+    (error.name === 'QuotaExceededError' ||
+      error.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+      error.code === 22)
   );
 }
 

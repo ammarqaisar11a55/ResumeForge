@@ -99,8 +99,13 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
     const now = Date.now();
     const key = options.coalesceKey ?? null;
     const coalesce =
-      key !== null && state.lastCommit.key === key && now - state.lastCommit.at < COALESCE_WINDOW_MS && state.past.length > 0;
-    const past = coalesce ? state.past : [...state.past, { resume: current, label }].slice(-HISTORY_LIMIT);
+      key !== null &&
+      state.lastCommit.key === key &&
+      now - state.lastCommit.at < COALESCE_WINDOW_MS &&
+      state.past.length > 0;
+    const past = coalesce
+      ? state.past
+      : [...state.past, { resume: current, label }].slice(-HISTORY_LIMIT);
 
     set({
       resume: stamped,

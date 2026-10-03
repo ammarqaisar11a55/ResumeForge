@@ -17,7 +17,13 @@ export interface SegmentedProps<T extends string> {
   className?: string;
 }
 
-export function Segmented<T extends string>({ value, onChange, options, label, className }: SegmentedProps<T>) {
+export function Segmented<T extends string>({
+  value,
+  onChange,
+  options,
+  label,
+  className,
+}: SegmentedProps<T>) {
   return (
     <ToggleGroup.Root
       type="single"

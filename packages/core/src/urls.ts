@@ -15,7 +15,9 @@ export function normalizeUrl(input: string | undefined | null): string {
   // "localhost:3000" or "example.com:8080/x" look like schemes but are hosts.
   const looksLikeHostPort = /^[\w.-]+:\d+(\/|$)/.test(value);
   const withScheme =
-    HAS_SCHEME_RE.test(value) && !looksLikeHostPort ? value : `https://${value.replace(/^\/+/, '')}`;
+    HAS_SCHEME_RE.test(value) && !looksLikeHostPort
+      ? value
+      : `https://${value.replace(/^\/+/, '')}`;
   try {
     const url = new URL(withScheme);
     if (!SAFE_SCHEMES.has(url.protocol)) return '';
@@ -73,7 +75,8 @@ export function describeLink(input: string): LinkDescription {
   const host = parsed.hostname.replace(/^www\./, '');
   const parts = parsed.pathname.split('/').filter(Boolean);
   if (host === 'github.com' && parts.length >= 2) return { source: 'GitHub', text: parts[1]! };
-  if (host === 'gitlab.com' && parts.length >= 2) return { source: 'GitLab', text: parts.slice(1).join('/') };
+  if (host === 'gitlab.com' && parts.length >= 2)
+    return { source: 'GitLab', text: parts.slice(1).join('/') };
   return { source: '', text: displayUrl(url) };
 }
 

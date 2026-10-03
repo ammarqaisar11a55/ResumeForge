@@ -28,7 +28,9 @@ export async function createPgliteDb(dataDir: string): Promise<Db> {
 
   return {
     kind: 'pglite',
-    query: async (sql, params = []) => ({ rows: (await pglite.query(sql, params)).rows as never[] }),
+    query: async (sql, params = []) => ({
+      rows: (await pglite.query(sql, params)).rows as never[],
+    }),
     exec: async (sql) => void (await pglite.exec(sql)),
     transaction: (fn) => pglite.transaction((tx) => fn(txDb(tx))),
     close: () => pglite.close(),

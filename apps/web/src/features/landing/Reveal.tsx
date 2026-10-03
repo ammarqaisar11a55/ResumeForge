@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ElementType,
+  type ReactNode,
+} from 'react';
 import { cn } from '../../lib/cn';
 
 /**

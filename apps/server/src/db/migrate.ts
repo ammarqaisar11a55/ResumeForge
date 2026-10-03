@@ -17,7 +17,10 @@ export async function migrate(db: Db): Promise<number[]> {
     if (applied.has(migration.version)) continue;
     await db.transaction(async (tx) => {
       await tx.exec(migration.sql);
-      await tx.query('INSERT INTO schema_migrations (version, name) VALUES ($1, $2)', [migration.version, migration.name]);
+      await tx.query('INSERT INTO schema_migrations (version, name) VALUES ($1, $2)', [
+        migration.version,
+        migration.name,
+      ]);
     });
     done.push(migration.version);
   }
@@ -26,5 +29,8 @@ export async function migrate(db: Db): Promise<number[]> {
 
 /** Make sure the built-in user exists (until authentication replaces it). */
 export async function ensureUser(db: Db, id: string): Promise<void> {
-  await db.query(`INSERT INTO users (id, display_name) VALUES ($1, 'Local user') ON CONFLICT (id) DO NOTHING`, [id]);
+  await db.query(
+    `INSERT INTO users (id, display_name) VALUES ($1, 'Local user') ON CONFLICT (id) DO NOTHING`,
+    [id],
+  );
 }

@@ -45,7 +45,10 @@ export function SaveIndicator() {
       <button
         type="button"
         onClick={() => flushSave()}
-        className={cn('flex h-7 items-center gap-1.5 rounded-md px-2 text-xs font-medium whitespace-nowrap hover:bg-raised', tone)}
+        className={cn(
+          'flex h-7 items-center gap-1.5 rounded-md px-2 text-xs font-medium whitespace-nowrap hover:bg-raised',
+          tone,
+        )}
         aria-live="polite"
         data-testid="save-status"
       >

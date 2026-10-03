@@ -19,7 +19,8 @@ export const useSidebarStore = create<SidebarState>()((set, get) => ({
   setPersonalOpen: (personalOpen) => set({ personalOpen }),
   toggleSection: (id, open) =>
     set({ openSections: { ...get().openSections, [id]: open ?? !get().openSections[id] } }),
-  toggleEntry: (id, open) => set({ openEntries: { ...get().openEntries, [id]: open ?? !get().openEntries[id] } }),
+  toggleEntry: (id, open) =>
+    set({ openEntries: { ...get().openEntries, [id]: open ?? !get().openEntries[id] } }),
   reveal: (sectionId, entryId) => {
     if (sectionId === '__header') {
       set({ personalOpen: true });
@@ -30,7 +31,9 @@ export const useSidebarStore = create<SidebarState>()((set, get) => ({
       });
     }
     requestAnimationFrame(() => {
-      const selector = entryId ? `[data-editor-entry="${entryId}"]` : `[data-editor-section="${sectionId}"]`;
+      const selector = entryId
+        ? `[data-editor-entry="${entryId}"]`
+        : `[data-editor-section="${sectionId}"]`;
       document.querySelector(selector)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     });
   },

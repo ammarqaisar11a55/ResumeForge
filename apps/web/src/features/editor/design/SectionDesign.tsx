@@ -14,7 +14,13 @@ import { setSectionOption, setSetting, updateSection } from '../../../state/edit
 import { Group } from './DesignPanel';
 
 /** Options for the selected section, plus the shared section typography. */
-export function SectionDesign({ section, settings }: { section: Section; settings: DocumentSettings }) {
+export function SectionDesign({
+  section,
+  settings,
+}: {
+  section: Section;
+  settings: DocumentSettings;
+}) {
   const def = getSectionDefinition(section.type);
   const options = sectionOptions(section);
   const limits = SETTING_LIMITS;
@@ -28,12 +34,19 @@ export function SectionDesign({ section, settings }: { section: Section; setting
         />
         <Switch
           label="Show heading"
-          description={section.type === 'summary' ? 'Summaries often read well without one.' : undefined}
+          description={
+            section.type === 'summary' ? 'Summaries often read well without one.' : undefined
+          }
           checked={options.showTitle}
           onCheckedChange={(v) => setSectionOption(section.id, 'showTitle', v)}
         />
         {def.options.map((option) => (
-          <OptionControl key={option.key} option={option} value={options[option.key]} sectionId={section.id} />
+          <OptionControl
+            key={option.key}
+            option={option}
+            value={options[option.key]}
+            sectionId={section.id}
+          />
         ))}
       </Group>
       <Group title="All sections">
@@ -105,7 +118,13 @@ function OptionControl({
       <Select
         value={String(value)}
         options={choices}
-        onChange={(e) => setSectionOption(sectionId, option.key, (numeric ? Number(e.target.value) : e.target.value) as never)}
+        onChange={(e) =>
+          setSectionOption(
+            sectionId,
+            option.key,
+            (numeric ? Number(e.target.value) : e.target.value) as never,
+          )
+        }
       />
     </label>
   );

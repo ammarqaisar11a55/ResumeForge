@@ -18,7 +18,15 @@ export const overlayClass =
 export const panelClass =
   'fixed top-1/2 left-1/2 z-50 w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 rounded-[10px] border border-line bg-surface p-5 shadow-pop focus:outline-none data-[state=open]:animate-[dialog-in_180ms_cubic-bezier(0.2,0.8,0.2,1)]';
 
-export function Dialog({ open, onOpenChange, title, description, children, footer, className }: DialogProps) {
+export function Dialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+  children,
+  footer,
+  className,
+}: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
@@ -28,7 +36,9 @@ export function Dialog({ open, onOpenChange, title, description, children, foote
             <div>
               <RadixDialog.Title className="type-title text-lg text-ink">{title}</RadixDialog.Title>
               {description ? (
-                <RadixDialog.Description className="mt-1 text-sm text-muted">{description}</RadixDialog.Description>
+                <RadixDialog.Description className="mt-1 text-sm text-muted">
+                  {description}
+                </RadixDialog.Description>
               ) : (
                 <RadixDialog.Description className="sr-only">{title}</RadixDialog.Description>
               )}

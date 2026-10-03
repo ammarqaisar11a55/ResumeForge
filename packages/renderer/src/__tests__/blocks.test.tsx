@@ -1,23 +1,41 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { createDemoResume, createEntry, createResume, createSection, resolveSettings, type Resume } from '@resumeforge/core';
+import {
+  createDemoResume,
+  createEntry,
+  createResume,
+  createSection,
+  resolveSettings,
+  type Resume,
+} from '@resumeforge/core';
 import { buildBlocks } from '../blocks/buildBlocks';
 import { buildPrintHtml } from '../print';
 
-const build = (resume: Resume) => buildBlocks(resume, { settings: resolveSettings(resume.template, resume.settings) });
+const build = (resume: Resume) =>
+  buildBlocks(resume, { settings: resolveSettings(resume.template, resume.settings) });
 const atomsIn = (html: string) => (html.match(/data-rf-atom=""/g) ?? []).length;
 
 describe('buildBlocks', () => {
   it('declares exactly as many atoms as it renders, for every block', () => {
     const resume = createDemoResume();
     // Add one of every section type so every renderer is covered.
-    for (const type of ['experience', 'certifications', 'awards', 'publications', 'languages', 'interests', 'custom'] as const) {
+    for (const type of [
+      'experience',
+      'certifications',
+      'awards',
+      'publications',
+      'languages',
+      'interests',
+      'custom',
+    ] as const) {
       const section = createSection(type);
       section.entries.push(createEntry(type) as never, createEntry(type) as never);
       resume.sections.push(section);
     }
     for (const block of build(resume)) {
-      const html = renderToStaticMarkup(<>{block.render({ from: 0, to: block.atomCount, continued: false })}</>);
+      const html = renderToStaticMarkup(
+        <>{block.render({ from: 0, to: block.atomCount, continued: false })}</>,
+      );
       expect(atomsIn(html), block.key).toBe(block.atomCount);
     }
   });
@@ -58,7 +76,9 @@ describe('buildBlocks', () => {
   });
 
   it('renders contacts as real links without requiring display text', () => {
-    const html = renderToStaticMarkup(<>{build(createDemoResume())[0]!.render({ from: 0, to: 1, continued: false })}</>);
+    const html = renderToStaticMarkup(
+      <>{build(createDemoResume())[0]!.render({ from: 0, to: 1, continued: false })}</>,
+    );
     expect(html).toContain('href="mailto:alex.morgan@example.com"');
     expect(html).toContain('href="https://github.com/alexmorgan-dev"');
     expect(html).toContain('>github.com/alexmorgan-dev<');
@@ -66,7 +86,11 @@ describe('buildBlocks', () => {
 
   it('shows GitHub links in compact form', () => {
     const blocks = build(createDemoResume());
-    const html = blocks.map((b) => renderToStaticMarkup(<>{b.render({ from: 0, to: b.atomCount, continued: false })}</>)).join('');
+    const html = blocks
+      .map((b) =>
+        renderToStaticMarkup(<>{b.render({ from: 0, to: b.atomCount, continued: false })}</>),
+      )
+      .join('');
     expect(html).toMatch(/GitHub<span class="rf-sep"> · <\/span>quillmark/);
     expect(html).toContain('href="https://github.com/alexmorgan-dev/quillmark"');
   });
@@ -74,7 +98,13 @@ describe('buildBlocks', () => {
 
 describe('buildPrintHtml', () => {
   it('sizes the page and escapes the title', () => {
-    const html = buildPrintHtml({ documentHtml: '<div></div>', css: 'a{}</style><script>', title: '<CV>', widthMm: 210, heightMm: 297 });
+    const html = buildPrintHtml({
+      documentHtml: '<div></div>',
+      css: 'a{}</style><script>',
+      title: '<CV>',
+      widthMm: 210,
+      heightMm: 297,
+    });
     expect(html).toContain('@page { size: 210mm 297mm; margin: 0; }');
     expect(html).toContain('<title>&lt;CV&gt;</title>');
     expect(html).not.toContain('</style><script>');

@@ -18,7 +18,10 @@ export async function printResume(element: HTMLElement | null, resume: Resume): 
     return;
   }
   try {
-    await printDocument(snapshotDocument(element, resume), pdfFileName(resume).replace(/\.pdf$/, ''));
+    await printDocument(
+      snapshotDocument(element, resume),
+      pdfFileName(resume).replace(/\.pdf$/, ''),
+    );
   } catch (error) {
     toast.error('Printing failed', { description: (error as Error).message });
   }
@@ -40,7 +43,8 @@ export async function downloadPdf(element: HTMLElement | null, resume: Resume): 
 
   if (!api || !capabilities.pdf) {
     toast.info('Choose “Save as PDF” in the print dialog', {
-      description: 'The PDF server is not running, so your browser will create the PDF. The pages are identical.',
+      description:
+        'The PDF server is not running, so your browser will create the PDF. The pages are identical.',
     });
     await printResume(element, resume);
     return;

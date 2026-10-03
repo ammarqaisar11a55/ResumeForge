@@ -19,7 +19,10 @@ export function SectionsPanel() {
         <h2 className="text-sm font-semibold text-ink">Sections</h2>
         <AddSectionMenu />
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" data-testid="sections-panel">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        data-testid="sections-panel"
+      >
         <PersonalInfoCard />
         <SortableList ids={sections.map((s) => s.id)} onMove={moveSection} itemName="section">
           {(id, index, { handle, isDragging }) => (
@@ -27,7 +30,9 @@ export function SectionsPanel() {
           )}
         </SortableList>
         {sections.length === 0 && (
-          <p className="px-4 py-6 text-sm text-muted">Your resume has no sections yet. Use Add section to start.</p>
+          <p className="px-4 py-6 text-sm text-muted">
+            Your resume has no sections yet. Use Add section to start.
+          </p>
         )}
       </div>
       <IssueSummary />

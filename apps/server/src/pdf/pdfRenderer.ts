@@ -33,11 +33,13 @@ const CSP =
   "default-src 'none'; style-src 'unsafe-inline'; font-src data:; img-src data:; script-src 'none'; base-uri 'none'; form-action 'none'";
 
 export function sanitizeDocumentHtml(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?<\/script\s*>/gi, '')
-    .replace(/<\/?(iframe|object|embed|link|meta|base|form)\b[^>]*>/gi, '')
-    // Event handler attributes, only inside tags so resume text is never altered.
-    .replace(/<[^>]+>/g, (tag) => tag.replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, ''));
+  return (
+    html
+      .replace(/<script[\s\S]*?<\/script\s*>/gi, '')
+      .replace(/<\/?(iframe|object|embed|link|meta|base|form)\b[^>]*>/gi, '')
+      // Event handler attributes, only inside tags so resume text is never altered.
+      .replace(/<[^>]+>/g, (tag) => tag.replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, ''))
+  );
 }
 
 let documentCssPromise: Promise<string> | null = null;
