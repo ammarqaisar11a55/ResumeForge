@@ -1,11 +1,9 @@
 import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import puppeteer, { type Browser } from 'puppeteer-core';
 import type { FontId } from '@resumeforge/core';
 import { buildPrintHtml } from '@resumeforge/renderer/print';
+import { documentCssPath } from './assets';
 import { detectFonts, fontFacesFor } from './fonts';
-
-const require = createRequire(import.meta.url);
 
 export interface RenderPdfInput {
   /** Outer HTML of the paginated `.rf-document` produced by the shared renderer. */
@@ -17,7 +15,17 @@ export interface RenderPdfInput {
 }
 
 export interface PdfRendererOptions {
-  executablePath: string;
+  /** Chrome executable, or a function resolving it (serverless Chromium unpacks on first use). */
+  executablePath: string | (() => Promise<string>);
+  /** Extra launch arguments, e.g. those required by serverless Chromium. */
+  args?: string[];
+  /** 'shell' for chrome-headless-shell builds such as serverless Chromium. */
+  headless?: true | 'shell';
+  /**
+   * Render each request in its own browser context (default). Single-process
+   * Chromium (serverless) cannot create contexts, so it uses a fresh page.
+   */
+  isolateContexts?: boolean;
   noSandbox?: boolean;
   /** Maximum concurrent renders. */
   concurrency?: number;
@@ -47,7 +55,7 @@ let documentCssPromise: Promise<string> | null = null;
 /** The renderer package's document stylesheet: the same CSS the editor preview uses. */
 export function documentCss(): Promise<string> {
   documentCssPromise ??= (async () => {
-    return readFile(require.resolve('@resumeforge/renderer/styles.css'), 'utf8');
+    return readFile(documentCssPath(), 'utf8');
   })();
   return documentCssPromise;
 }
@@ -61,18 +69,24 @@ export class PdfRenderer {
 
   private getBrowser(): Promise<Browser> {
     if (!this.browser) {
-      this.browser = puppeteer
-        .launch({
-          executablePath: this.options.executablePath,
-          headless: true,
-          args: [
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            // Hinting off keeps glyph advances identical to the desktop preview.
-            '--font-render-hinting=none',
-            ...(this.options.noSandbox ? ['--no-sandbox', '--disable-setuid-sandbox'] : []),
-          ],
-        })
+      const { executablePath } = this.options;
+      this.browser = Promise.resolve(
+        typeof executablePath === 'string' ? executablePath : executablePath(),
+      )
+        .then((path) =>
+          puppeteer.launch({
+            executablePath: path,
+            headless: this.options.headless ?? true,
+            args: [
+              ...(this.options.args ?? []),
+              '--disable-dev-shm-usage',
+              '--disable-gpu',
+              // Hinting off keeps glyph advances identical to the desktop preview.
+              '--font-render-hinting=none',
+              ...(this.options.noSandbox ? ['--no-sandbox', '--disable-setuid-sandbox'] : []),
+            ],
+          }),
+        )
         .then((browser) => {
           browser.on('disconnected', () => {
             this.browser = null;
@@ -108,12 +122,16 @@ export class PdfRenderer {
       this.release();
       throw new Error(`Chrome could not be started: ${error.message}`);
     });
-    const context = await browser.createBrowserContext().catch((error: Error) => {
-      this.release();
-      throw error;
-    });
+    const isolate = this.options.isolateContexts ?? true;
+    const context = isolate
+      ? await browser.createBrowserContext().catch((error: Error) => {
+          this.release();
+          throw error;
+        })
+      : null;
+    let page: Awaited<ReturnType<Browser['newPage']>> | null = null;
     try {
-      const page = await context.newPage();
+      page = await (context ?? browser).newPage();
       page.setDefaultTimeout(this.options.timeoutMs ?? 30_000);
       await page.setRequestInterception(true);
       page.on('request', (request) => {
@@ -147,7 +165,8 @@ export class PdfRenderer {
       });
       return Buffer.from(pdf);
     } finally {
-      await context.close().catch(() => undefined);
+      if (context) await context.close().catch(() => undefined);
+      else await page?.close().catch(() => undefined);
       this.release();
     }
   }

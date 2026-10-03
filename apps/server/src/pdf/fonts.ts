@@ -1,9 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { FONT_IDS, FONTS, type FontId } from '@resumeforge/core';
-
-const require = createRequire(import.meta.url);
+import { fontPackageDir } from './assets';
 
 /**
  * Subsets embedded in PDFs: Latin plus Latin Extended covers most resumes.
@@ -31,7 +29,7 @@ export function fontFaceCss(id: FontId): Promise<string> {
 
 async function buildFontFaceCss(id: FontId): Promise<string> {
   const font = FONTS[id];
-  const dir = path.dirname(require.resolve(`${font.packageName}/package.json`));
+  const dir = fontPackageDir(font.packageName);
   const blocks: string[] = [];
   for (const sheet of STYLESHEETS) {
     const css = await readFile(path.join(dir, sheet), 'utf8');

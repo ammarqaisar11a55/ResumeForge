@@ -7,6 +7,8 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     ignores: [
+      '.vercel/**',
+      '.claude/**',
       '**/dist/**',
       '**/coverage/**',
       '**/node_modules/**',
@@ -16,6 +18,10 @@ export default tseslint.config(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

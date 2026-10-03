@@ -2,7 +2,7 @@
   "name": "resumeforge",
   "private": true,
   "version": "0.1.0",
-  "description": "ResumeForge \u2014 build a resume worth remembering.",
+  "description": "ResumeForge — build a resume worth remembering.",
   "type": "module",
   "workspaces": [
     "packages/*",
@@ -21,11 +21,13 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "npm run test:e2e -w @resumeforge/web"
+    "test:e2e": "npm run test:e2e -w @resumeforge/web",
+    "build:vercel": "node scripts/build-vercel.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "concurrently": "^10.0.5",
+    "esbuild": "^0.28.2",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
