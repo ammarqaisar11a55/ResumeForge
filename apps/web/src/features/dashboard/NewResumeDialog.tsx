@@ -40,6 +40,7 @@ export function NewResumeDialog({
       onOpenChange={onOpenChange}
       title="Create a resume"
       description="You can change the template and every setting later."
+      className="max-w-lg"
     >
       <form onSubmit={submit} className="flex flex-col gap-4">
         <Field
@@ -71,7 +72,7 @@ export function NewResumeDialog({
         </div>
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-2 text-[13px] font-medium text-ink">Template</legend>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {TEMPLATE_LIST.map((t) => (
               <label
                 key={t.id}

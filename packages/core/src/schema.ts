@@ -11,7 +11,15 @@ import { FONT_IDS } from './fonts';
  */
 export const SCHEMA_VERSION = 1;
 
-export const TEMPLATE_IDS = ['classic', 'modern', 'minimal'] as const;
+export const TEMPLATE_IDS = [
+  'classic',
+  'modern',
+  'minimal',
+  'claude',
+  'swiss',
+  'studio',
+  'executive',
+] as const;
 export const SECTION_TYPES = [
   'summary',
   'education',
@@ -298,6 +306,8 @@ export const DocumentSettingsSchema = z.object({
     secondary: hex,
     accent: hex,
     divider: hex,
+    /** Page background. Printed as-is, so keep it light. */
+    paper: hex,
   }),
   header: z.object({
     alignment: z.enum(['left', 'center']),

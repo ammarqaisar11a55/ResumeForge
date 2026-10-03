@@ -2,7 +2,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { createDemoResume, TEMPLATE_LIST, type TemplateId } from '@resumeforge/core';
+import { createDemoResume, TEMPLATE_LIST, TEMPLATES, type TemplateId } from '@resumeforge/core';
 import { ResumeThumbnail } from '@resumeforge/renderer';
 import { GitHubMark } from '../components/GitHubMark';
 import { Segmented } from '../components/ui/Segmented';
@@ -65,6 +65,9 @@ function HeroCopy({ children }: { children: React.ReactNode }) {
   return <motion.div style={reduce ? undefined : { y, opacity }}>{children}</motion.div>;
 }
 
+/** Templates offered by the hero's live switcher. */
+const HERO_TEMPLATES: TemplateId[] = ['classic', 'claude', 'swiss', 'studio'];
+
 function HeroDocument() {
   const [template, setTemplate] = useState<TemplateId>('classic');
   const resumes = useMemo(
@@ -111,8 +114,11 @@ function HeroDocument() {
         label="Preview template"
         value={template}
         onChange={setTemplate}
-        className="w-full max-w-xs bg-surface"
-        options={TEMPLATE_LIST.map((t) => ({ value: t.id, label: t.name.replace('Forge ', '') }))}
+        className="w-full max-w-sm bg-surface"
+        options={HERO_TEMPLATES.map((id) => ({
+          value: id,
+          label: TEMPLATES[id].name.replace('Forge ', ''),
+        }))}
       />
     </div>
   );
@@ -235,15 +241,22 @@ export function LandingPage() {
       <section id="templates" className="mx-auto max-w-6xl scroll-mt-8 px-4 py-24 sm:px-6">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="type-title max-w-lg text-[2rem] leading-tight text-ink">
-            Three templates, one set of content
+            {TEMPLATE_LIST.length} templates, one set of content
           </h2>
           <p className="max-w-sm text-[15px] text-muted">
             Switch at any time. Your content never changes, only how it is set.
           </p>
         </Reveal>
         <div className="mt-12">
-          <TemplateShowcase width={280} />
+          <TemplateShowcase width={280} ids={['classic', 'claude', 'swiss']} />
         </div>
+        <Link
+          to="/templates"
+          className="mt-12 inline-flex h-11 items-center gap-2 rounded-md border border-line-strong bg-surface px-5 text-[15px] font-semibold text-ink hover:bg-raised"
+        >
+          See all {TEMPLATE_LIST.length} templates
+          <ArrowRight className="size-4" aria-hidden />
+        </Link>
       </section>
 
       <section className="border-t border-line">

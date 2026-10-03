@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createDemoResume, createResume } from '@resumeforge/core';
+import { createDemoResume, createResume, TEMPLATE_LIST } from '@resumeforge/core';
 import { longResume, openEditor, pageCount, seedResumes } from './fixtures';
 
 const A4 = { width: 793.7, height: 1122.5 };
@@ -79,6 +79,29 @@ test.describe('multi-page rendering', () => {
     for (let i = 0; i < 9; i++) await page.keyboard.press('Control+z');
     await expect.poll(() => pageCount(page)).toBeLessThan(grown);
   });
+});
+
+test.describe('every template', () => {
+  for (const template of TEMPLATE_LIST) {
+    test(`${template.name} paginates a long resume cleanly`, async ({ page }) => {
+      const resume = longResume();
+      resume.template = template.id;
+      await seedResumes(page, [resume]);
+      await openEditor(page, resume.id);
+      expect(await pageCount(page)).toBeGreaterThanOrEqual(2);
+      await expect(page.locator('.rf-preview .rf-page[data-overflow]')).toHaveCount(0);
+      const lastIsHeading = await page
+        .locator('.rf-preview .rf-page')
+        .evaluateAll((pages) =>
+          pages.map((p) =>
+            [...p.querySelectorAll('.rf-block')]
+              .at(-1)
+              ?.classList.contains('rf-block--section-title'),
+          ),
+        );
+      expect(lastIsHeading.every((v) => !v)).toBe(true);
+    });
+  }
 });
 
 test.describe('editing', () => {

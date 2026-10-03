@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createDemoResume } from '@resumeforge/core';
+import { createDemoResume, TEMPLATE_LIST } from '@resumeforge/core';
 import { seedResumes } from './fixtures';
 
 test('landing page links into the app, templates, source and portfolio', async ({ page }) => {
@@ -18,7 +18,7 @@ test('landing page links into the app, templates, source and portfolio', async (
   await page.getByRole('link', { name: 'View templates' }).click();
   await expect(page).toHaveURL(/\/templates$/);
   // Only the visible thumbnails; each also has an invisible measuring copy outside <main>.
-  await expect(page.locator('main .rf-document')).toHaveCount(3);
+  await expect(page.locator('main .rf-document')).toHaveCount(TEMPLATE_LIST.length);
   await page.getByRole('link', { name: 'Start with Forge Modern' }).click();
   await expect(page.getByRole('dialog', { name: 'Create a resume' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /Modern/ })).toBeChecked();

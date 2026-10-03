@@ -23,7 +23,9 @@
   font-kerning: normal;
   font-optical-sizing: auto;
   font-variant-ligatures: common-ligatures;
-  font-synthesis: none;
+  /* No faux bold or italic (real files are loaded), but allow small caps
+     for fonts without dedicated small-cap glyphs. */
+  font-synthesis: small-caps;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -webkit-print-color-adjust: exact;
@@ -49,7 +51,7 @@
 .rf-page {
   position: relative;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--rf-paper, #ffffff);
   color: var(--rf-text);
 }
 
@@ -423,6 +425,250 @@
 }
 
 .rf-tpl-minimal .rf-stat-value {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Claude: ivory paper, editorial serif headings, clay accent         */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-claude .rf-name {
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.rf-tpl-claude .rf-headline {
+  color: var(--rf-secondary);
+  font-family: var(--rf-font-heading);
+  font-style: italic;
+  font-size: 1.2em;
+}
+
+.rf-tpl-claude .rf-contacts {
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-claude .rf-contact-row {
+  column-gap: 1.4em;
+}
+
+.rf-tpl-claude .rf-header {
+  border-bottom: 0.75pt solid var(--rf-divider);
+}
+
+.rf-tpl-claude .rf-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font-weight: 500;
+  color: var(--rf-text);
+  letter-spacing: -0.01em;
+  padding-bottom: 0.45em;
+}
+
+/* A small clay square marks each heading, after Claude's spark accents. */
+.rf-tpl-claude .rf-section-title::before {
+  content: '';
+  flex: none;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 1.5px;
+  background: var(--rf-accent);
+  transform: rotate(45deg);
+}
+
+.rf-tpl-claude .rf-entry-title {
+  font-family: var(--rf-font-heading);
+  font-weight: 600;
+}
+
+.rf-tpl-claude .rf-entry-aside {
+  font-weight: 500;
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-claude .rf-compact-link,
+.rf-tpl-claude .rf-bullets > li::before {
+  color: var(--rf-accent);
+}
+
+.rf-tpl-claude .rf-stat {
+  border-left-color: var(--rf-accent);
+}
+
+.rf-tpl-claude .rf-stat-value {
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Swiss: hanging headings in a left column                           */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-swiss {
+  --rf-gutter: 27mm;
+}
+
+.rf-tpl-swiss .rf-name {
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.rf-tpl-swiss .rf-headline {
+  margin-top: 0.5em;
+  font-weight: 500;
+}
+
+.rf-tpl-swiss .rf-header {
+  border-bottom: 2pt solid var(--rf-divider);
+}
+
+.rf-tpl-swiss .rf-contacts {
+  color: var(--rf-secondary);
+}
+
+/* The heading takes no vertical space; it hangs beside the first entry. */
+.rf-tpl-swiss .rf-block--section-title {
+  height: 0;
+  overflow: visible;
+}
+
+.rf-tpl-swiss .rf-section-title {
+  width: calc(var(--rf-gutter) - 4mm);
+  padding-top: 0.15em;
+  color: var(--rf-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.rf-tpl-swiss .rf-section > .rf-block:not(.rf-block--section-title) {
+  padding-left: var(--rf-gutter);
+}
+
+.rf-tpl-swiss .rf-entry-aside {
+  font-weight: 500;
+}
+
+.rf-tpl-swiss .rf-stat {
+  border-left-width: 2pt;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Studio: full-bleed colour band behind the header                   */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-studio .rf-header {
+  margin: calc(var(--rf-margin-top) * -1) calc(var(--rf-margin-right) * -1) 0
+    calc(var(--rf-margin-left) * -1);
+  padding: calc(var(--rf-margin-top) + 2mm) var(--rf-margin-right) 7mm var(--rf-margin-left);
+  margin-bottom: var(--rf-space-header);
+  background: var(--rf-accent);
+  color: #ffffff;
+}
+
+.rf-tpl-studio .rf-name {
+  letter-spacing: -0.03em;
+}
+
+.rf-tpl-studio .rf-headline {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.rf-tpl-studio .rf-contacts {
+  opacity: 0.85;
+}
+
+.rf-tpl-studio .rf-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  padding-bottom: 0.5em;
+}
+
+.rf-tpl-studio .rf-section-title::after {
+  content: '';
+  flex: 1;
+  height: 0.75pt;
+  background: var(--rf-divider);
+}
+
+.rf-tpl-studio .rf-entry-aside {
+  font-weight: 500;
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-studio .rf-compact-link,
+.rf-tpl-studio .rf-bullets > li::before {
+  color: var(--rf-accent);
+}
+
+.rf-tpl-studio .rf-stat {
+  border-left: none;
+  padding: 0.5em 0.7em;
+  border-radius: 3pt;
+  background: color-mix(in srgb, var(--rf-accent) 7%, transparent);
+}
+
+.rf-tpl-studio .rf-stat-value {
+  color: var(--rf-accent);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Forge Executive: formal serif, centred name, double rules                */
+/* ------------------------------------------------------------------------ */
+
+.rf-tpl-executive .rf-name {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--rf-accent);
+}
+
+.rf-tpl-executive .rf-headline {
+  font-style: italic;
+  color: var(--rf-secondary);
+}
+
+.rf-tpl-executive .rf-header {
+  border-bottom: 2.5pt double var(--rf-divider);
+}
+
+.rf-tpl-executive .rf-contact-row {
+  column-gap: 1.2em;
+}
+
+.rf-tpl-executive .rf-section-title {
+  font-variant-caps: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--rf-accent);
+  border-bottom: 0.6pt solid var(--rf-divider);
+  padding-bottom: 0.15em;
+  margin-bottom: 0.45em;
+}
+
+.rf-tpl-executive .rf-entry-title {
+  font-weight: 600;
+}
+
+.rf-tpl-executive .rf-entry-meta,
+.rf-tpl-executive .rf-entry-aside {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.rf-tpl-executive .rf-tech {
+  font-style: italic;
+}
+
+.rf-tpl-executive .rf-stat {
+  border-left-color: var(--rf-divider);
+}
+
+.rf-tpl-executive .rf-stat-value {
   font-weight: 600;
 }
 

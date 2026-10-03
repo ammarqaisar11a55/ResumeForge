@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { formatDateRange, isRangeInverted, parsePartialDate } from '../dates';
 import { createContact, createResume } from '../operations';
 import { createEntry, createSection } from '../sections';
-import { clampSetting, resolveSettings } from '../settings';
+import { DocumentSettingsSchema, TEMPLATE_IDS } from '../schema';
+import { clampSetting, contrastRatio, resolveSettings } from '../settings';
+import { TEMPLATE_LIST } from '../templates';
 import { summaryGuidance } from '../summary';
 import { contactHref, contactText, describeLink, displayUrl, normalizeUrl } from '../urls';
 import { checkGpa, issuesFor, validateResume } from '../validation';
@@ -135,6 +137,28 @@ describe('settings', () => {
     expect(settings.typography.lineHeight).toBe(1.8);
     expect(settings.page.margins.top).toBe(6);
     expect(clampSetting('nameSize', Number.NaN)).toBe(14);
+  });
+});
+
+describe('templates', () => {
+  it('defines seven complete, readable templates', () => {
+    expect(TEMPLATE_LIST.map((t) => t.id)).toEqual([...TEMPLATE_IDS]);
+    for (const template of TEMPLATE_LIST) {
+      const settings = resolveSettings(template.id, {});
+      expect(DocumentSettingsSchema.safeParse(settings).success, template.id).toBe(true);
+      // Body and secondary text stay legible on the template's paper.
+      expect(contrastRatio(settings.colors.text, settings.colors.paper)).toBeGreaterThanOrEqual(7);
+      expect(
+        contrastRatio(settings.colors.secondary, settings.colors.paper),
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('lets a resume override the paper colour', () => {
+    expect(resolveSettings('claude', {}).colors.paper).toBe('#faf9f5');
+    expect(resolveSettings('claude', { colors: { paper: '#ffffff' } }).colors.paper).toBe(
+      '#ffffff',
+    );
   });
 });
 

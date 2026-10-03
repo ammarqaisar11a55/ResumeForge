@@ -378,6 +378,11 @@ function DocumentDesign({ resume, settings }: { resume: Resume; settings: Docume
           value={settings.colors.divider}
           onChange={(v) => setSetting('colors', 'divider', v)}
         />
+        <ColorField
+          label="Paper"
+          value={settings.colors.paper}
+          onChange={(v) => setSetting('colors', 'paper', v)}
+        />
       </Group>
 
       <Group title="Document">

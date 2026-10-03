@@ -100,4 +100,19 @@ describe('paginate', () => {
       placed.set(f.key, (placed.get(f.key) ?? 0) + f.to - f.from);
     for (const b of blocks) expect(placed.get(b.key)).toBe(b.segments.length);
   });
+
+  it('counts headings that hang beside content (negative trail) as taking no height', () => {
+    // A gutter heading: its atom is 40px tall but its block occupies nothing.
+    const hanging = block('t', [40], { keepWithNext: true, spaceBefore: 20, trail: -40 });
+    const pages = paginate([block('a', [900]), hanging, block('e', [60])], PAGE);
+    expect(pages).toHaveLength(1);
+    expect(pages[0]!.used).toBe(900 + 20 + 0 + 10 + 60);
+  });
+
+  it('accounts for blocks that bleed into the margin (negative lead)', () => {
+    const band = block('header', [160], { lead: -60 });
+    const pages = paginate([band, block('e', [880])], PAGE);
+    expect(pages).toHaveLength(1);
+    expect(pages[0]!.used).toBe(100 + 10 + 880);
+  });
 });

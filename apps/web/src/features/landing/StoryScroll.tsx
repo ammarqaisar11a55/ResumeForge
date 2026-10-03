@@ -7,7 +7,7 @@ import {
   useTransform,
 } from 'motion/react';
 import { useMemo, useRef, useState } from 'react';
-import { createDemoResume, TEMPLATE_LIST, TEMPLATES, type TemplateId } from '@resumeforge/core';
+import { createDemoResume, TEMPLATES, type TemplateId } from '@resumeforge/core';
 import { ResumeThumbnail } from '@resumeforge/renderer';
 import { cn } from '../../lib/cn';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -18,7 +18,8 @@ export interface Step {
   body: string;
 }
 
-const TEMPLATE_ORDER: TemplateId[] = TEMPLATE_LIST.map((t) => t.id);
+/** Templates shown while the "Shape the page" step is pinned. */
+const TEMPLATE_ORDER: TemplateId[] = ['classic', 'claude', 'swiss', 'studio'];
 
 /**
  * "How it works" as a pinned scroll story: while the section is pinned, the
@@ -62,7 +63,12 @@ function PinnedStory({ steps }: { steps: Step[] }) {
     const sections =
       step === 0 ? Math.max(1, Math.ceil(local * demo.sections.length)) : demo.sections.length;
     // Step 2 cycles through the templates; the export step returns to Classic.
-    const template = step === 1 ? TEMPLATE_ORDER[Math.min(2, Math.floor(local * 3))]! : 'classic';
+    const template =
+      step === 1
+        ? TEMPLATE_ORDER[
+            Math.min(TEMPLATE_ORDER.length - 1, Math.floor(local * TEMPLATE_ORDER.length))
+          ]!
+        : 'classic';
     setFrame((prev) =>
       prev.step === step && prev.sections === sections && prev.template === template
         ? prev

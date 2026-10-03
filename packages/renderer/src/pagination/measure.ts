@@ -40,8 +40,11 @@ export function measureBlocks(root: HTMLElement, blocks: DocBlock[]): MeasuredBl
     const segments = tops.map((top, i) => (i < tops.length - 1 ? tops[i + 1]! : lastBottom) - top);
     return {
       ...base,
-      lead: Math.max(0, tops[0]!),
-      trail: Math.max(0, height - lastBottom),
+      // Lead and trail may be negative: a template can bleed an element
+      // into the margin (a header band) or hang it beside the next block
+      // (a gutter heading). The sum still equals the space actually used.
+      lead: tops[0]!,
+      trail: height - lastBottom,
       segments: segments.map((s) => Math.max(0, s)),
     };
   });

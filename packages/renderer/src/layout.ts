@@ -44,11 +44,15 @@ export function documentStyle(settings: DocumentSettings): CSSProperties {
     '--rf-secondary': c.secondary,
     '--rf-accent': c.accent,
     '--rf-divider': c.divider,
+    '--rf-paper': c.paper,
     '--rf-space-paragraph': `${s.paragraph}pt`,
     '--rf-space-header': `${s.header}pt`,
     '--rf-header-align': h.alignment,
     '--rf-header-justify': h.alignment === 'center' ? 'center' : 'flex-start',
+    '--rf-margin-top': `${page.margins.top}mm`,
+    '--rf-margin-right': `${page.margins.right}mm`,
     '--rf-margin-bottom': `${page.margins.bottom}mm`,
+    '--rf-margin-left': `${page.margins.left}mm`,
   } as CSSProperties;
 }
 

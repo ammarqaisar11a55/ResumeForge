@@ -20,7 +20,7 @@ export default function TemplatesPage() {
         </div>
       </div>
       <main className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <TemplateShowcase width={320} />
+        <TemplateShowcase width={280} />
       </main>
       <SiteFooter />
     </div>
