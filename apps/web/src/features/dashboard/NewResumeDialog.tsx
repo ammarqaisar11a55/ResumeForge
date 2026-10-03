@@ -27,7 +27,7 @@ export function NewResumeDialog({
 }) {
   const [title, setTitle] = useState('');
   const [template, setTemplate] = useState<TemplateId>(initialTemplate);
-  const [startFrom, setStartFrom] = useState<'blank' | 'demo'>('blank');
+  const [startFrom, setStartFrom] = useState<'blank' | 'demo'>('demo');
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -66,8 +66,8 @@ export function NewResumeDialog({
             value={startFrom}
             onChange={setStartFrom}
             options={[
-              { value: 'blank', label: 'Blank resume' },
               { value: 'demo', label: 'Example content' },
+              { value: 'blank', label: 'Blank resume' },
             ]}
           />
         </div>

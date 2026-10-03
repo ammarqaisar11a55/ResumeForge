@@ -6,6 +6,7 @@ import {
   addSection,
   duplicateEntry,
   duplicateSection,
+  fillWithExample,
   moveBullet,
   moveEntry,
   moveSection,
@@ -20,6 +21,7 @@ import {
   updateSection,
 } from '../state/editorActions';
 import { useEditorStore } from '../state/editorStore';
+import { resumeIsEmpty } from '../features/editor/sidebar/content';
 
 const state = () => useEditorStore.getState();
 const resume = () => state().resume!;
@@ -178,5 +180,24 @@ describe('a blank resume', () => {
       degree: 'BSc Computer Science',
       dates: { start: '2022', current: true },
     });
+  });
+});
+
+describe('example content', () => {
+  it('fills an empty resume with the example in its template, undoably', () => {
+    const blank = createResume({ title: 'Mine', template: 'claude' });
+    state().load(blank);
+    expect(resumeIsEmpty(resume())).toBe(true);
+
+    fillWithExample();
+    expect(resumeIsEmpty(resume())).toBe(false);
+    expect(resume().personalInfo.fullName).toBe('Alex Morgan');
+    expect(resume().sections.some((s) => s.type === 'projects' && s.entries.length > 0)).toBe(true);
+    // Title, template and formatting are kept.
+    expect(resume().metadata.title).toBe('Mine');
+    expect(resume().template).toBe('claude');
+
+    expect(state().undo()).toBe('Fill with example content');
+    expect(resumeIsEmpty(resume())).toBe(true);
   });
 });

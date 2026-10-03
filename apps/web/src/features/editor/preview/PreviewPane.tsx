@@ -1,4 +1,4 @@
-import { AlertTriangle, Minus, Plus, Scan } from 'lucide-react';
+import { AlertTriangle, Minus, Plus, Scan, Sparkles } from 'lucide-react';
 import {
   forwardRef,
   useCallback,
@@ -10,7 +10,10 @@ import {
 } from 'react';
 import { clamp, pageSizeMm, resolveSettings } from '@resumeforge/core';
 import { mmToPx, ResumeDocument, type LayoutInfo } from '@resumeforge/renderer';
+import { Button } from '../../../components/ui/Button';
 import { IconButton } from '../../../components/ui/IconButton';
+import { fillWithExample } from '../../../state/editorActions';
+import { resumeIsEmpty } from '../sidebar/content';
 import { cn } from '../../../lib/cn';
 import { pluralize } from '../../../lib/format';
 import { useEditorStore } from '../../../state/editorStore';
@@ -44,6 +47,7 @@ export const PreviewPane = forwardRef<HTMLDivElement, { interactive?: boolean }>
     const selection = useEditorStore((s) => s.selection);
     const pageCount = useEditorStore((s) => s.pageCount);
     const overflow = useEditorStore((s) => s.overflow);
+    const empty = useEditorStore((s) => (s.resume ? resumeIsEmpty(s.resume) : false));
     const zoom = useUiStore((s) => s.zoom);
     const setZoom = useUiStore((s) => s.setZoom);
     const cropMarks = useUiStore((s) => s.cropMarks);
@@ -106,6 +110,20 @@ export const PreviewPane = forwardRef<HTMLDivElement, { interactive?: boolean }>
 
     return (
       <div className="relative flex h-full min-h-0 flex-col bg-canvas">
+        {empty && (
+          <div
+            role="status"
+            className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-surface px-4 py-2.5 text-sm"
+          >
+            <Sparkles className="size-4 shrink-0 text-accent-ink" aria-hidden />
+            <span className="flex-1 text-muted">
+              This resume is empty. Start from example content and replace it with your own.
+            </span>
+            <Button size="sm" variant="primary" onClick={fillWithExample}>
+              Fill with example content
+            </Button>
+          </div>
+        )}
         {overflow && (
           <div
             role="status"

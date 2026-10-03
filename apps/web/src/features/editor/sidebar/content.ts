@@ -1,4 +1,4 @@
-import type { AnyEntry, Section } from '@resumeforge/core';
+import type { AnyEntry, Resume, Section } from '@resumeforge/core';
 
 const IGNORED = new Set(['id', 'kind', 'gpaLabel']);
 
@@ -16,4 +16,9 @@ export function entryHasContent(entry: AnyEntry): boolean {
 
 export function sectionHasContent(section: Section): boolean {
   return (section.entries as AnyEntry[]).some(entryHasContent);
+}
+
+/** True when a resume has no name and no section content: a blank canvas. */
+export function resumeIsEmpty(resume: Resume): boolean {
+  return !resume.personalInfo.fullName.trim() && !resume.sections.some(sectionHasContent);
 }

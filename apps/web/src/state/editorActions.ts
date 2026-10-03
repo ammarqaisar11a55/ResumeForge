@@ -1,6 +1,7 @@
 import type { Draft } from 'immer';
 import {
   createContact,
+  createDemoResume,
   createEntry,
   createSection,
   duplicateEntry as cloneEntry,
@@ -58,6 +59,15 @@ function sectionLabel(sectionId: string): string {
 export function renameResume(title: string) {
   commit('Rename resume', (d) => void (d.metadata.title = title), {
     coalesceKey: 'metadata.title',
+  });
+}
+
+/** Replace the content with the example resume (undoable); title, template and formatting stay. */
+export function fillWithExample() {
+  commit('Fill with example content', (d) => {
+    const demo = createDemoResume(d.template);
+    d.personalInfo = demo.personalInfo;
+    d.sections = demo.sections;
   });
 }
 
