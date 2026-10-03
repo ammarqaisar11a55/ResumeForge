@@ -3,6 +3,7 @@ import { SECTION_DEFINITIONS, SECTION_MENU_ORDER } from '@resumeforge/core';
 import { Button } from '../../../components/ui/Button';
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '../../../components/ui/Menu';
 import { addSection } from '../../../state/editorActions';
+import { useEditorStore } from '../../../state/editorStore';
 import { useSidebarStore } from './sidebarStore';
 import { SECTION_ICONS } from './sectionIcons';
 
@@ -24,7 +25,9 @@ export function AddSectionMenu() {
               icon={<Icon className="size-4" />}
               onSelect={() => {
                 const id = addSection(type);
-                useSidebarStore.getState().reveal(id);
+                // Open the starter entry too, so the user can type straight away.
+                const section = useEditorStore.getState().resume?.sections.find((s) => s.id === id);
+                useSidebarStore.getState().reveal(id, section?.entries[0]?.id);
               }}
             >
               <span className="flex flex-col py-1">

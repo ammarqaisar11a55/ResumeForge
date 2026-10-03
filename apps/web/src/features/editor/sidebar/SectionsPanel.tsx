@@ -1,3 +1,4 @@
+import type { Section } from '@resumeforge/core';
 import { useEditorStore } from '../../../state/editorStore';
 import { moveSection } from '../../../state/editorActions';
 import { SortableList } from '../fields/SortableList';
@@ -6,9 +7,12 @@ import { PersonalInfoCard } from './PersonalInfoCard';
 import { SectionCard } from './SectionCard';
 import { IssueSummary } from './IssueSummary';
 
+// A stable fallback: a fresh [] per read would make the store subscription loop forever.
+const NO_SECTIONS: Section[] = [];
+
 /** Left panel: the document outline. Sections reorder by drag or keyboard. */
 export function SectionsPanel() {
-  const sections = useEditorStore((s) => s.resume?.sections ?? []);
+  const sections = useEditorStore((s) => s.resume?.sections ?? NO_SECTIONS);
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-line px-3">
