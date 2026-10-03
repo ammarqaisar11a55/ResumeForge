@@ -2,6 +2,8 @@
 
 **Build a resume worth remembering.**
 
+**Live:** https://resumeforge-nine-dusky.vercel.app
+
 ResumeForge is a resume builder that works like a document tool. You fill in structured sections and watch real A4 or US Letter pages lay themselves out, page breaks included. The preview is the document itself, and the PDF you download is rendered from exactly those pages.
 
 - Live, paginated A4/Letter preview built from the real resume DOM (no screenshots)
@@ -49,6 +51,20 @@ npm run build
 
 ```bash
 WEB_DIST=../web/dist npm start -w @resumeforge/server
+```
+
+## Deploying to Vercel
+
+The project deploys to Vercel as a static web app plus two serverless functions, `/api/health` and `/api/export/pdf`. The PDF function bundles [`@sparticuz/chromium`](https://github.com/Sparticuz/chromium), the document stylesheet and the font files. `scripts/build-vercel.mjs` writes everything in Vercel's Build Output format, and `vercel.json` makes Vercel run that script, so every push to `main` deploys automatically.
+
+To deploy manually from your machine:
+
+```bash
+npm run build:vercel
+```
+
+```bash
+npx vercel deploy --prebuilt --prod
 ```
 
 ## Architecture
