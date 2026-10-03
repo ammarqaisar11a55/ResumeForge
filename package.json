@@ -2,14 +2,14 @@
   "name": "resumeforge",
   "private": true,
   "version": "0.1.0",
-  "description": "ResumeForge — build a resume worth remembering.",
+  "description": "ResumeForge \u2014 build a resume worth remembering.",
   "type": "module",
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "engines": {
-    "node": ">=20.11"
+    "node": ">=20.12"
   },
   "scripts": {
     "dev": "concurrently -k -n server,web -c blue,magenta \"npm:dev -w @resumeforge/server\" \"npm:dev -w @resumeforge/web\"",

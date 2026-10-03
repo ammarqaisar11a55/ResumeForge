@@ -1,8 +1,9 @@
 import { createApp } from './app';
-import { loadConfig } from './config';
+import { loadConfig, loadDotEnv } from './config';
 import { openDatabase, type Db } from './db';
 import { PdfRenderer } from './pdf/pdfRenderer';
 
+loadDotEnv();
 const config = loadConfig();
 
 let db: Db | null = null;

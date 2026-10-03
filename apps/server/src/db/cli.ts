@@ -1,4 +1,4 @@
-import { loadConfig } from '../config';
+import { loadConfig, loadDotEnv } from '../config';
 import { openDatabase } from './index';
 
 const command = process.argv[2];
@@ -7,6 +7,7 @@ if (command !== 'migrate') {
   process.exit(1);
 }
 
+loadDotEnv();
 const config = loadConfig();
 const db = await openDatabase(config);
 console.log(`Database ready (${db.kind}${config.databaseUrl ? '' : ` in ${config.dataDir}`}).`);

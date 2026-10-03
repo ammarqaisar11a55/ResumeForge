@@ -32,6 +32,11 @@ export function findChrome(explicit?: string): string | null {
   return CHROME_CANDIDATES.find((candidate) => existsSync(candidate)) ?? null;
 }
 
+/** Load `.env` from the working directory when present. Real environment variables win. */
+export function loadDotEnv(file = '.env'): void {
+  if (existsSync(file)) process.loadEnvFile(file);
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const port = Number(env.PORT ?? 4000);
   return {
