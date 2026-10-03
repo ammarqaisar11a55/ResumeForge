@@ -6,6 +6,8 @@ const apiTarget = process.env.RESUMEFORGE_API_URL ?? 'http://localhost:4000';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Workspace packages must share the app's single copy of React.
+  resolve: { dedupe: ['react', 'react-dom'] },
   server: {
     port: Number(process.env.PORT ?? 5173),
     proxy: {

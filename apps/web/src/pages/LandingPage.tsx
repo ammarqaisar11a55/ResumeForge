@@ -1,4 +1,5 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { createDemoResume, TEMPLATE_LIST, type TemplateId } from '@resumeforge/core';
@@ -6,7 +7,9 @@ import { ResumeThumbnail } from '@resumeforge/renderer';
 import { GitHubMark } from '../components/GitHubMark';
 import { Segmented } from '../components/ui/Segmented';
 import { Reveal } from '../features/landing/Reveal';
+import { ScrollProgress, WordReveal } from '../features/landing/ScrollMotion';
 import { SiteFooter, SiteHeader } from '../features/landing/SiteHeader';
+import { StoryScroll } from '../features/landing/StoryScroll';
 import { TemplateShowcase } from '../features/landing/TemplateShowcase';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { DEVELOPER_NAME, DEVELOPER_URL, REPOSITORY_URL } from '../lib/links';
@@ -53,6 +56,15 @@ const STEPS: { title: string; body: string }[] = [
   },
 ];
 
+/** Hero copy drifts up and fades as the hero scrolls away (parallax against the sheets). */
+function HeroCopy({ children }: { children: React.ReactNode }) {
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 500], [0, -70]);
+  const opacity = useTransform(scrollY, [0, 420], [1, 0.25]);
+  return <motion.div style={reduce ? undefined : { y, opacity }}>{children}</motion.div>;
+}
+
 function HeroDocument() {
   const [template, setTemplate] = useState<TemplateId>('classic');
   const resumes = useMemo(
@@ -61,16 +73,31 @@ function HeroDocument() {
   );
   const wide = useMediaQuery('(min-width: 640px)');
   const width = wide ? 440 : 300;
+  const reduce = useReducedMotion();
+  // Parallax: the sheets fan apart as the hero scrolls away.
+  const { scrollY } = useScroll();
+  const backX = useTransform(scrollY, [0, 600], [0, 26]);
+  const backY = useTransform(scrollY, [0, 600], [0, 34]);
+  const backRotate = useTransform(scrollY, [0, 600], [0, 4]);
+  const frontY = useTransform(scrollY, [0, 600], [0, -40]);
+  const frontRotate = useTransform(scrollY, [0, 600], [0, -1.5]);
 
   return (
     <div className="flex flex-col items-center gap-5">
       <div className="relative" style={{ width }}>
         {/* The second sheet behind hints that documents run to several pages. */}
-        <div className="hero-sheet-back absolute inset-0 translate-x-5 translate-y-4 rotate-[2.5deg] bg-white shadow-page" aria-hidden />
+        <motion.div
+          className="absolute inset-0 translate-x-5 translate-y-4 rotate-[2.5deg] bg-white shadow-page"
+          style={reduce ? undefined : { x: backX, y: backY, rotate: backRotate }}
+          aria-hidden
+        />
         <div className="relative animate-rise">
-          <div className="hero-sheet-front shadow-page" style={{ height: width * (297 / 210) }}>
+          <motion.div
+            className="shadow-page"
+            style={{ height: width * (297 / 210), ...(reduce ? {} : { y: frontY, rotate: frontRotate }) }}
+          >
             <ResumeThumbnail resume={resumes[template]} width={width} />
-          </div>
+          </motion.div>
         </div>
       </div>
       <Segmented
@@ -127,10 +154,11 @@ export function LandingPage() {
 
   return (
     <div className="min-h-dvh bg-surface">
+      <ScrollProgress />
       <div className="relative overflow-hidden bg-canvas">
         <SiteHeader />
         <section className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-10 pb-20 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-16 lg:pb-28">
-          <div>
+          <HeroCopy>
             <h1 className="type-display text-[clamp(2.6rem,7vw,4.6rem)] text-ink">Build a resume worth remembering.</h1>
             <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-muted">
               ResumeForge is a resume editor that works like a document tool. Fill in structured sections and watch real
@@ -152,7 +180,7 @@ export function LandingPage() {
               </Link>
             </div>
             <p className="mt-5 text-sm text-faint">Free to use. No account needed: your resumes stay in your browser.</p>
-          </div>
+          </HeroCopy>
           <HeroDocument />
         </section>
       </div>
@@ -185,18 +213,7 @@ export function LandingPage() {
           <Reveal>
             <h2 className="type-title text-[2rem] text-ink">How it works</h2>
           </Reveal>
-          <ol className="mt-10 grid gap-10 md:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <li key={step.title}>
-                <Reveal variant="draw" delay={i * 160} className="h-0.5 bg-ink" />
-                <Reveal delay={i * 160 + 120} className="pt-5">
-                  <span className="type-display text-4xl text-accent-ink tabular">{i + 1}</span>
-                  <h3 className="mt-3 text-lg font-semibold text-ink">{step.title}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-muted">{step.body}</p>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
+          <StoryScroll steps={STEPS} />
         </div>
       </section>
 
@@ -245,7 +262,7 @@ export function LandingPage() {
 
       <section className="bg-ink text-surface">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <h2 className="type-display text-[clamp(2rem,4vw,3rem)]">Your next resume starts on page one.</h2>
+          <WordReveal text="Your next resume starts on page one." className="type-display text-[clamp(2rem,4vw,3rem)]" />
           <Link
             to="/app?new"
             className="inline-flex h-12 shrink-0 items-center gap-2 rounded-md bg-accent px-6 text-[15px] font-semibold text-on-accent hover:brightness-105"

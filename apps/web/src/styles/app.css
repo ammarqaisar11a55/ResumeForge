@@ -218,24 +218,6 @@
     transition-delay: 1100ms;
   }
 
-  /* Hero sheets fan apart as the page scrolls (scroll-driven, where supported). */
-  @supports (animation-timeline: scroll()) {
-    .hero-sheet-back,
-    .hero-sheet-front {
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: scroll(root);
-      animation-range: 0 70vh;
-    }
-
-    .hero-sheet-back {
-      animation-name: sheet-fan;
-    }
-
-    .hero-sheet-front {
-      animation-name: sheet-lift;
-    }
-  }
 
   /* Pages sitting on the desk. Crop marks sit outside the trim box. */
   .rf-preview .rf-document {
@@ -297,18 +279,6 @@
   }
 }
 
-@keyframes sheet-fan {
-  to {
-    transform: translate(36px, 30px) rotate(5deg);
-  }
-}
-
-@keyframes sheet-lift {
-  to {
-    transform: translateY(-28px) rotate(-1.5deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .specimen-ghost,
@@ -319,11 +289,6 @@
 
   .reveal[data-shown] .specimen-ghost {
     opacity: 0 !important;
-  }
-
-  .hero-sheet-back,
-  .hero-sheet-front {
-    animation: none !important;
   }
 
   *,
