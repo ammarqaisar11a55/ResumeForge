@@ -30,7 +30,10 @@ test('phone layout uses tabs and keeps the page faithful to A4', async ({ browse
   await page.goto(`/app/resume/${resume.id}`);
   await expect(page.getByRole('navigation', { name: 'Editor panels' })).toBeVisible();
   await page.getByRole('button', { name: 'Preview' }).click();
-  const ratio = await page.locator('.rf-preview .rf-page').first().evaluate((el) => el.offsetHeight / el.offsetWidth);
+  const ratio = await page
+    .locator('.rf-preview .rf-page')
+    .first()
+    .evaluate((el) => el.getBoundingClientRect().height / el.getBoundingClientRect().width);
   expect(ratio).toBeCloseTo(297 / 210, 2);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
